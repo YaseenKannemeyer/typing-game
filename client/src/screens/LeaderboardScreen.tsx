@@ -19,6 +19,7 @@ const PERIODS = [
   { days: 0, label: 'All time' },
 ] as const;
 const PODIUM = ['gold', 'silver', 'bronze'] as const;
+const PLACE_LABELS = ['01 / POLE POSITION', '02 / SECOND', '03 / THIRD'];
 
 const label = (m: string) => (m === 'all' ? 'All modes' : m[0]!.toUpperCase() + m.slice(1));
 const vehicleOf = (r: LeaderRow, i: number) => ({
@@ -38,13 +39,28 @@ function HallOfFame({ rows, loading }: { rows: LeaderRow[] | null; loading: bool
         <p>One great race can put you here. The fastest verified finishes, from across the grid.</p>
         <span className="lb-caption">PRECISION MEETS PACE / GRID MOTOR CLUB</span>
       </div>
-      {rows && rows.length > 0 ? <div className={`lb-champions lb-champions--${Math.min(rows.length, 3)}`}>
-        {rows.slice(0, 3).map((p, i) => {
+      {rows && rows.length > 0 ? <div className="lb-champions">
+        {/* Always three places; unclaimed ones stay open (never fake racers). */}
+        {PODIUM.map((trophy, i) => {
+          const p = rows[i];
+          if (!p) {
+            return (
+              <article key={trophy} className={`lb-champion lb-champion--open lb-place-${i + 1}`}>
+                <div className="lb-champion-place">
+                  <span>{PLACE_LABELS[i]}</span>
+                  <TrophyIcon trophy={trophy} size={48} state="locked" />
+                </div>
+                <div className="lb-open-bay" aria-hidden="true">+</div>
+                <h2>Open spot</h2>
+                <p>Finish a race to claim it.</p>
+              </article>
+            );
+          }
           return (
             <article key={p.handle} className={`lb-champion lb-place-${i + 1}`}>
               <div className="lb-champion-place">
-                <span>{['01 / POLE POSITION', '02 / SECOND', '03 / THIRD'][i]}</span>
-                <TrophyIcon trophy={PODIUM[i]!} size={48} />
+                <span>{PLACE_LABELS[i]}</span>
+                <TrophyIcon trophy={trophy} size={48} />
               </div>
               <div className="lb-champion-car">
                 <Car vehicle={vehicleOf(p, i)} />
