@@ -608,3 +608,80 @@ html {
     font-size: 13px;
   }
 }
+
+/* Results: the next-step buttons sit under the podium; other racers' awards are compact. */
+.g-result-actions {
+  margin-top: 0;
+}
+.award-grid--compact {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+.g-award--compact {
+  align-items: flex-start;
+  padding: 12px 14px 12px 10px;
+  background: var(--g-panel);
+}
+.g-award--compact > svg {
+  width: 56px;
+}
+.g-award--compact h3 {
+  font-size: 15px;
+  margin: 4px 0 4px;
+}
+
+/* Clubhouse: dialogs centre again (preflight drops the UA margin); names outrank the rule text. */
+.w-dialog {
+  margin: auto;
+}
+.w-trophy-details {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.w-cabinet-slot strong {
+  font-size: 12px;
+  min-height: 0;
+  margin-top: 8px;
+}
+.w-cabinet-slot small {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+}
+.w-cabinet-slot .trophy-rule,
+.a-trophy-strip .trophy-rule {
+  font-size: 11px;
+  line-height: 1.4;
+}
+.a-trophy-strip strong {
+  font-size: 12px;
+  margin-top: 6px;
+}
+@media (max-width: 640px) {
+  .w-cabinet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .w-cabinet-slot {
+    padding: 12px 8px;
+  }
+  .w-cabinet-slot strong {
+    font-size: 12px;
+  }
+  .w-cabinet-slot small {
+    font-size: 9px;
+  }
+  /* Recent trophies: one per row so the rule text has room. */
+  .a-trophy-strip {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Waiting room, tablet: the side cards sit two across; the odd one out spans the row. */
+@media (min-width: 601px) and (max-width: 1050px) {
+  .g-lobby-grid aside > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}

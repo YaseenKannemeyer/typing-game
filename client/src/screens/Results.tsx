@@ -155,6 +155,30 @@ export function Results({ state }: { state: LobbyState }) {
         )}
       </Card>
 
+      {/* What's next sits right under the podium, not 3,000px down. */}
+      <div className="g-result-actions">
+        {isHost ? (
+          <>
+            <Button icon="refresh" loading={busy === 'rematch'} disabled={!!busy} onClick={run('rematch', () => api.startRace(lobby.id))}>
+              Race again
+            </Button>
+            <Button variant="secondary" loading={busy === 'vote'} disabled={!!busy} onClick={run('vote', () => api.startVoting(lobby.id))}>
+              New mode vote
+            </Button>
+            <Button variant="ghost" loading={busy === 'lobby'} disabled={!!busy} onClick={run('lobby', () => api.returnToLobby(lobby.id))}>
+              Back to lobby
+            </Button>
+          </>
+        ) : (
+          <p className="g-muted">Waiting for the host to choose what's next…</p>
+        )}
+      </div>
+
+      <section className="g-stack">
+        <h2 className="g-heading">Official standings</h2>
+        <ResultsTable rows={rows} />
+      </section>
+
       {me && (
         <section className="g-stack">
           <div className="g-between">
@@ -184,11 +208,6 @@ export function Results({ state }: { state: LobbyState }) {
         </section>
       )}
 
-      <section className="g-stack">
-        <h2 className="g-heading">Official standings</h2>
-        <ResultsTable rows={rows} />
-      </section>
-
       {awarded && (
         <section className="g-stack">
           <h2 className="g-heading">Everyone's awards</h2>
@@ -199,9 +218,9 @@ export function Results({ state }: { state: LobbyState }) {
               return (
                 <div key={r.id} className="g-stack">
                   <p className="g-eyebrow">{r.name}</p>
-                  <div className="g-grid-2">
+                  <div className="award-grid--compact">
                     {[...theirs.race, ...theirs.progression].map((a) => (
-                      <AwardCard key={a.trophy} award={a} recipient={r.name} reveal={false} />
+                      <AwardCard key={a.trophy} award={a} recipient={r.name} reveal={false} compact />
                     ))}
                   </div>
                 </div>
@@ -210,23 +229,6 @@ export function Results({ state }: { state: LobbyState }) {
         </section>
       )}
 
-      <div className="g-result-actions">
-        {isHost ? (
-          <>
-            <Button icon="refresh" loading={busy === 'rematch'} disabled={!!busy} onClick={run('rematch', () => api.startRace(lobby.id))}>
-              Race again
-            </Button>
-            <Button variant="secondary" loading={busy === 'vote'} disabled={!!busy} onClick={run('vote', () => api.startVoting(lobby.id))}>
-              New mode vote
-            </Button>
-            <Button variant="ghost" loading={busy === 'lobby'} disabled={!!busy} onClick={run('lobby', () => api.returnToLobby(lobby.id))}>
-              Back to lobby
-            </Button>
-          </>
-        ) : (
-          <p className="g-muted">Waiting for the host to choose what's next…</p>
-        )}
-      </div>
       <ErrorText>{error}</ErrorText>
     </div>
   );

@@ -60,11 +60,11 @@ export function Paddock({ players }: { players: RosterPlayer[] }) {
       <div className="w-parking-grid">
         {players.map((p, i) => <Bay key={p.id} p={p} index={i} />)}
         {Array.from({ length: open }, (_, i) => (
-          <EmptyBay key={i} index={players.length + i} className="max-sm:!hidden" />
+          <EmptyBay key={i} index={players.length + i} className="max-lg:!hidden" />
         ))}
         {open > 0 && (
-          // Phones: one summary bay instead of a long column of empty seats.
-          <article className="w-parking-bay empty sm:!hidden">
+          // Phones and tablets: one summary bay instead of a long column of empty seats.
+          <article className="w-parking-bay empty lg:!hidden">
             <div className="w-bay-ground">
               <span className="w-empty-plus" aria-hidden="true">+</span>
             </div>
