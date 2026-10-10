@@ -16,6 +16,7 @@ const MESSAGES: Record<string, string> = {
   voting_open: 'Voting is still open.',
   not_member: 'You are no longer in this lobby.',
   not_authenticated: 'Could not sign you in. Refresh and try again.',
+  captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
 
 export class ApiError extends Error {}

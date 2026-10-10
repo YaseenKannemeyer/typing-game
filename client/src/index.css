@@ -103,3 +103,12 @@
     --car-w: 88px;
   }
 }
+
+/* Turnstile appears here only if Cloudflare needs the visitor to interact. */
+.g-captcha {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+}

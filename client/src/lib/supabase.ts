@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { getCaptchaToken } from './captcha';
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
@@ -31,7 +32,8 @@ export function ensureSession(): Promise<string> {
     const sb = requireSupabase();
     const { data } = await sb.auth.getSession();
     if (data.session) return data.session.user.id;
-    const { data: signedIn, error } = await sb.auth.signInAnonymously();
+    const captchaToken = await getCaptchaToken();
+    const { data: signedIn, error } = await sb.auth.signInAnonymously(captchaToken ? { options: { captchaToken } } : undefined);
     if (error) throw error;
     return signedIn.user!.id;
   })().catch((e: unknown) => {
