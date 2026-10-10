@@ -1,0 +1,42 @@
+{
+  "name": "GRID Racing World Expansion",
+  "version": "1.0.0",
+  "entry": "OPEN-ME.html",
+  "kits": [
+    "16-workshop",
+    "17-circuit",
+    "18-paddock",
+    "19-destinations",
+    "20-finish-venue",
+    "21-driver-livery",
+    "22-dashboard",
+    "23-race-control",
+    "24-clubhouse",
+    "25-championship"
+  ],
+  "scripts": [
+    "vendor/core.js",
+    "vendor/vehicles.js",
+    "vendor/trophies.js",
+    "vendor/sound.js",
+    "showroom/world-core.js",
+    "16-workshop/workshop.js",
+    "19-destinations/destinations.js",
+    "17-circuit/circuit.js",
+    "18-paddock/paddock.js",
+    "20-finish-venue/finish.js",
+    "21-driver-livery/livery.js",
+    "22-dashboard/dashboard.js",
+    "23-race-control/control.js",
+    "24-clubhouse/clubhouse.js",
+    "25-championship/championship.js"
+  ],
+  "styles": [
+    "vendor/tokens.css",
+    "vendor/components.css",
+    "vendor/vehicles.css",
+    "vendor/trophies.css",
+    "showroom/world.css"
+  ],
+  "scope": "Presentation modules and local demos; no backend integration"
+}

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
-import { HowTo, InviteLink, RaceSettings, RoomCode, Roster, type RosterPlayer } from '../components/lobby/Lobby';
+import { DestinationPicker } from '../components/lobby/Destinations';
+import { HowTo, InviteLink, RaceSettings, RoomCode, type RosterPlayer } from '../components/lobby/Lobby';
+import { Paddock } from '../components/lobby/Paddock';
+import type { DestinationId } from '../art/worldArt';
 import { TrophyRoom } from '../components/trophies/TrophyRoom';
 import { Button, Card, ErrorText, PageTitle, Pill, SectionTitle } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
@@ -27,13 +30,14 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   // Shown straight away while the server confirms (it broadcasts lobby:update).
-  const [pending, setPending] = useState<{ seconds: number; zero: boolean } | null>(null);
+  const [pending, setPending] = useState<{ seconds: number; zero: boolean; destination: DestinationId | null } | null>(null);
   const [garageOpen, setGarageOpen] = useState(false);
   const garageRef = useRef<HTMLElement>(null);
   const roster = useMemo(() => rosterFrom(state), [state]);
   // Drop the optimistic value once the lobby reflects it.
   useEffect(() => {
-    if (pending && lobby && pending.seconds === lobby.race_seconds && pending.zero === lobby.zero_mistakes) setPending(null);
+    if (pending && lobby && pending.seconds === lobby.race_seconds && pending.zero === lobby.zero_mistakes && pending.destination === lobby.destination)
+      setPending(null);
   }, [pending, lobby]);
   if (!lobby) return null;
   const isHost = lobby.host_id === userId;
@@ -53,12 +57,17 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
     }
   };
 
-  const changeSettings = async (seconds: number, zeroMistakes: boolean) => {
+  const rules = {
+    seconds: pending?.seconds ?? lobby.race_seconds,
+    zero: pending?.zero ?? lobby.zero_mistakes,
+    destination: pending ? pending.destination : lobby.destination,
+  };
+  const changeSettings = async (seconds: number, zeroMistakes: boolean, destination: DestinationId | null = rules.destination) => {
     setSaving(true);
-    setPending({ seconds, zero: zeroMistakes });
+    setPending({ seconds, zero: zeroMistakes, destination });
     setError(null);
     try {
-      await api.setRaceSettings(lobby.id, seconds, zeroMistakes);
+      await api.setRaceSettings(lobby.id, seconds, zeroMistakes, destination);
     } catch (e) {
       setError(errorMessage(e));
       setPending(null);
@@ -84,11 +93,11 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
         <section>
           <div className="g-between">
             <h2 className="g-heading">
-              The starting grid <span className="g-muted g-small">{players.length} / {MAX_PLAYERS}</span>
+              The paddock <span className="g-muted g-small">{players.length} / {MAX_PLAYERS} parked</span>
             </h2>
-            <Pill lime>PRIVATE ROOM</Pill>
+            <Pill lime>PRIVATE PADDOCK</Pill>
           </div>
-          <Roster players={roster} />
+          <Paddock players={roster} />
         </section>
 
         <aside className="g-stack">
@@ -102,8 +111,8 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
             <div className="g-eyebrow">RACE RULES</div>
             <h2 className="g-heading mb-4">Type until the clock stops.</h2>
             <RaceSettings
-              seconds={pending?.seconds ?? lobby.race_seconds}
-              zeroMistakes={pending?.zero ?? lobby.zero_mistakes}
+              seconds={rules.seconds}
+              zeroMistakes={rules.zero}
               editable={isHost}
               busy={saving}
               onChange={changeSettings}
@@ -132,6 +141,16 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
           </Card>
         </aside>
       </div>
+
+      <section className="space-y-4">
+        <SectionTitle eyebrow="Destination" title="Where are we racing?" />
+        <DestinationPicker
+          value={rules.destination}
+          editable={isHost}
+          busy={saving}
+          onChange={(d) => void changeSettings(rules.seconds, rules.zero, d)}
+        />
+      </section>
 
       {me && garageOpen && (
         <section ref={garageRef} className="space-y-4 scroll-mt-4">

@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { MOTION, prefersReducedMotion } from '../../art/motion';
+import { decorative, playerCarSvg, podiumVenueSvg } from '../../art/worldArt';
+import { TrustedSvg } from '../TrustedSvg';
 import type { VehicleProps } from '../../art/vehicleArt';
 import { Car } from '../Car';
 import { PositionBadge } from '../race/Hud';
@@ -30,34 +32,40 @@ export function formatRaceTime(ms: number): string {
 
 const PODIUM_TROPHY = ['gold', 'silver', 'bronze'] as const;
 
-/** Top three finishers only; no medals are invented for missing places. */
-export function Podium({ rows }: { rows: ResultRowView[] }) {
+/**
+ * 20-finish-venue: grandstand and podium with the official top three (fewer
+ * when fewer finished). The artwork is decorative; the list below it carries
+ * the names and WPM for everyone, including screen readers.
+ */
+export function FinishVenue({ rows }: { rows: ResultRowView[] }) {
   const top = rows.filter((r) => r.status === 'finished').slice(0, 3);
-  const order = [1, 0, 2].filter((i) => top[i]);
+  const key = JSON.stringify(top.map((p) => [p.id, p.name, p.vehicle]));
+  const markup = useMemo(
+    () => decorative(podiumVenueSvg(top.map((p) => ({ name: p.name, vehicle: p.vehicle })), playerCarSvg)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [key],
+  );
   if (!top.length) return null;
   return (
-    <div className="g-podium">
-      {order.map((i) => {
-        const p = top[i]!;
-        return (
-          <article key={p.id} className={`g-podium-slot place-${i + 1}`}>
-            <div className="g-podium-trophy">
-              <TrophyIcon trophy={PODIUM_TROPHY[i]!} size={82} state="reveal" />
-            </div>
-            <strong>
-              {p.name}
-              {p.you && <small> YOU</small>}
-            </strong>
-            <span className="g-podium-time">{p.wpm === null ? '—' : `${Math.round(p.wpm)} WPM`}</span>
-            <div className="g-podium-car">
-              <Car vehicle={p.vehicle} animation={i === 0 ? 'winner' : 'finish'} />
-            </div>
-            <div className="g-podium-step">
-              <span>{String(i + 1).padStart(2, '0')}</span>
-            </div>
-          </article>
-        );
-      })}
+    <div className="g-stack">
+      <div className="w-finish-venue">
+        <TrustedSvg markup={markup} />
+      </div>
+      <ol className="w-podium-list" aria-label="Podium">
+        {top.map((p, i) => (
+          <li key={p.id} className={p.you ? 'is-you' : ''}>
+            <TrophyIcon trophy={PODIUM_TROPHY[i]!} size={44} state="reveal" />
+            <span>
+              <small>{['1ST', '2ND', '3RD'][i]}</small>
+              <strong>
+                {p.name}
+                {p.you && <em> YOU</em>}
+              </strong>
+            </span>
+            <b>{p.wpm === null ? '—' : `${Math.round(p.wpm)} WPM`}</b>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

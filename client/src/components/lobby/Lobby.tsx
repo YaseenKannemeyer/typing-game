@@ -98,7 +98,7 @@ export function InviteLink({ code }: { code: string }) {
 
 const STEPS = [
   ['keyboard', '01', 'Type until the clock stops', 'The text never runs out. Every correct word moves your car.'],
-  ['bolt', '02', 'Mistakes turn red', 'Fix them with Backspace or keep going. Press Enter to lock in each line.'],
+  ['bolt', '02', 'Mistakes turn red', 'Fix them with Backspace or keep going. At the end of a line, Space or Enter takes you to the next one.'],
   ['flag', '03', 'Highest WPM wins', 'Everyone still racing at the final whistle takes home an award.'],
 ] as const;
 

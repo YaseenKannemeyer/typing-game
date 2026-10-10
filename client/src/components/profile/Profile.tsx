@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { TROPHIES, type TrophyCategory, type TrophyId } from '@race/shared';
+import { TROPHIES } from '@race/shared';
 import { avatarSvg, lineChartSvg, modeBestsHtml } from '../../art/accountArt';
-import { trophyScope } from '../../art/trophyArt';
 import type { VehicleProps } from '../../art/vehicleArt';
 import type { Summary } from '../../lib/api';
 import { Car } from '../Car';
@@ -140,51 +139,3 @@ export function RecentTrophies({ recent }: { recent: Summary['recent'] }) {
   );
 }
 
-const CATEGORY_ORDER: TrophyCategory[] = ['podium', 'speed', 'accuracy', 'funny', 'special'];
-
-/** All 20 trophies: earned ones in colour with a count, the rest locked. */
-export function TrophyCabinet({ counts }: { counts: Summary['trophy_counts'] }) {
-  const ids = (Object.keys(TROPHIES) as TrophyId[]).sort(
-    (a, b) => CATEGORY_ORDER.indexOf(TROPHIES[a].category) - CATEGORY_ORDER.indexOf(TROPHIES[b].category),
-  );
-  const earned = ids.filter((id) => (counts[id] ?? 0) > 0).length;
-  return (
-    <section className="g-stack">
-      <div className="g-between">
-        <div>
-          <p className="g-eyebrow">YOUR COLLECTION</p>
-          <h2 className="g-heading mt-1">The trophy cabinet</h2>
-        </div>
-        <span className="g-pill g-pill--lime">{earned} / {ids.length} UNLOCKED</span>
-      </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {ids.map((id) => {
-          const n = counts[id] ?? 0;
-          const info = TROPHIES[id];
-          return (
-            <div
-              key={id}
-              className={`rounded-card border p-3 text-center ${n ? 'border-line bg-panel' : 'border-dashed border-line bg-ink'}`}
-              title={info.rule}
-            >
-              <div className="flex justify-between font-mono text-[9px] uppercase tracking-wider text-subtle">
-                <span>{info.category}</span>
-                <span>{n ? `×${n}` : 'LOCKED'}</span>
-              </div>
-              <TrophyIcon
-                trophy={id}
-                size={88}
-                state={n ? 'earned' : 'locked'}
-                label={`${info.name}${n ? `, earned ${n} ${n === 1 ? 'time' : 'times'}` : ', locked'}`}
-                className="mx-auto mt-1 block w-fit"
-              />
-              <p className={`mt-2 text-sm font-semibold ${n ? '' : 'text-subtle'}`}>{info.name}</p>
-              <p className="text-[10px] text-subtle">{trophyScope(id)}</p>
-            </div>
-          );
-        })}
-      </div>
-      <p className="a-footnote">The headline trophy total counts distinct trophy types. Repeated awards stay in your race history.</p>
-    </section>
-  );
-}

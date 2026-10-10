@@ -36,8 +36,9 @@ async function typeUntilTimeUp(page: Page, delay: number) {
     if (!line) break;
     // On the second line, leave one wrong letter in place: it stays red and the race carries on.
     const text = lines === 1 ? (line[0] === 'q' ? 'z' : 'q') + line.slice(1) : line;
+    // Alternate Space and Enter at the end of the line: both lock it in.
     await page.keyboard.type(text, { delay });
-    await page.keyboard.press('Enter');
+    await page.keyboard.press(lines % 2 ? 'Space' : 'Enter');
     lines++;
   }
   return lines;
@@ -68,20 +69,31 @@ async function main() {
   await shot(bob, '02-name-gate-mobile');
   await bob.getByPlaceholder('e.g. Speedy').fill('Bob');
   await bob.getByRole('button', { name: 'Join the grid' }).click();
-  await alice.locator('.g-player', { hasText: 'Bob' }).waitFor();
+  await alice.locator('.w-parking-bay', { hasText: 'Bob' }).waitFor();
 
   // Garage: Bob picks the rocket in neon and confirms.
   await bob.getByRole('button', { name: 'Open garage' }).click();
   await bob.getByRole('button', { name: /Rocket Racer/ }).click();
   await bob.getByLabel('Cosmetic effect').selectOption('neon');
+  // Livery station: team, decal and driver lettering (cosmetic, validated by the server).
+  await bob.getByRole('tab', { name: 'Livery' }).click();
+  await bob.getByRole('button', { name: /Nightshift/ }).click();
+  await bob.getByLabel('Decal').selectOption('checkered');
+  await bob.getByLabel('Driver lettering').fill('bob<3!');
   await bob.getByRole('button', { name: /Confirm vehicle/ }).click();
   await bob.getByText('Selection saved').waitFor();
+  // The server keeps only the allowed lettering ("BOB3") and the livery shows on Alice's screen.
+  await alice.locator('.w-parking-bay', { hasText: 'Bob' }).locator('text', { hasText: 'BOB3' }).waitFor();
   // Race rules: the host flips zero-mistake mode on and off; Bob sees it live.
   await alice.getByLabel('Zero-mistake mode').click();
   await bob.getByText("On: you can't move past a wrong word").waitFor();
   await alice.getByLabel('Zero-mistake mode').click();
   await bob.getByText('Off: mistakes turn red').waitFor();
   await alice.getByRole('button', { name: '1 min' }).click();
+  // Destination: the host picks the scenery for the room.
+  const rainCard = (page: Page) => page.locator('.w-destination-card', { has: page.locator('h3', { hasText: 'Midnight Rain' }) });
+  await rainCard(alice).click();
+  await bob.locator('.w-destination-card[aria-pressed="true"] h3', { hasText: 'Midnight Rain' }).waitFor();
   await alice.waitForTimeout(1500);
   await shot(alice, '03-waiting-room');
   await shot(bob, '04-waiting-room-mobile');
@@ -108,7 +120,7 @@ async function main() {
   await shot(alice, '07b-time-up');
 
   await alice.getByText('Every finish has a story.').waitFor({ timeout: 30_000 });
-  const podium = (await alice.locator('.g-podium-time').allTextContents()).join(', ');
+  const podium = (await alice.locator('.w-podium-list b').allTextContents()).join(', ');
   console.log('podium:', podium);
   // Trophies arrive from the server shortly after the race ends.
   await alice.locator('.g-award').first().waitFor({ timeout: 20_000 });
@@ -124,7 +136,7 @@ async function main() {
   console.log('achievement toast:', (await alice.locator('.a-achievement-toast h2').textContent())?.trim());
 
   await alice.getByRole('button', { name: 'Back to lobby' }).click();
-  await bob.getByText('The starting grid').waitFor();
+  await bob.getByRole('heading', { name: /The paddock/ }).waitFor();
   console.log('round trip complete');
 
   // Phase 4 pages, as a guest who now has race history.

@@ -39,3 +39,25 @@ export function loadAccountKit<T>(): T {
   delete g.AccountKit;
   return kit;
 }
+
+/**
+ * Test-only: loads the racing-world kit (kits 16–24) with its vendor runtimes
+ * in manifest order and returns the WorldKit API. Its renderers look up
+ * VehicleKit/TrophyKit/GridKit lazily, so those globals stay loaded.
+ */
+export function loadWorldKit<T>(): T {
+  const g = globalThis as unknown as Record<string, unknown>;
+  const globals = ['GridKit', 'VehicleKit', 'TrophyKit', 'WorldKit'];
+  for (const name of globals) delete g[name];
+  const scripts = [
+    'vendor/core.js', 'vendor/vehicles.js', 'vendor/trophies.js', 'showroom/world-core.js',
+    '16-workshop/workshop.js', '19-destinations/destinations.js', '17-circuit/circuit.js', '18-paddock/paddock.js',
+    '20-finish-venue/finish.js', '21-driver-livery/livery.js', '22-dashboard/dashboard.js',
+    '23-race-control/control.js', '24-clubhouse/clubhouse.js',
+  ];
+  for (const script of scripts) {
+    const file = fileURLToPath(new URL(`../../../design-kits/racing-world-kit/${script}`, import.meta.url));
+    new Function(readFileSync(file, 'utf8'))();
+  }
+  return g.WorldKit as T;
+}

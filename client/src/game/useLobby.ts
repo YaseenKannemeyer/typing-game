@@ -75,7 +75,7 @@ export function useLobby(code: string, name: string) {
     const id = lobbyId.current;
     if (!id) return;
     const [lobbyRes, playersRes, votesRes] = await Promise.all([
-      sb.from('lobbies').select('id, code, host_id, status, current_race_id, vote_ends_at, mode, race_seconds, zero_mistakes').eq('id', id).maybeSingle(),
+      sb.from('lobbies').select('id, code, host_id, status, current_race_id, vote_ends_at, mode, race_seconds, zero_mistakes, destination').eq('id', id).maybeSingle(),
       sb.from('lobby_players').select('user_id, name, car_color, joined_at, streak, vehicle').eq('lobby_id', id).order('joined_at'),
       sb.from('lobby_votes').select('user_id, mode').eq('lobby_id', id),
     ]);

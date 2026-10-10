@@ -1,8 +1,8 @@
 /**
  * Line-based typing engine for timed races. The text is laid out in lines;
  * the player types the current line freely (Space moves to the next word even
- * if this one is wrong, Backspace corrects anything on the line) and presses
- * Enter on the last word to lock the line in. In zero-mistake (strict) mode a
+ * if this one is wrong, Backspace corrects anything on the line); Space or
+ * Enter on the last word locks the line in and moves to the next one. In zero-mistake (strict) mode a
  * wrong word blocks Space and Enter until it is fixed.
  *
  * Pure and immutable so the same logic runs in the browser and in bot scripts.
@@ -186,8 +186,10 @@ export function typeChar(s: TypingState, char: string, section = 0): TypingState
 
   // Attempts are judged by position: is this the character expected here?
   if (char === ' ') {
-    // Nothing to separate yet, or the line ends here (Enter locks it).
-    if (cur === '' || k >= targets.length - 1) return s;
+    // Nothing to separate yet.
+    if (cur === '') return s;
+    // Last word: Space locks the line like Enter (zero-mistake mode: only when it's all right).
+    if (k >= targets.length - 1) return canLock(s) ? lockLine(s, section) : { ...s, ...count(s, false, section) };
     // Zero-mistake mode: leaving a wrong word is a failed attempt; you stay on it.
     if (s.strict && cur !== target) return { ...s, ...count(s, false, section) };
     return { ...s, input: s.input + ' ', ...count(s, cur.length === target.length, section) };
@@ -203,7 +205,7 @@ export function backspace(s: TypingState): TypingState {
   return { ...s, input: s.input.slice(0, -1), deletions: s.deletions + 1 };
 }
 
-/** Enter: locks the current line in (if allowed) and clears the input. */
+/** Enter (or Space on the last word): locks the current line in (if allowed) and clears the input. */
 export function lockLine(s: TypingState, section = 0): TypingState {
   if (!canLock(s)) return s;
   const typed = typedWords(s);

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_BUILD, normalizeVehicle } from '../art/vehicleArt';
-import { ChartCard, EditNameDialog, ModeBests, ProfileHeader, RecentTrophies, TrendCharts, TrophyCabinet } from '../components/profile/Profile';
+import { ChartCard, EditNameDialog, ModeBests, ProfileHeader, RecentTrophies, TrendCharts } from '../components/profile/Profile';
+import { Clubhouse } from '../components/trophies/Clubhouse';
 import { Banner, Button, Card, Loading, Page, PageTitle } from '../components/ui';
 import { SoundToggle } from '../game/sound';
 import { useAuth } from '../game/useAuth';
 import { signOut } from '../lib/account';
-import { api, errorMessage, type Summary } from '../lib/api';
+import { api, errorMessage, type Summary, type TrophyRecord } from '../lib/api';
 import { navigate } from '../lib/router';
 import { saveName } from '../lib/storage';
 
@@ -26,6 +27,7 @@ export function ProfileScreen() {
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
+  const [trophies, setTrophies] = useState<TrophyRecord[] | null>(null);
 
   const load = useCallback(async (d: number) => {
     try {
@@ -39,6 +41,9 @@ export function ProfileScreen() {
   useEffect(() => {
     if (auth.ready && auth.permanent) void load(days);
   }, [auth.ready, auth.permanent, days, load]);
+  useEffect(() => {
+    if (auth.ready && auth.permanent) void api.myTrophies().then(setTrophies, () => setTrophies([]));
+  }, [auth.ready, auth.permanent]);
 
   if (!auth.ready) return <Page><Loading label="Loading your profile" /></Page>;
 
@@ -140,7 +145,7 @@ export function ProfileScreen() {
         Charts use UTC dates and leave out unfinished and flagged races.
       </p>
 
-      <TrophyCabinet counts={summary.trophy_counts} />
+      <Clubhouse counts={summary.trophy_counts} records={trophies} />
 
       {editing && (
         <EditNameDialog

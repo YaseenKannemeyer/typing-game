@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { normalizeVehicle, vehicleSvg, type VehicleAnimation, type VehicleProps } from '../art/vehicleArt';
+import { liveryOverlay, normalizeLivery } from '../art/worldArt';
 
 interface Props {
   vehicle: Partial<VehicleProps>;
@@ -17,12 +18,14 @@ interface Props {
 export function Car({ vehicle, animation = 'idle', animationKey = 0, className = '' }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const v = normalizeVehicle(vehicle);
-  const markup = useMemo(
-    () => vehicleSvg({ ...v, animation: 'idle', effect: 'none' }),
+  const livery = normalizeLivery(vehicle);
+  const markup = useMemo(() => {
+    const svg = vehicleSvg({ ...v, animation: 'idle', effect: 'none' });
+    // Racing-world livery (kit 21): team decal and driver lettering on the body.
+    return livery.team ? svg.replace(/<\/svg>$/, liveryOverlay(v.model, { ...livery, team: livery.team }) + '</svg>') : svg;
     // Appearance fields only, matching the kit's rebuild rule.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [v.model, v.primary, v.accent, v.wheels, v.stripes, v.number, v.playerName],
-  );
+  }, [v.model, v.primary, v.accent, v.wheels, v.stripes, v.number, v.playerName, livery.team, livery.decal, livery.driver]);
 
   useLayoutEffect(() => {
     const svg = ref.current?.firstElementChild as SVGElement | null;

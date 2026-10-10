@@ -1,5 +1,6 @@
 import type { Award, LobbyStatus, PassageMode, Sample, VoteMode } from '@race/shared';
 import type { VehicleBuild } from '../art/vehicleArt';
+import type { DestinationId } from '../art/worldArt';
 
 export interface Lobby {
   id: string;
@@ -13,6 +14,8 @@ export interface Lobby {
   race_seconds: number;
   /** Zero-mistake mode: a wrong word blocks you until it is fixed. */
   zero_mistakes: boolean;
+  /** Host's scenery for the room; null = match the race mode. Cosmetic only. */
+  destination: DestinationId | null;
 }
 
 export interface LobbyPlayer {

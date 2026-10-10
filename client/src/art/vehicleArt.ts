@@ -5,6 +5,8 @@
  * Presentation only: nothing here affects scoring or progress.
  */
 
+import type { DecalId, TeamId } from './worldArt';
+
 export const VEHICLE_MODELS = [
   'classic', 'formula', 'muscle', 'supercar', 'hypercar', 'drift', 'rally', 'monster',
   'pickup', 'kart', 'vintage', 'cyber', 'police', 'taxi', 'rocket',
@@ -30,6 +32,11 @@ export interface VehicleBuild {
   stripes: boolean;
   number: number;
   effect: VehicleEffect;
+  /** Optional racing-world livery (kit 21); team null means no livery. */
+  team?: TeamId | null;
+  decal?: DecalId;
+  /** Driver lettering on the car (≤ 12 characters). */
+  driver?: string;
 }
 
 export interface VehicleProps extends VehicleBuild {

@@ -1,9 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { environmentSvg, finishFlagSvg, type SceneId } from '../art/gridArt';
 import { MOTION } from '../art/motion';
 import { laneLeft } from '../art/vehicleAnchors';
 import type { VehicleProps } from '../art/vehicleArt';
+import {
+  circuitFlagSvg,
+  decorative,
+  destinationSceneSvg,
+  finishStripeSvg,
+  kerbSvg,
+  startGridSvg,
+  type DestinationId,
+} from '../art/worldArt';
 import { useVehicleAnimation } from '../game/useVehicleAnimation';
 import { Car } from './Car';
 import { TrustedSvg } from './TrustedSvg';
@@ -28,46 +36,65 @@ interface Props {
   cars: TrackCar[];
   total: number;
   started: boolean;
-  scene: SceneId;
+  destination: DestinationId;
   /** Five ruler labels, start to finish. */
   ruler?: readonly string[];
 }
 
 const RULER = ['START', '25%', '50%', '75%', 'FINISH'] as const;
+const BARRIER = ['GRID MOTOR CLUB', 'TYPE / RACE / REPEAT', 'PRECISION WINS'];
 
-/** 06-track: scenery, ruler, four keyed lanes and the animated finish flag. */
-export function Track({ cars, total, started, scene, ruler = RULER }: Props) {
+// Static circuit artwork, built once (decorative: the lanes carry the meaning).
+const ART = {
+  // Stretched to the full track width (the kit's kerb is a repeating strip).
+  kerb: decorative(kerbSvg()).replace('<svg ', '<svg preserveAspectRatio="none" '),
+  grid: decorative(startGridSvg()),
+  stripe: decorative(finishStripeSvg()),
+  flag: decorative(circuitFlagSvg()),
+};
+
+/**
+ * 17-circuit: destination scenery, barrier, distance ruler and up to four
+ * keyed lanes. Cars are placed by our front-bumper anchors (vehicleAnchors),
+ * so at progress 1 every model's bumper meets the finish stripe.
+ */
+export function Track({ cars, total, started, destination, ruler = RULER }: Props) {
+  const sky = useMemo(() => decorative(destinationSceneSvg(destination)), [destination]);
   return (
-    <div className="g-track" aria-label={`Race track, ${total} racers`}>
-      <div className="g-track-scenery">
-        <TrustedSvg markup={environmentSvg(scene)} />
+    <section className="w-circuit" aria-label={`Race track, ${total} racers`}>
+      <div className="w-circuit-sky">
+        <TrustedSvg markup={sky} />
       </div>
-      <div className="g-track-ruler" aria-hidden="true">
-        {ruler.map((label, i) => (
-          <span key={i}>{label}</span>
-        ))}
+      <div className="w-track-barrier" aria-hidden="true">
+        {BARRIER.map((t) => <span key={t}>{t}</span>)}
       </div>
-      <div className="g-track-lanes">
+      <div className="w-distance" aria-hidden="true">
+        {ruler.map((label, i) => <span key={i}>{label}</span>)}
+      </div>
+      <div className="w-lane-list">
         {cars.map((car) => (
           // Keyed by player id: lanes swap with a FLIP layout animation, cars never remount.
           <motion.div
             key={car.id}
             layout="position"
             transition={{ layout: { duration: MOTION.ms.laneSwap / 1000, ease: MOTION.easing.standard } }}
-            className={`g-lane ${car.isMe ? 'is-you' : ''}`}
+            className={`w-lane ${car.isMe ? 'is-you' : ''}`}
           >
-            <Lane car={car} started={started} />
+            <Lane car={car} started={started} wet={destination === 'rain'} />
           </motion.div>
         ))}
       </div>
-      <div className="g-track-flag">
-        <TrustedSvg markup={finishFlagSvg()} />
+      <div className="w-kerb">
+        <TrustedSvg markup={ART.kerb} />
       </div>
-    </div>
+      <div className="w-finish-flag">
+        <TrustedSvg markup={ART.flag} />
+      </div>
+    </section>
   );
 }
 
-function Lane({ car, started }: { car: TrackCar; started: boolean }) {
+function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boolean }) {
   const base = car.finished ? (car.rank === 1 ? 'winner' : 'finish') : started ? 'driving' : 'idle';
   const { animation, animationKey, play } = useVehicleAnimation(base);
   const prev = useRef({ errors: car.errors, rank: car.rank, started });
@@ -84,16 +111,21 @@ function Lane({ car, started }: { car: TrackCar; started: boolean }) {
   const pct = Math.round(car.percent ?? progress * 100);
   return (
     <>
-      <div className="g-lane-label">
-        <strong>
-          {car.name} {car.isMe && <span>YOU</span>}
-        </strong>
-        <small>P{car.rank} · {Math.round(car.wpm)} WPM</small>
+      <div className="w-lane-name">
+        <strong>{car.name}</strong>
+        <span>P{car.rank}{car.isMe ? ' · YOU' : ''}</span>
+        <small>{Math.round(car.wpm)} WPM</small>
       </div>
-      <div className="g-lane-road" aria-label={`${car.name}, position ${car.rank}, ${pct} percent`}>
-        <div className="g-grid-marks" aria-hidden="true" />
-        <div className="g-racer" style={{ left: laneLeft(car.vehicle.model, progress) }}>
+      <div className={`w-road ${wet ? 'wet' : ''}`} aria-label={`${car.name}, position ${car.rank}, ${pct} percent`}>
+        <div className="w-grid-paint">
+          <TrustedSvg markup={ART.grid} />
+        </div>
+        <div className="w-distance-lines" />
+        <div className="w-track-racer" style={{ left: laneLeft(car.vehicle.model, progress) }}>
           <Car vehicle={car.vehicle} animation={animation} animationKey={animationKey} />
+        </div>
+        <div className="w-finish-paint">
+          <TrustedSvg markup={ART.stripe} />
         </div>
         <span className="g-lane-percent">{pct}%</span>
       </div>

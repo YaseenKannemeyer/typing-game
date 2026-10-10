@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { raceResultsFromRows, TROPHIES, type Award, type RaceResult } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
-import { Confetti, Podium, ResultsTable, type ResultRowView } from '../components/results/Results';
+import { Confetti, FinishVenue, ResultsTable, type ResultRowView } from '../components/results/Results';
 import { useAchievements } from '../components/achievements/Achievements';
 import { AwardCard } from '../components/trophies/AwardCard';
+import { PitBoard, useControlBoard } from '../components/race/RaceControl';
 import { Button, Card, ErrorText, PageTitle, Pill, Skeleton } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
 import { useSound } from '../game/sound';
@@ -97,6 +98,21 @@ export function Results({ state }: { state: LobbyState }) {
       .catch(() => {});
   }, [awarded, myAwards, race, results, userId, pushAchievement]);
 
+  // Race control: a confirmed personal best (server stats include this race).
+  const { board, show } = useControlBoard(race ? `${race.id}:results` : undefined);
+  const myWpm = me && me.finishedMs !== null && !me.flagged ? me.netWpm : null;
+  useEffect(() => {
+    if (!awarded || !race || myWpm === null) return;
+    void api
+      .mySummary(0)
+      .then((summary) => {
+        const best = summary.stats.best_wpm;
+        if (summary.stats.races > 1 && best !== null && Math.abs(best - Math.round(myWpm * 10) / 10) < 0.05)
+          show({ id: `${race.id}:best`, type: 'best', detail: `${myWpm.toFixed(1)} WPM. Your best verified finish yet.` }, true);
+      })
+      .catch(() => {});
+  }, [awarded, race, myWpm, show]);
+
   if (!race || !lobby) return null;
   const isHost = lobby.host_id === userId;
   const design = modeDesign(race.mode);
@@ -126,10 +142,12 @@ export function Results({ state }: { state: LobbyState }) {
         lead="Highest WPM when the clock stopped wins. Official order and awards come from the server."
       />
 
+      <div aria-live="polite">{board && <PitBoard key={board.id} event={board} />}</div>
+
       <Card className="relative overflow-hidden">
         {rows.some((r) => r.status === 'finished') ? (
           <>
-            <Podium rows={rows} />
+            <FinishVenue rows={rows} />
             <Confetti />
           </>
         ) : (

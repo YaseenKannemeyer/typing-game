@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_BUILD, normalizeVehicle } from '../art/vehicleArt';
+import { normalizeLivery } from '../art/worldArt';
 import {
   AuthForm,
   AuthStatus,
@@ -60,7 +61,7 @@ function adoptProfile(summary: Summary) {
   saveName(p.display_name);
   if (p.car_color && Object.keys(p.vehicle).length) {
     const v = normalizeVehicle({ ...p.vehicle, primary: p.car_color });
-    saveBuild({ build: { model: v.model, accent: v.accent, wheels: v.wheels, stripes: v.stripes, number: v.number, effect: v.effect }, primary: v.primary });
+    saveBuild({ build: { model: v.model, accent: v.accent, wheels: v.wheels, stripes: v.stripes, number: v.number, effect: v.effect, ...normalizeLivery(p.vehicle) }, primary: v.primary });
   }
 }
 

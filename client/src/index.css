@@ -19,6 +19,7 @@
 @import './styles/grid/results.css' layer(components);
 @import './styles/grid/system.css' layer(components);
 @import './styles/grid/account.css' layer(components);
+@import './styles/world/world.css' layer(components);
 
 /*
  * Design tokens taken from the GRID vehicle and trophy kits
@@ -151,4 +152,178 @@
 }
 .g-typing--shakespeare .missed {
   color: #7c2820;
+}
+
+/* Racing world (kits 16–24): app overrides on top of the copied world.css. */
+/* Circuit: cars use our front-bumper anchors (laneLeft), not the kit's translate. */
+.w-track-racer {
+  --car-w: 122px;
+  width: var(--car-w);
+  max-width: none;
+  transform: none;
+}
+.w-track-racer > div > svg {
+  width: 100%;
+}
+.w-road .g-lane-percent {
+  right: 16px;
+}
+@media (max-width: 760px) {
+  .w-track-racer {
+    --car-w: 92px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w-flag-wave,
+  .w-parked-car,
+  .w-pitboard {
+    animation: none !important;
+  }
+  .w-track-racer {
+    transition: none;
+  }
+}
+
+/* Paddock: the building stands on its own above the bays. */
+.w-paddock-building--solo {
+  border-radius: 15px;
+}
+.w-parked-car .vehicle {
+  display: block;
+  height: 85px;
+  width: auto;
+  margin: auto;
+}
+.w-bay-offline {
+  color: var(--g-subtle);
+}
+/* Destinations: disabled cards stay readable for non-hosts. */
+.w-destination-card:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.w-destination-card:not(:disabled):hover {
+  border-color: var(--g-border-hi, #5d7a52);
+}
+.w-destination-card:focus-visible {
+  outline: 2px solid var(--g-lime);
+  outline-offset: 3px;
+}
+.w-destination-mix {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+.w-destination-mix svg {
+  height: 100%;
+  width: 100%;
+}
+
+/* Race: dashboard with race control beside it (desktop) or below the text (phones). */
+.race-top {
+  display: grid;
+  gap: 16px;
+}
+.race-control {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .race-top {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+  .race-control {
+    display: block;
+  }
+}
+.race-control-below {
+  min-height: 0;
+}
+@media (min-width: 1024px) {
+  .race-control-below {
+    display: none;
+  }
+}
+
+/* Finish venue: the podium names and WPM, readable under the artwork. */
+.w-podium-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.w-podium-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--g-border);
+  border-radius: 12px;
+  background: var(--g-panel);
+}
+.w-podium-list li.is-you {
+  border-color: var(--g-lime);
+}
+.w-podium-list span {
+  flex: 1;
+  min-width: 0;
+}
+.w-podium-list small {
+  display: block;
+  font: 9px var(--g-mono);
+  color: var(--g-muted);
+  letter-spacing: 1px;
+}
+.w-podium-list strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.w-podium-list em {
+  font-style: normal;
+  font-size: 9px;
+  color: var(--g-lime);
+}
+.w-podium-list b {
+  font: 600 14px var(--g-mono);
+  color: var(--g-lime);
+}
+
+/* Workshop: the live car stands where the kit's composite places it (x301 y216 w500 of 1100×520). */
+.w-workshop {
+  position: relative;
+}
+.w-workshop-car {
+  position: absolute;
+  left: 27.36%;
+  top: 41.54%;
+  width: 45.45%;
+  pointer-events: none;
+}
+.w-workshop-car svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.w-team-button:disabled {
+  opacity: 0.6;
+}
+.w-team-button:focus-visible,
+.w-station-tabs button:focus-visible {
+  outline: 2px solid var(--g-lime);
+  outline-offset: 3px;
+}
+.w-team-options .w-team-button > span:only-child {
+  display: block;
+  line-height: 65px;
+}
+.w-pitboard--idle {
+  --board-accent: var(--g-muted);
+  animation: none;
+  opacity: 0.7;
+}
+.race-control > .w-pitboard,
+.race-control > div > .w-pitboard {
+  height: 100%;
 }

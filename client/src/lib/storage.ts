@@ -1,4 +1,5 @@
 import { normalizeVehicle, type VehicleBuild } from '../art/vehicleArt';
+import { normalizeLivery } from '../art/worldArt';
 
 
 const NAME_KEY = 'typeracer:name';
@@ -32,7 +33,10 @@ export function loadBuild(): SavedBuild | null {
     const raw = JSON.parse(localStorage.getItem(BUILD_KEY) ?? 'null') as Partial<SavedBuild> | null;
     if (!raw?.build) return null;
     const v = normalizeVehicle({ ...raw.build, primary: raw.primary });
-    return { build: { model: v.model, accent: v.accent, wheels: v.wheels, stripes: v.stripes, number: v.number, effect: v.effect }, primary: v.primary };
+    return {
+      build: { model: v.model, accent: v.accent, wheels: v.wheels, stripes: v.stripes, number: v.number, effect: v.effect, ...normalizeLivery(raw.build) },
+      primary: v.primary,
+    };
   } catch {
     return null;
   }

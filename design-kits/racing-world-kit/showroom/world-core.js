@@ -1,0 +1,11 @@
+(function(g){'use strict';const W=g.WorldKit={};W.esc=GridKit.escape;W.clamp=GridKit.clamp;
+W.svg=(body,label,viewBox='0 0 1100 520')=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="${W.esc(label)}">${body}</svg>`;
+W.text=(x,y,text,size=16,fill='#e8f0df',weight=400)=>`<text x="${x}" y="${y}" font-family="Arial,sans-serif" font-size="${size}" fill="${fill}" font-weight="${weight}">${W.esc(text)}</text>`;
+W.rect=(x,y,w,h,fill,rx=0,stroke='none')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}"/>`;
+W.embed=(svg,x,y,w,h)=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${svg.match(/viewBox="([^"]+)"/)?.[1]||'0 0 280 140'}">${svg.replace(/^[\s\S]*?<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'')}</svg>`;
+W.car=(props={})=>{const p=VehicleKit.normalize(props);return VehicleKit.svg(p).replaceAll('var(--primary)',p.primary).replaceAll('var(--accent)',p.accent)};
+W.staticCar=(props={})=>W.car(props).replace('<title>','<style>.smoke,.trails,.glow,.celebrate{display:none}</style><title>');
+W.samplePlayers=['Alex','Mika','Nadia','Kai','Robin','Sam','Yaseen','Aisha','Noah','Leah','Jules','Theo','Zoe','Ravi','Morgan'].map((name,i)=>({id:'p'+i,name,position:i+1,ready:i%3!==0,host:i===6,you:i===6,progress:.88-i*.038,wpm:112-i*3,vehicle:{model:VehicleKit.models[i].id,primary:['#ff683b','#9fcaff','#c6a3ff','#70e3c6','#dce4cf'][i%5],accent:'#b9f46a',number:i+1}}));
+W.heading=(n,title,description,actions='')=>`<div class="w-page-head"><div><span class="g-eyebrow">${n} / RACING WORLD</span><h1>${title}</h1><p>${description}</p></div>${actions}</div>`;
+W.visible=(ranked,id)=>{const i=ranked.findIndex(p=>p.id===id);const start=i<0?0:Math.max(0,Math.min(i-2,ranked.length-4));return ranked.slice(start,start+4)};
+})(globalThis);

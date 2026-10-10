@@ -8,6 +8,7 @@ import { useServerNow } from '../lib/clock';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
+import { destinationInfo } from '../game/destinations';
 
 export function Voting({ state }: { state: LobbyState }) {
   const { lobby, votes, userId, players, clockOffset, voteResult } = state;
@@ -57,6 +58,7 @@ export function Voting({ state }: { state: LobbyState }) {
         <Pill lime>{votes.length} / {players.length} VOTED</Pill>
         <Pill>{lobby.race_seconds / 60} MIN RACE</Pill>
         {lobby.zero_mistakes && <Pill>ZERO MISTAKES</Pill>}
+        <Pill>{lobby.destination ? destinationInfo(lobby.destination).name.toUpperCase() : 'SCENERY MATCHES THE MODE'}</Pill>
         <p className="g-small g-muted">You can change your vote until time runs out. Ties are broken by the server.</p>
       </div>
       <div className="g-grid-3">

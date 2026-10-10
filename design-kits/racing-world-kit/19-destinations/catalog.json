@@ -1,0 +1,56 @@
+[
+  {
+    "id": "city",
+    "name": "Metro Sprint",
+    "tag": "Street circuit",
+    "distance": "Neon signs. Tight streets. Wide-open competition.",
+    "sky": "#223a40",
+    "land": "#345043",
+    "accent": "#b9f46a"
+  },
+  {
+    "id": "desert",
+    "name": "Dustline Highway",
+    "tag": "Desert run",
+    "distance": "Sun-baked tarmac through the sandstone valley.",
+    "sky": "#b98c60",
+    "land": "#8d6242",
+    "accent": "#f7d48e"
+  },
+  {
+    "id": "rain",
+    "name": "Midnight Rain",
+    "tag": "Wet night circuit",
+    "distance": "Reflective roads, quiet rain, and a clear line ahead.",
+    "sky": "#172834",
+    "land": "#274a56",
+    "accent": "#9fcaff"
+  },
+  {
+    "id": "coast",
+    "name": "Cape Horizon",
+    "tag": "Coastal road",
+    "distance": "Ocean air and a mountain silhouette at your shoulder.",
+    "sky": "#60918d",
+    "land": "#426b58",
+    "accent": "#70e3c6"
+  },
+  {
+    "id": "neon",
+    "name": "Afterglow Circuit",
+    "tag": "Neon district",
+    "distance": "A midnight run beneath electric city lights.",
+    "sky": "#211e38",
+    "land": "#343052",
+    "accent": "#c6a3ff"
+  },
+  {
+    "id": "country",
+    "name": "Meadow Loop",
+    "tag": "Country route",
+    "distance": "Rolling hills, open fields, and a steady rhythm.",
+    "sky": "#809581",
+    "land": "#42663c",
+    "accent": "#b9f46a"
+  }
+]

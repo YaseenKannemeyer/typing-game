@@ -1,5 +1,6 @@
 import { lineWords, lockedWords, typedWords, type TrophyId, type TypingState, type VoteMode } from '@race/shared';
 import type { VehicleBuild } from '../art/vehicleArt';
+import type { DestinationId } from '../art/worldArt';
 import { requireSupabase } from './supabase';
 
 const MESSAGES: Record<string, string> = {
@@ -27,6 +28,7 @@ const MESSAGES: Record<string, string> = {
   account_required: 'You need an account for that. Save your progress first.',
   profile_required: 'Finish setting up your profile first.',
   invalid_avatar: 'Choose the car or initials avatar.',
+  invalid_destination: 'Pick one of the six destinations.',
   invalid_duration: 'Pick a race length between 1 and 5 minutes.',
   captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
@@ -91,8 +93,10 @@ export const api = {
     call<string>('start_race', { p_lobby_id: lobbyId, p_mode: mode ?? null }),
   returnToLobby: (lobbyId: string) => call<void>('return_to_lobby', { p_lobby_id: lobbyId }),
   finalizeRace: (raceId: string) => call<boolean>('finalize_race', { p_race_id: raceId }),
-  setRaceSettings: (lobbyId: string, seconds: number, zeroMistakes: boolean) =>
-    call<void>('set_race_settings', { p_lobby_id: lobbyId, p_seconds: seconds, p_zero_mistakes: zeroMistakes }),
+  setRaceSettings: (lobbyId: string, seconds: number, zeroMistakes: boolean, destination: DestinationId | null) =>
+    call<void>('set_race_settings', { p_lobby_id: lobbyId, p_seconds: seconds, p_zero_mistakes: zeroMistakes, p_destination: destination }),
+  /** Earned trophy types with the latest verified statistic (accounts and guests). */
+  myTrophies: () => call<TrophyRecord[]>('my_trophies'),
   /** Sends the words typed from `fromWord`; `lock` locks them in (Enter). */
   submitTyping: (raceId: string, fromWord: number, words: string[], lock: boolean, s: TypingState) =>
     call<SubmitResult>('submit_typing', {
@@ -146,6 +150,17 @@ export interface Summary {
   mode_bests: Record<string, number | null>;
   trophy_counts: Partial<Record<TrophyId, number>>;
   recent: { trophy: TrophyId; reason: string; race_id: string; at: string }[];
+}
+
+export interface TrophyRecord {
+  trophy: TrophyId;
+  /** Times this trophy type was awarded. */
+  times: number;
+  /** The most recent award's verified statistic. */
+  reason: string;
+  race_id: string;
+  mode: string;
+  earned_at: string | null;
 }
 
 export interface LeaderRow {

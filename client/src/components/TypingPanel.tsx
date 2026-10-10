@@ -76,7 +76,7 @@ function Line({ targets, typed, active, past }: { targets: readonly string[]; ty
 
 /**
  * 09-typing panel styled by the kit, driven by the shared line engine: the
- * current line is highlighted, mistakes stay red, Enter locks a line in.
+ * current line is highlighted, mistakes stay red, Space or Enter at the end locks a line in.
  */
 export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPanel(
   { state, onKeyDown, variant = 'standard', waiting = false, doneLabel },
@@ -105,8 +105,8 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
   let feedback = '';
   if (done) feedback = doneLabel ?? 'Finished';
   else if (waiting) feedback = 'Get ready';
-  else if (blocked) feedback = 'Fix the red words before you press Enter';
-  else if (onLastWord && typed[typed.length - 1] !== '') feedback = 'Press Enter to lock in this line';
+  else if (blocked) feedback = 'Fix the red words to move to the next line';
+  else if (onLastWord && typed[typed.length - 1] !== '') feedback = 'Space or Enter locks in this line';
   else if (error) feedback = state.strict ? 'Fix this word with Backspace to move on' : 'Wrong letters stay red. Fix them with Backspace, or carry on';
 
   return (
@@ -128,7 +128,7 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
       </div>
       <label className="g-sr" htmlFor={id}>Type the current line</label>
       <p className="g-sr" id={`${id}-instructions`}>
-        Current line: {currentText}. Press Enter at the end of the line.
+        Current line: {currentText}. Press Space or Enter at the end of the line.
       </p>
       <input
         ref={ref}
@@ -148,10 +148,10 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
         spellCheck={false}
         inputMode="text"
         enterKeyHint="enter"
-        placeholder={waiting ? 'Waiting for the start…' : done ? (doneLabel ?? 'You made it.') : 'Type the highlighted line, then press Enter…'}
+        placeholder={waiting ? 'Waiting for the start…' : done ? (doneLabel ?? 'You made it.') : 'Type the highlighted line. Space at the end moves on…'}
       />
       <div className="g-typing-foot">
-        <span>Space: next word · Backspace: fix · Enter: lock the line</span>
+        <span>Space: next word or line · Backspace: fix · Enter: lock the line</span>
         <span className="g-type-feedback" role="status">{feedback}</span>
       </div>
     </section>

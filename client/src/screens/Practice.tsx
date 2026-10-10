@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { computeStats, passageLength, typedCorrectChars } from '@race/shared';
-import { Hud } from '../components/race/Hud';
+import { Dashboard } from '../components/race/Dashboard';
 import { TypingPanel } from '../components/TypingPanel';
 import { Button, SectionTitle } from '../components/ui';
 import { PRACTICE_PASSAGES } from '../game/practicePassages';
@@ -48,7 +48,16 @@ export function Practice() {
           </Button>
         }
       />
-      <Hud wpm={stats.netWpm} accuracy={stats.accuracy} mistakes={state.errors} elapsedMs={elapsed} progress={stats.progress} />
+      <Dashboard
+        wpm={stats.netWpm}
+        accuracy={stats.accuracy}
+        mistakes={state.errors}
+        timeLabel="TIME"
+        timeMs={elapsed}
+        progress={stats.progress}
+        progressLabel="Passage complete"
+        running={startedAt !== null && !state.finished}
+      />
       <TypingPanel
         ref={inputRef}
         state={state}

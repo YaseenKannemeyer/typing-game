@@ -76,9 +76,16 @@ describe('free typing', () => {
     expect(lockLine(s).lockedChars).toBe(12);
   });
 
-  it('ignores Space before a word starts and at the end of the line', () => {
-    const s = type(createTypingState(text), ' the  cat sat ');
+  it('ignores Space before a word starts', () => {
+    const s = type(createTypingState(text), ' the  cat sat');
     expect(s.input).toBe('the cat sat');
+  });
+
+  it('Space on the last word locks the line, like Enter', () => {
+    const viaSpace = type(createTypingState(text), 'the cat sat ');
+    const viaEnter = lockLine(type(createTypingState(text), 'the cat sat'));
+    expect(viaSpace).toEqual(viaEnter);
+    expect(viaSpace.lockedChars).toBe(12);
   });
 
   it('marks extra characters as mistakes', () => {
@@ -102,6 +109,13 @@ describe('zero-mistake mode', () => {
     const s = type(createTypingState(text, true), 'the cut ');
     expect(s.input).toBe('the cut');
     expect(s.errors).toBe(2); // 'u' and the blocked space
+  });
+
+  it('Space on a wrong last word stays put and counts a mistake', () => {
+    const s = type(createTypingState(text, true), 'the cat sab ');
+    expect(s.input).toBe('the cat sab');
+    expect(s.lineIndex).toBe(0);
+    expect(s.errors).toBe(2); // 'b' and the blocked space
   });
 
   it('Enter needs every word right', () => {

@@ -14,8 +14,10 @@ import {
   wpm,
 } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
-import { CountdownFrame, MomentBanner } from '../components/race/Moments';
-import { formatElapsed, Hud, Minimap } from '../components/race/Hud';
+import { CountdownFrame } from '../components/race/Moments';
+import { Dashboard } from '../components/race/Dashboard';
+import { IdleBoard, PitBoard, useRaceControl } from '../components/race/RaceControl';
+import { formatElapsed, Minimap } from '../components/race/Hud';
 import { Track, type TrackCar } from '../components/Track';
 import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
 import { Banner, Loading, Pill } from '../components/ui';
@@ -24,8 +26,8 @@ import { useServerNow } from '../lib/clock';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
 import type { LiveProgress } from '../game/types';
-import { useRaceMoments } from '../game/useRaceMoments';
 import { useTyping } from '../game/useTyping';
+import { destinationFor } from '../game/destinations';
 import { vehicleFor } from '../game/vehicles';
 
 interface Props {
@@ -247,7 +249,8 @@ export function Race({ state, sendProgress }: Props) {
   }, [ts.errors, timeUp, myRank, started, isRacer, play]);
 
   const leader = ranked[0] && leaderChars > 0 ? { id: ranked[0].id, name: ranked[0].name } : null;
-  const moment = useRaceMoments({ started, leader, myRank, timeUp: timeUp && started });
+  const msLeft = Math.max(0, endAt - now);
+  const board = useRaceControl({ raceId: race?.id, started, myId: userId, leader, myRank, msLeft, timeUp: timeUp && started });
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -284,21 +287,28 @@ export function Race({ state, sendProgress }: Props) {
       {!isRacer && <Banner tone="info">The race is under way. You'll be on the grid for the next one.</Banner>}
 
       {isRacer && (
-        <Hud
-          position={myRank || racePlayers.length}
-          total={racePlayers.length}
-          wpm={myStats.netWpm}
-          accuracy={myStats.accuracy}
-          mistakes={ts.errors}
-          elapsedMs={started ? Math.max(0, endAt - now) : durationMs}
-          timeLabel="TIME LEFT"
-          progress={elapsed / durationMs}
-          progressLabel="Race time used"
-        />
+        <div className="race-top">
+          <Dashboard
+            position={myRank || racePlayers.length}
+            total={racePlayers.length}
+            wpm={myStats.netWpm}
+            accuracy={myStats.accuracy}
+            mistakes={ts.errors}
+            timeMs={started ? msLeft : durationMs}
+            timeLabel="TIME LEFT"
+            progress={elapsed / durationMs}
+            progressLabel="Race time used"
+            running={started && !timeUp}
+          />
+          <div className="race-control">
+            <div aria-live="polite">{board && <PitBoard key={board.id} event={board} />}</div>
+            {!board && <IdleBoard />}
+          </div>
+        </div>
       )}
 
       <div className="relative">
-        <Track cars={cars} total={racePlayers.length} started={started} scene={design.scene} ruler={RULER} />
+        <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} ruler={RULER} />
         {(!started || elapsed < GO_BANNER_MS) && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
             <CountdownFrame value={started ? 'GO!' : countdownValue} />
@@ -311,10 +321,6 @@ export function Race({ state, sendProgress }: Props) {
         localId={userId}
         endLabel="LEADER"
       />
-
-      <div className="min-h-[86px]" aria-live="polite">
-        {moment && <MomentBanner key={`${moment.kind}:${moment.name ?? ''}:${moment.gain ?? ''}`} moment={moment} />}
-      </div>
 
       {isRacer && (
         <>
@@ -331,11 +337,15 @@ export function Race({ state, sendProgress }: Props) {
           ) : (
             started && (
               <p className="g-small g-muted">
-                {formatElapsed(Math.max(0, endAt - now))} left. The text keeps going, so type until the clock stops.
+                {formatElapsed(msLeft)} left. The text keeps going, so type until the clock stops.
               </p>
             )
           )}
           {warning && <Banner tone="warning">{warning}</Banner>}
+          {/* Phones: race control sits below the text so it never shifts the line you're typing. */}
+          <div className="race-control-below" aria-live="polite">
+            {board && <PitBoard key={board.id} event={board} />}
+          </div>
         </>
       )}
     </div>
