@@ -685,3 +685,114 @@ html {
     grid-column: 1 / -1;
   }
 }
+
+/*
+ * Readability floor. The kits set many labels at 6–9px (smaller still on phones).
+ * Uppercase/mono labels get at least 10px; sentence-case small print at least 11px.
+ * Applies at every width, so the kits' phone shrink rules no longer go below it.
+ */
+.g-hud-position .g-eyebrow,
+.g-stat > span,
+.g-mini-wrap .g-eyebrow,
+.g-mini-start,
+.g-mini-end,
+.g-podium-slot small,
+.g-result-player small,
+.g-award .g-eyebrow,
+.g-podium-time,
+.g-results-table td[data-label]::before,
+.g-system-state .g-eyebrow,
+.g-track-ruler,
+.g-lane-percent,
+.g-lane-label strong span,
+.g-typing-head,
+.g-timer small,
+.g-mode .g-eyebrow,
+.g-player .g-pill,
+.lb-caption,
+.lb-champion-place > span,
+.lb-you,
+.lb-rules > .g-eyebrow,
+.w-distance,
+.w-bay-top,
+.w-bay-person small,
+.w-lane-name span,
+.w-destination-card > span,
+.w-paddock-control .g-eyebrow,
+.w-dash-kicker,
+.w-dash-kicker span,
+.w-dash-stats > div > span,
+.w-dash-progress-label,
+.w-board-source,
+.w-cabinet-slot small,
+.w-trophy-details > .g-eyebrow,
+.w-round-card > span,
+.w-static-passage > span,
+.w-overview-card > span,
+.w-workshop-footer,
+.a-guest-summary > .g-eyebrow,
+.a-guest-name .g-pill,
+.a-profile-identity .g-pill,
+.a-profile-metrics span,
+.a-card-heading > span,
+.a-chart-range,
+.a-champion > strong small,
+.a-leader-table small,
+.a-unlock-copy .g-eyebrow,
+.a-preview-banner,
+.a-demo-label {
+  font-size: 10px;
+}
+.g-typing-foot,
+.lb-mobile-date,
+.w-lane-name small,
+.w-bay-person > span,
+.w-sidebar > p,
+.w-footer,
+.w-topbar,
+.w-nav a small,
+.g-lane-label small,
+.a-auth-bottom > span,
+.a-mode-row small,
+.a-trophy-strip span,
+.a-champion p,
+.a-unlock-recipient,
+.a-footer {
+  font-size: 11px;
+}
+
+/* Cabinet slots are buttons, which centre their content; keep every trophy on one baseline. */
+.w-cabinet-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Garage on phones: the 15 models scroll sideways, so Confirm stays close to the choice. */
+@media (max-width: 639px) {
+  .garage-models {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: -16px;
+    padding: 2px 16px 10px;
+    scrollbar-width: thin;
+  }
+  .garage-models > button {
+    flex: 0 0 44%;
+    scroll-snap-align: start;
+  }
+}
+
+/* Race: with the barrier strip hidden, stand the finish flag on the skyline, clear of the ruler. */
+.race-screen .w-finish-flag {
+  top: 54px;
+}
+@media (max-width: 767px) {
+  .race-screen .w-finish-flag {
+    top: 16px;
+    width: 40px;
+  }
+}

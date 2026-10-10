@@ -161,13 +161,13 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <section>
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold">The collection <span className="ml-2 text-sm text-muted">15</span></h3>
-            <span className="text-[9px] tracking-widest text-subtle">ALL MODELS UNLOCKED</span>
+            <span className="text-[10px] tracking-widest text-subtle">ALL MODELS UNLOCKED</span>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="garage-models grid grid-cols-2 gap-3 sm:grid-cols-3">
             {MODEL_GEOMETRY.map((m, i) => {
               const selected = m.id === build.model;
               return (

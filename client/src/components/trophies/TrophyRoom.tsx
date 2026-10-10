@@ -55,9 +55,9 @@ export function TrophyRoom() {
             key={id}
             aria-pressed={selected === id}
             onClick={() => setSelected(id)}
-            className="rounded-card border border-line bg-panel p-3 text-left transition hover:border-line-hi hover:bg-panel-hi aria-pressed:border-lime"
+            className="flex flex-col justify-start rounded-card border border-line bg-panel p-3 text-left transition hover:border-line-hi hover:bg-panel-hi aria-pressed:border-lime"
           >
-            <div className="flex justify-between font-mono text-[9px] uppercase tracking-wider text-subtle">
+            <div className="flex justify-between font-mono text-[10px] uppercase tracking-wider text-subtle">
               <span>{TROPHIES[id].category}</span>
               <span>{String(IDS.indexOf(id) + 1 || i + 1).padStart(2, '0')}</span>
             </div>
