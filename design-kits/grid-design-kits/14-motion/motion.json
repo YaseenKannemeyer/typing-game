@@ -1,0 +1,6 @@
+{
+  "version": "1.0.0",
+  "easing": {"standard":"cubic-bezier(.2,.7,.3,1)","position":"linear","celebration":"cubic-bezier(.18,.8,.35,1.2)"},
+  "durationsMs": {"hover":120,"screenEnter":220,"laneSwap":260,"progressInterpolation":180,"vehicleMistake":300,"overtake":650,"awardReveal":650,"modeReveal":420,"diceReveal":700,"confetti":1700,"toast":4000},
+  "rules": ["Server state determines progress, ranking, winners, and deadlines.","Animate only the visible lane window; key by stable player ID.","Use FLIP for lane reordering; avoid layout reads in the typing handler.","Keep progress interpolation separate from chassis animation.","Never loop screen celebrations.","Do not delay interaction while screen transitions play.","Cancel transient timers when a racer finishes or a component unmounts.","Reduced motion: disable transforms, spinning, shake, confetti and smooth scrolling; show final state immediately.","Queue at most one noncritical race banner; replace stale overtake announcements."]
+}

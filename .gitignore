@@ -6,3 +6,5 @@ dist
 .vercel
 supabase/.temp
 .claude/settings.local.json
+e2e-screens
+.build

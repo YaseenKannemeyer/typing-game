@@ -1,0 +1,72 @@
+[
+  {
+    "id": "countdown-beep",
+    "label": "Countdown beep",
+    "file": "wav/countdown-beep.wav",
+    "durationSeconds": 0.18,
+    "original": true
+  },
+  {
+    "id": "go-horn",
+    "label": "GO signal",
+    "file": "wav/go-horn.wav",
+    "durationSeconds": 0.3900226757369615,
+    "original": true
+  },
+  {
+    "id": "key-click",
+    "label": "Soft key click",
+    "file": "wav/key-click.wav",
+    "durationSeconds": 0.07501133786848073,
+    "original": true
+  },
+  {
+    "id": "mistake",
+    "label": "Gentle mistake cue",
+    "file": "wav/mistake.wav",
+    "durationSeconds": 0.18,
+    "original": true
+  },
+  {
+    "id": "overtake",
+    "label": "Overtake whoosh",
+    "file": "wav/overtake.wav",
+    "durationSeconds": 0.3,
+    "original": true
+  },
+  {
+    "id": "finish",
+    "label": "Finish chime",
+    "file": "wav/finish.wav",
+    "durationSeconds": 0.82,
+    "original": true
+  },
+  {
+    "id": "winner",
+    "label": "Winner fanfare",
+    "file": "wav/winner.wav",
+    "durationSeconds": 1.18,
+    "original": true
+  },
+  {
+    "id": "award-reveal",
+    "label": "Trophy reveal",
+    "file": "wav/award-reveal.wav",
+    "durationSeconds": 0.7200453514739229,
+    "original": true
+  },
+  {
+    "id": "ui-click",
+    "label": "UI click",
+    "file": "wav/ui-click.wav",
+    "durationSeconds": 0.10503401360544218,
+    "original": true
+  },
+  {
+    "id": "countdown-final",
+    "label": "Final countdown beep",
+    "file": "wav/countdown-final.wav",
+    "durationSeconds": 0.21002267573696146,
+    "original": true
+  }
+]

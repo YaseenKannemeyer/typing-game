@@ -1,1 +1,105 @@
 @import 'tailwindcss';
+@import './styles/vehicles.css';
+@import './styles/trophies.css';
+
+/*
+ * GRID collection styles (design-kits/grid-design-kits), in manifest order.
+ * They live in the `components` layer so Tailwind utilities can still refine
+ * them, and so the kit's element resets can't override utility classes.
+ */
+@import './styles/grid/tokens.css' layer(base);
+@import './styles/grid/components.css' layer(components);
+@import './styles/grid/brand.css' layer(components);
+@import './styles/grid/lobby.css' layer(components);
+@import './styles/grid/voting.css' layer(components);
+@import './styles/grid/track.css' layer(components);
+@import './styles/grid/moments.css' layer(components);
+@import './styles/grid/hud.css' layer(components);
+@import './styles/grid/typing.css' layer(components);
+@import './styles/grid/results.css' layer(components);
+@import './styles/grid/system.css' layer(components);
+
+/*
+ * Design tokens taken from the GRID vehicle and trophy kits
+ * (design-kits/vehicle-kit/garage.css, design-kits/trophy-kit/gallery.html).
+ * Use them as Tailwind utilities: bg-ink, bg-panel, border-line, text-muted, text-lime…
+ */
+@theme {
+  /* Mirrors 02-ui/tokens.css (--g-*) so Tailwind utilities and kit classes match. */
+  --color-ink: #111916; /* --g-bg */
+  --color-panel: #1b2520; /* --g-panel */
+  --color-panel-hi: #253329; /* --g-panel-raised */
+  --color-well: #111d16; /* kit input background */
+  --color-line: #3b4d40; /* --g-border */
+  --color-line-hi: #4b6052;
+  --color-fg: #eef4e9; /* --g-text */
+  --color-muted: #b1beb3; /* --g-muted */
+  --color-subtle: #8e9e92; /* --g-subtle */
+  --color-lime: #b9f46a; /* --g-lime */
+  --color-lime-ink: #17291a; /* --g-ink */
+  --color-paper: #dce4cf; /* --g-sage */
+  --color-paper-ink: #1b2a21;
+  --color-paper-muted: #647461;
+  --color-danger: #ffa69b; /* --g-error */
+  --color-danger-bg: #3d2423; /* --g-error-bg */
+  --color-info: #9fcaff; /* --g-blue */
+  --color-warning: #f7d48e; /* --g-warning */
+  --color-success: #91e1b8; /* --g-success */
+  --color-gold: #ffce65;
+  --color-silver: #c9dfeb;
+  --color-bronze: #dc9d71;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --radius-card: 14px; /* --g-radius-md */
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-ink font-sans text-fg antialiased;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-lime);
+    outline-offset: 3px;
+  }
+  /* The kit relies on browser-default bold headings, which Tailwind's preflight resets. */
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  /* Small uppercase label used above headings, as in the kit pages. */
+  .eyebrow {
+    @apply text-[10px] font-bold tracking-[0.2em] text-lime uppercase;
+  }
+  /* Checkered finish strip, matching the kit's grid demo lanes. */
+  .finish-strip {
+    background: repeating-conic-gradient(var(--color-paper) 0 25%, var(--color-panel-hi) 0 50%) 0 0 / 8px 8px;
+  }
+}
+
+/* Garage model cards are static thumbnails (as in the kit). */
+.garage-card .rim,
+.garage-card .chassis {
+  animation: none;
+}
+
+/* Track lanes: the car is positioned by its front-bumper anchor (see vehicleAnchors.ts). */
+.g-racer {
+  --car-w: 110px;
+  width: var(--car-w);
+  max-width: none;
+  transform: none;
+}
+@media (max-width: 620px) {
+  .g-racer {
+    --car-w: 88px;
+  }
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "gold-champion",
+    "name": "Gold Champion",
+    "category": "Podium",
+    "criteria": "Official first-place finisher.",
+    "example": "1st place",
+    "symbol": "crown",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "silver-runner-up",
+    "name": "Silver Runner-Up",
+    "category": "Podium",
+    "criteria": "Official second-place finisher.",
+    "example": "2nd place",
+    "symbol": "two",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "bronze-racer",
+    "name": "Bronze Racer",
+    "category": "Podium",
+    "criteria": "Official third-place finisher.",
+    "example": "3rd place",
+    "symbol": "three",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "speed-demon",
+    "name": "Speed Demon",
+    "category": "Speed",
+    "criteria": "Highest average WPM across the passage.",
+    "example": "112.4 average WPM",
+    "symbol": "flame",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "fastest-fingers",
+    "name": "Fastest Fingers",
+    "category": "Speed",
+    "criteria": "Highest peak WPM in a rolling 5-second window.",
+    "example": "148.2 peak WPM",
+    "symbol": "keys",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "speed-over-power",
+    "name": "Speed Over Power",
+    "category": "Speed",
+    "criteria": "Highest average WPM with accuracy ≥80% and <90%.",
+    "example": "109.8 WPM · 86.2% accuracy",
+    "symbol": "bolt",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "quick-starter",
+    "name": "Quick Starter",
+    "category": "Speed",
+    "criteria": "Highest WPM over the first 20% of passage progress.",
+    "example": "126.0 WPM · first 20%",
+    "symbol": "launch",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "perfectionist",
+    "name": "Perfectionist",
+    "category": "Accuracy",
+    "criteria": "Finish with 100% accuracy and zero incorrect attempts.",
+    "example": "100% accuracy · 0 mistakes",
+    "symbol": "diamond",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "sharp-shooter",
+    "name": "Sharp Shooter",
+    "category": "Accuracy",
+    "criteria": "Highest accuracy among finishers with at least one mistake.",
+    "example": "99.1% accuracy · 3 mistakes",
+    "symbol": "target",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "clean-run",
+    "name": "Clean Run",
+    "category": "Accuracy",
+    "criteria": "Finish without incorrect characters, backspace or delete.",
+    "example": "0 mistakes · 0 deletions",
+    "symbol": "check",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "steady-hands",
+    "name": "Steady Hands",
+    "category": "Accuracy",
+    "criteria": "Lowest standard deviation of accuracy over all ten passage sections.",
+    "example": "0.42 percentage-point deviation",
+    "symbol": "hand",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "oops-factory",
+    "name": "Oops Factory",
+    "category": "Funny",
+    "criteria": "Most incorrect character attempts among finishers.",
+    "example": "42 incorrect attempts",
+    "symbol": "factory",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "keyboard-chaos",
+    "name": "Keyboard Chaos",
+    "category": "Funny",
+    "criteria": "Highest mistakes per 100 attempts; at least 100 attempts.",
+    "example": "18.5 mistakes / 100 attempts",
+    "symbol": "chaos",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "slow-and-steady",
+    "name": "Slow and Steady",
+    "category": "Funny",
+    "criteria": "Lowest average WPM among finishers.",
+    "example": "28.6 average WPM",
+    "symbol": "turtle",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "last-but-persistent",
+    "name": "Last but Persistent",
+    "category": "Funny",
+    "criteria": "Last finisher; at least two players must finish.",
+    "example": "15th of 15 finishers",
+    "symbol": "flag",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "comeback-kid",
+    "name": "Comeback Kid",
+    "category": "Special",
+    "criteria": "Largest positive rank gain from first reaching 20% to final rank.",
+    "example": "+7 positions · 12th → 5th",
+    "symbol": "return",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "consistency",
+    "name": "Consistency King/Queen",
+    "category": "Special",
+    "criteria": "Lowest coefficient of variation in 10-second WPM windows; ≥3 valid samples and positive mean.",
+    "example": "4.8% WPM variation",
+    "symbol": "wave",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "unstoppable",
+    "name": "Unstoppable",
+    "category": "Special",
+    "criteria": "Complete three consecutive races in one lobby; repeat after another three.",
+    "example": "3 consecutive completions",
+    "symbol": "chain",
+    "scope": "Progression achievement"
+  },
+  {
+    "id": "code-warrior",
+    "name": "Code Warrior",
+    "category": "Special",
+    "criteria": "Highest Coding Mode score: average WPM × accuracy / 100.",
+    "example": "96.4 score · Coding Mode",
+    "symbol": "code",
+    "scope": "Race trophy"
+  },
+  {
+    "id": "participation",
+    "name": "Participation Trophy",
+    "category": "Special",
+    "criteria": "Complete the passage and receive no other race trophy.",
+    "example": "Passage completed",
+    "symbol": "star",
+    "scope": "Race trophy"
+  }
+]

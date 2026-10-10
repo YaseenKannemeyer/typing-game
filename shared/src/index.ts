@@ -3,6 +3,8 @@ export * from './types';
 export * from './stats';
 export * from './ranking';
 export * from './visibleCars';
+export * from './samples';
 export * from './trophies';
 export * from './typing';
 export * from './names';
+export * from './results';

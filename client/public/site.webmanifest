@@ -1,0 +1,13 @@
+{
+  "name": "GRID / Type Racing",
+  "short_name": "GRID",
+  "description": "Race up to 15 friends in real time. Only your typing decides who wins.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111916",
+  "theme_color": "#111916",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

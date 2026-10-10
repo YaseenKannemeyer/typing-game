@@ -1,4 +1,9 @@
+import type { PASSAGE_MODES, VOTE_MODES } from './constants';
+
 export type PlayerId = string;
+export type PassageMode = (typeof PASSAGE_MODES)[number];
+export type VoteMode = (typeof VOTE_MODES)[number];
+export type LobbyStatus = 'waiting' | 'voting' | 'racing';
 
 /** Raw counters for one player in one race. */
 export interface PlayerProgress {
@@ -28,12 +33,22 @@ export interface RankedPlayer extends PlayerStats {
   rank: number;
 }
 
-export type TrophyKind =
-  | 'first'
-  | 'second'
-  | 'third'
-  | 'mostAccurate'
-  | 'mostMistakes'
-  | 'speedOverPower';
+/**
+ * Server-recorded snapshot taken on every accepted progress submission:
+ * [ms since race start, correct chars, keystrokes, errors]. Cumulative.
+ */
+export type Sample = readonly [number, number, number, number];
 
-export type LobbyStatus = 'waiting' | 'countdown' | 'racing' | 'finished';
+/** Verified final data for one racer, as stored by the server. */
+export interface RaceResult extends RankedPlayer {
+  flagged: boolean;
+  samples: readonly Sample[];
+  /** Backspace/delete presses that removed a character. */
+  deletions: number;
+  /** Character attempts per passage section (SECTIONS entries). */
+  sectionKeystrokes: readonly number[];
+  /** Incorrect attempts per passage section. */
+  sectionErrors: readonly number[];
+  /** Consecutive completed races in this lobby, including this one. */
+  streak: number;
+}
