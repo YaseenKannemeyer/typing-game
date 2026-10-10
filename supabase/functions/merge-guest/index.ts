@@ -52,6 +52,11 @@ Deno.serve(async (req) => {
     p_guest: guest.data.user.id,
     p_account: account.data.user.id,
   });
-  if (error) return json({ error: error.message }, 500);
+  if (error) {
+    // Our own exceptions are safe to return; anything else stays in the function logs.
+    if (['same_user', 'guest_not_anonymous', 'account_not_permanent'].includes(error.message)) return json({ error: error.message }, 400);
+    console.error('merge_guest failed', error);
+    return json({ error: 'merge_failed' }, 500);
+  }
   return json(data);
 });

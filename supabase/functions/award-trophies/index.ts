@@ -84,6 +84,11 @@ Deno.serve(async (req) => {
 
   const payload: Record<string, Award[]> = Object.fromEntries(awards);
   const { data: stored, error } = await admin.rpc('store_awards', { p_race_id: raceId, p_awards: payload });
-  if (error) return json({ error: error.message }, 500);
+  if (error) {
+    // Our own exceptions are safe to return; anything else stays in the function logs.
+    if (error.message === 'race_not_finished') return json({ error: error.message }, 409);
+    console.error('store_awards failed', error);
+    return json({ error: 'store_failed' }, 500);
+  }
   return json({ ok: true, stored });
 });
