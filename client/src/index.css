@@ -535,3 +535,76 @@ html {
 .a-achievement-toast .trophy-rule {
   color: var(--g-muted);
 }
+
+/* Room-level tabs: an underlined strip (heavier than the garage's pill filters). */
+.section-tabs-list {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--g-border);
+  margin-bottom: 20px;
+}
+.section-tabs-list [role='tab'] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--g-muted);
+  border-radius: 8px 8px 0 0;
+  transition: color var(--g-fast) var(--g-ease), background-color var(--g-fast) var(--g-ease);
+}
+.section-tabs-list [role='tab']:hover {
+  color: var(--g-text);
+  background: #ffffff08;
+}
+.section-tabs-list [role='tab']::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--g-lime);
+  transform: scaleX(0);
+  transition: transform var(--g-normal) var(--g-ease);
+}
+.section-tabs-list [role='tab'][aria-selected='true'] {
+  color: var(--g-text);
+}
+.section-tabs-list [role='tab'][aria-selected='true']::after {
+  transform: scaleX(1);
+}
+.section-tabs-list [role='tab']:focus-visible {
+  outline-offset: -3px;
+}
+.section-tabs-badge {
+  font: 500 11px var(--g-mono);
+  color: var(--g-subtle);
+}
+.section-tabs-panel .g-howto {
+  margin-top: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-tabs-list [role='tab']::after {
+    transition: none;
+  }
+}
+@media (max-width: 639px) {
+  /* Edge to edge on phones so all four tabs fit (still scrolls on very narrow screens). */
+  .section-tabs-list {
+    gap: 0;
+    margin-inline: -16px;
+    padding-inline: 8px;
+  }
+  .section-tabs-list [role='tab'] {
+    padding: 0 9px;
+    font-size: 13px;
+  }
+}

@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE } from '@race/shared';
+import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE, TROPHIES } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
 import { DestinationPicker } from '../components/lobby/Destinations';
 import { HowTo, InviteLink, RaceSettings, RoomCode, type RosterPlayer } from '../components/lobby/Lobby';
 import { Paddock } from '../components/lobby/Paddock';
 import type { DestinationId } from '../art/worldArt';
 import { TrophyRoom } from '../components/trophies/TrophyRoom';
-import { Button, Card, ErrorText, PageTitle, Pill, SectionTitle } from '../components/ui';
+import { Button, Card, ErrorText, PageTitle, Pill, SectionTabs, type SectionTab } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
 import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
+
+type RoomTab = 'destination' | 'garage' | 'how' | 'trophies';
+const TROPHY_COUNT = Object.keys(TROPHIES).length;
 
 export function rosterFrom(state: LobbyState): RosterPlayer[] {
   const { players, lobby, userId, online } = state;
@@ -31,8 +34,8 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   const [saving, setSaving] = useState(false);
   // Shown straight away while the server confirms (it broadcasts lobby:update).
   const [pending, setPending] = useState<{ seconds: number; zero: boolean; destination: DestinationId | null } | null>(null);
-  const [garageOpen, setGarageOpen] = useState(false);
-  const garageRef = useRef<HTMLElement>(null);
+  const [tab, setTab] = useState<RoomTab>('destination');
+  const tabsRef = useRef<HTMLElement>(null);
   const roster = useMemo(() => rosterFrom(state), [state]);
   // Drop the optimistic value once the lobby reflects it.
   useEffect(() => {
@@ -77,9 +80,41 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   };
 
   const openGarage = () => {
-    setGarageOpen(true);
-    requestAnimationFrame(() => garageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    setTab('garage');
+    requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
+
+  // Everything below the paddock lives in one tab set, so the room stays short on phones.
+  const tabs: SectionTab<RoomTab>[] = [
+    {
+      key: 'destination',
+      label: 'Destination',
+      panel: (
+        <DestinationPicker
+          value={rules.destination}
+          editable={isHost}
+          busy={saving}
+          onChange={(d) => void changeSettings(rules.seconds, rules.zero, d)}
+        />
+      ),
+    },
+    ...(me
+      ? [
+          {
+            key: 'garage' as const,
+            label: 'Garage',
+            panel: (
+              <div className="space-y-4">
+                <p className="g-muted">Pick a silhouette and make it yours. It's 100% cosmetic: every car has the same speed.</p>
+                <Garage lobbyId={lobby.id} me={me} meIndex={meIndex} players={players} locked={lobby.status !== 'waiting'} />
+              </div>
+            ),
+          },
+        ]
+      : []),
+    { key: 'how', label: 'How it works', panel: <section className="g-panel"><HowTo /></section> },
+    { key: 'trophies', label: 'Trophies', badge: TROPHY_COUNT, panel: <TrophyRoom /> },
+  ];
 
   return (
     <>
@@ -142,40 +177,8 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
         </aside>
       </div>
 
-      <section className="space-y-4">
-        <SectionTitle eyebrow="Destination" title="Where are we racing?" />
-        <DestinationPicker
-          value={rules.destination}
-          editable={isHost}
-          busy={saving}
-          onChange={(d) => void changeSettings(rules.seconds, rules.zero, d)}
-        />
-      </section>
-
-      {me && garageOpen && (
-        <section ref={garageRef} className="space-y-4 scroll-mt-4">
-          <SectionTitle
-            eyebrow="Make your entrance"
-            title="Your ride. Your rules."
-            aside={<Button variant="ghost" icon="close" onClick={() => setGarageOpen(false)}>Close garage</Button>}
-          />
-          <p className="g-muted">Pick a silhouette and make it yours. It's 100% cosmetic: every car has the same speed.</p>
-          <Garage lobbyId={lobby.id} me={me} meIndex={meIndex} players={players} locked={lobby.status !== 'waiting'} />
-        </section>
-      )}
-
-      <section className="g-panel g-how-panel">
-        <div className="g-eyebrow">HOW A TIMED RACE WORKS</div>
-        <HowTo />
-      </section>
-
-      <section className="space-y-4">
-        <SectionTitle
-          eyebrow="Every finish has a story"
-          title="The trophy room"
-          aside={<span className="g-small g-muted">19 race trophies + 1 progression achievement</span>}
-        />
-        <TrophyRoom />
+      <section ref={tabsRef} className="scroll-mt-4" aria-label="Room details">
+        <SectionTabs label="Room details" tabs={tabs} value={tab} onChange={setTab} />
       </section>
     </>
   );

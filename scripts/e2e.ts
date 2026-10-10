@@ -93,6 +93,8 @@ async function main() {
   // Destination: the host picks the scenery for the room.
   const rainCard = (page: Page) => page.locator('.w-destination-card', { has: page.locator('h3', { hasText: 'Midnight Rain' }) });
   await rainCard(alice).click();
+  // Bob is on the garage tab; the destinations live on their own tab.
+  await bob.getByRole('tab', { name: 'Destination' }).click();
   await bob.locator('.w-destination-card[aria-pressed="true"] h3', { hasText: 'Midnight Rain' }).waitFor();
   await alice.waitForTimeout(1500);
   await shot(alice, '03-waiting-room');
