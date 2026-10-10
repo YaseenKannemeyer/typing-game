@@ -77,9 +77,9 @@ async function main() {
   await bob.getByRole('button', { name: /Confirm vehicle/ }).click();
   await bob.getByText('Selection saved').waitFor();
   // Race rules: the host flips zero-mistake mode on and off; Bob sees it live.
-  await alice.getByLabel('Zero-mistake mode').check();
+  await alice.getByLabel('Zero-mistake mode').click();
   await bob.getByText("On: you can't move past a wrong word").waitFor();
-  await alice.getByLabel('Zero-mistake mode').uncheck();
+  await alice.getByLabel('Zero-mistake mode').click();
   await bob.getByText('Off: mistakes turn red').waitFor();
   await alice.getByRole('button', { name: '1 min' }).click();
   await alice.waitForTimeout(1500);

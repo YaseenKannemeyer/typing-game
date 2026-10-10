@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
 import { HowTo, InviteLink, RaceSettings, RoomCode, Roster, type RosterPlayer } from '../components/lobby/Lobby';
@@ -26,9 +26,15 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Shown straight away while the server confirms (it broadcasts lobby:update).
+  const [pending, setPending] = useState<{ seconds: number; zero: boolean } | null>(null);
   const [garageOpen, setGarageOpen] = useState(false);
   const garageRef = useRef<HTMLElement>(null);
   const roster = useMemo(() => rosterFrom(state), [state]);
+  // Drop the optimistic value once the lobby reflects it.
+  useEffect(() => {
+    if (pending && lobby && pending.seconds === lobby.race_seconds && pending.zero === lobby.zero_mistakes) setPending(null);
+  }, [pending, lobby]);
   if (!lobby) return null;
   const isHost = lobby.host_id === userId;
   const meIndex = players.findIndex((p) => p.user_id === userId);
@@ -49,11 +55,13 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
 
   const changeSettings = async (seconds: number, zeroMistakes: boolean) => {
     setSaving(true);
+    setPending({ seconds, zero: zeroMistakes });
     setError(null);
     try {
       await api.setRaceSettings(lobby.id, seconds, zeroMistakes);
     } catch (e) {
       setError(errorMessage(e));
+      setPending(null);
     } finally {
       setSaving(false);
     }
@@ -94,8 +102,8 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
             <div className="g-eyebrow">RACE RULES</div>
             <h2 className="g-heading mb-4">Type until the clock stops.</h2>
             <RaceSettings
-              seconds={lobby.race_seconds}
-              zeroMistakes={lobby.zero_mistakes}
+              seconds={pending?.seconds ?? lobby.race_seconds}
+              zeroMistakes={pending?.zero ?? lobby.zero_mistakes}
               editable={isHost}
               busy={saving}
               onChange={changeSettings}

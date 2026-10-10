@@ -13,8 +13,10 @@ export interface TrackCar {
   name: string;
   vehicle: VehicleProps;
   rank: number;
-  /** 0..1 */
+  /** 0..1, where the car sits on the road. */
   progress: number;
+  /** Percentage shown on the lane (defaults to the road position). */
+  percent?: number;
   wpm: number;
   errors: number;
   finished: boolean;
@@ -79,7 +81,7 @@ function Lane({ car, started }: { car: TrackCar; started: boolean }) {
   }, [car.errors, car.rank, car.finished, started, play]);
 
   const progress = Math.min(1, Math.max(0, car.progress));
-  const pct = Math.round(progress * 100);
+  const pct = Math.round(car.percent ?? progress * 100);
   return (
     <>
       <div className="g-lane-label">

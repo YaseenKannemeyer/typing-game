@@ -221,6 +221,7 @@ export function Race({ state, sendProgress }: Props) {
     vehicle: vehicles.get(s.id) ?? vehicleFor({ name: s.name, car_color: '#748782', vehicle: {} }),
     rank: rankOf(s.id),
     progress: s.progress * LEADER_POSITION,
+    percent: s.progress * 100, // of the leader's total
     wpm: s.netWpm,
     errors: s.id === userId ? ts.errors : (live[s.id]?.errors ?? 0),
     finished: timeUp && started,

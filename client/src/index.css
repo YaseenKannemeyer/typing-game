@@ -118,6 +118,7 @@
 .g-lines {
   white-space: normal;
   overflow: hidden;
+  max-height: none;
 }
 .g-line {
   white-space: pre-wrap;
