@@ -280,8 +280,7 @@ export function Race({ state, sendProgress }: Props) {
     <div className="race-screen">
       <div className="g-between">
         <div>
-          <p className="g-eyebrow" style={{ color: design.color }}>{design.tag}</p>
-          <h1 className="g-heading mt-1">
+          <h1 className="g-heading">
             {lobby?.mode === 'random' && <span className="text-muted">Random → </span>}
             {design.name}
           </h1>

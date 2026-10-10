@@ -46,7 +46,6 @@ export function Home() {
   return (
     <Page actions={<SoundToggle />}>
       <PageTitle
-        eyebrow={`${MAX_PLAYERS} racers. One finish line.`}
         title="Type it. Race it."
         lead={`Race up to ${MAX_PLAYERS} friends in real time. Same text, same clock: 1 to 5 minutes of non-stop typing. Highest WPM wins. No account needed.`}
       />

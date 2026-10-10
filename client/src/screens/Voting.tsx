@@ -51,7 +51,7 @@ export function Voting({ state }: { state: LobbyState }) {
   return (
     <>
       <div className="g-voting-head gap-6">
-        <PageTitle eyebrow="Mode voting" title="Pick your kind of fast." lead="One racer, one vote. Choose the challenge for the whole grid." />
+        <PageTitle title="Pick your kind of fast." lead="One racer, one vote. Choose the challenge for the whole grid." />
         <TimerRing seconds={remaining} total={VOTE_DURATION_MS / 1000} />
       </div>
       <div className="g-row">

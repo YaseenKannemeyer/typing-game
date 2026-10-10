@@ -40,7 +40,6 @@ export function Practice() {
   return (
     <section className="g-stack">
       <SectionTitle
-        eyebrow="Warm up"
         title="Practice lap"
         aside={
           <Button variant="secondary" icon="refresh" onClick={() => setIndex((i) => (i + 1) % PRACTICE_PASSAGES.length)}>

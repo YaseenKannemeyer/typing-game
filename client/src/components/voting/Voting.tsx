@@ -73,7 +73,7 @@ export function ModeCard({ mode, count, selected, voters, disabled, onVote }: Ca
 export function VoteReveal({ mode, tie }: { mode: ModeDesign; tie: boolean }) {
   return (
     <div className="g-vote-reveal" role="status">
-      <span className="g-eyebrow">{tie ? 'TIE RESOLVED · SERVER SELECTION' : 'THE GRID HAS SPOKEN'}</span>
+      {tie && <span className="g-eyebrow">TIE RESOLVED · SERVER SELECTION</span>}
       {tie ? (
         <div className="g-dice rolling" aria-label="Revealing server-selected tie result">
           <ModeArt mode="random" />

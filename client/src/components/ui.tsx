@@ -69,10 +69,10 @@ export function SectionTitle({ eyebrow, title, aside }: { eyebrow?: string; titl
   );
 }
 
-export function PageTitle({ eyebrow, title, lead }: { eyebrow: string; title: ReactNode; lead?: ReactNode }) {
+export function PageTitle({ eyebrow, title, lead }: { eyebrow?: string; title: ReactNode; lead?: ReactNode }) {
   return (
     <div>
-      <p className="g-eyebrow">{eyebrow}</p>
+      {eyebrow && <p className="g-eyebrow">{eyebrow}</p>}
       <h1 className="g-title">{title}</h1>
       {lead && <p className="g-muted">{lead}</p>}
     </div>

@@ -50,7 +50,7 @@ export function ProfileScreen() {
   if (!auth.permanent) {
     return (
       <Page actions={<SoundToggle />}>
-        <PageTitle eyebrow="Your driver profile" title="Make your progress permanent." lead="Guests race freely, but only accounts keep a profile, charts, a trophy cabinet and a place in the hall of fame." />
+        <PageTitle title="Make your progress permanent." lead="Guests race freely, but only accounts keep a profile, charts, a trophy cabinet and a place in the hall of fame." />
         <div className="g-row">
           <Button icon="arrow" onClick={() => navigate('/account')}>Save your progress</Button>
           <Button variant="secondary" onClick={() => navigate('/account')}>Sign in</Button>

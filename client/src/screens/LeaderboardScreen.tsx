@@ -148,7 +148,6 @@ export function LeaderboardScreen() {
       <section aria-labelledby="leaderboard-field" aria-busy={loading}>
       {error && (
         <div className="lb-state lb-state--error">
-          <span className="g-eyebrow">CONNECTION INTERRUPTED</span>
           <h3>The standings couldn’t load.</h3>
           <p>{error}</p>
           <p>Your filters are saved. Try again to bring the field back.</p>
@@ -163,7 +162,6 @@ export function LeaderboardScreen() {
       )}
       {rows && rows.length === 0 && (
         <div className="lb-state">
-          <span className="g-eyebrow">THE GRID IS OPEN</span>
           <h3>{filtered ? 'No finishes in this field. Yet.' : 'Be the first name on the board.'}</h3>
           <p>{filtered ? `No verified account finishes for ${label(mode).toLowerCase()} · ${period.toLowerCase()}. Try a wider view, or set the pace yourself.` : 'Finish a race with an account to put your best WPM on the board.'}</p>
           <div className="lb-state-actions">

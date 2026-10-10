@@ -154,7 +154,6 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
             />
           </Card>
           <Card>
-            <div className="g-eyebrow">YOUR NEXT MOVE</div>
             <h2 className="g-heading">Ready when you are.</h2>
             <p className="g-muted mb-4">Customize your vehicle, then join the vote.</p>
             <div className="g-stack">

@@ -57,7 +57,6 @@ export function AuthStory({ mode, guest }: StoryProps) {
   const reset = mode === 'reset';
   return (
     <section className="a-auth-story">
-      <div className="g-eyebrow">{save ? 'KEEP YOUR MOMENTUM' : 'ONE ACCOUNT. EVERY FINISH.'}</div>
       <h1>
         {save ? <>You earned it.<br />Make it yours.</> : signup ? 'Your starting line.' : reset ? 'Back on the grid.' : <>Welcome back,<br />racer.</>}
       </h1>

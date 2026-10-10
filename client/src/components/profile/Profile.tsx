@@ -33,7 +33,6 @@ export function ProfileHeader({ name, handle, memberSince, avatar, vehicle, stat
         {avatar === 'initials' ? <TrustedSvg markup={avatarSvg(name, 124)} /> : <Car vehicle={vehicle} className="w-full" />}
       </div>
       <div className="a-profile-identity">
-        <span className="g-eyebrow">YOUR DRIVER PROFILE</span>
         <h1>{name}</h1>
         <p>
           @{handle} <span>·</span> Member since {memberSince}

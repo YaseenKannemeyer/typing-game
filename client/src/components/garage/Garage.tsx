@@ -198,8 +198,6 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
             aria-labelledby={`${tabsId}-${station}`}
             className="space-y-4 rounded-[15px] border border-line bg-panel p-6 text-[11px] text-muted"
           >
-            <p className="g-eyebrow">{STATION_LABELS[station].toUpperCase()} STATION</p>
-
             {station === 'overview' && (
               <>
                 <p>Pick a body from the collection, then visit each station. Confirm when your ride is ready.</p>

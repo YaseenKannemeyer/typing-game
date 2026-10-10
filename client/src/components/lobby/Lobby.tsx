@@ -110,7 +110,6 @@ export function HowTo() {
           <span className="g-how-icon">
             <Icon name={icon} size={28} />
           </span>
-          <span className="g-eyebrow">{n}</span>
           <h3>{h}</h3>
           <p>{p}</p>
         </div>
