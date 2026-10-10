@@ -77,6 +77,7 @@ export function Clubhouse({ counts, records }: Props) {
               <TrophyIcon trophy={id} size={112} state={times ? 'earned' : 'locked'} label="" />
               <strong>{t.name}</strong>
               <small>{times ? (times > 1 ? `EARNED ×${times}` : 'EARNED') : 'NOT YET EARNED'}</small>
+              <span className="trophy-rule">{t.rule}</span>
             </button>
           );
         })}

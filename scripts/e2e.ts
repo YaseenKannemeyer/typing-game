@@ -21,7 +21,7 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const shot = (page: Page, name: string) => page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
 
 /** Types the highlighted line and presses Enter, over and over, until time runs out. */
-async function typeUntilTimeUp(page: Page, delay: number) {
+async function typeUntilTimeUp(page: Page, delay: number, maxLines = Infinity) {
   const input = page.getByLabel('Type the current line');
   await input.waitFor();
   await page.waitForFunction(() => !(document.querySelector('.g-type-input') as HTMLInputElement).disabled, null, { timeout: 20_000 });
@@ -30,7 +30,7 @@ async function typeUntilTimeUp(page: Page, delay: number) {
   await page.keyboard.type('x', { delay });
   await page.keyboard.press('Backspace');
   let lines = 0;
-  for (;;) {
+  while (lines < maxLines) {
     if (await input.isDisabled().catch(() => true)) break;
     const line = (await page.locator('.g-line.is-current').textContent().catch(() => null))?.replace('⏎', '').trim();
     if (!line) break;
@@ -111,7 +111,17 @@ async function main() {
   await alice.locator('.g-countdown-number', { hasText: '2' }).waitFor({ timeout: 20_000 });
   await shot(alice, '06-countdown');
 
-  const racing = Promise.all([typeUntilTimeUp(alice, 45), typeUntilTimeUp(bob, 80)]);
+  // Bob leaves mid-race, rejoins from the home page and keeps racing.
+  const bobRace = (async () => {
+    const before = await typeUntilTimeUp(bob, 80, 3);
+    await bob.getByRole('button', { name: 'Leave' }).click();
+    await bob.getByRole('button', { name: 'Rejoin race' }).waitFor();
+    await shot(bob, '06c-rejoin-mobile');
+    await bob.getByRole('button', { name: 'Rejoin race' }).click();
+    console.log(`bob left after ${before} lines and rejoined`);
+    return before + (await typeUntilTimeUp(bob, 80));
+  })();
+  const racing = Promise.all([typeUntilTimeUp(alice, 45), bobRace]);
   await alice.waitForTimeout(20_000);
   await shot(alice, '06b-race');
   await shot(bob, '07-race-mobile');
@@ -121,6 +131,9 @@ async function main() {
 
   await alice.getByText('Every finish has a story.').waitFor({ timeout: 30_000 });
   const podium = (await alice.locator('.w-podium-list b').allTextContents()).join(', ');
+  const bobRow = (await alice.locator('.g-results-table tbody tr', { hasText: 'Bob' }).textContent()) ?? '';
+  if (!bobRow.includes('Finished')) throw new Error(`Bob should finish after rejoining: ${bobRow}`);
+  console.log('bob after rejoin:', bobRow.replace(/\s+/g, ' '));
   console.log('podium:', podium);
   // Trophies arrive from the server shortly after the race ends.
   await alice.locator('.g-award').first().waitFor({ timeout: 20_000 });
@@ -149,7 +162,7 @@ async function main() {
   await alice.getByRole('button', { name: 'Sign in', exact: true }).first().click();
   await shot(alice, '11-account-signin');
   await alice.goto(`${base}/leaderboard`);
-  await alice.locator('.a-hall').waitFor();
+  await alice.locator('.lb-hall').waitFor();
   await alice.waitForTimeout(1500);
   await shot(alice, '12-leaderboard');
   await alice.goto(`${base}/profile`);

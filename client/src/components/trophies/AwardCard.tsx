@@ -15,13 +15,14 @@ interface Props {
 export function AwardCard({ award, recipient, reveal = true }: Props) {
   const info = TROPHIES[award.trophy];
   return (
-    <article className="g-award" title={info.rule}>
+    <article className="g-award">
       <TrophyIcon trophy={award.trophy} size={100} state={reveal ? 'reveal' : 'earned'} />
       <div>
         <span className="g-eyebrow">{CATEGORY[info.category]} · {trophyScope(award.trophy)}</span>
         <h3>{info.name}</h3>
         <strong>{recipient}</strong>
         <p>{award.reason}</p>
+        <p className="trophy-rule">{info.rule}</p>
       </div>
     </article>
   );

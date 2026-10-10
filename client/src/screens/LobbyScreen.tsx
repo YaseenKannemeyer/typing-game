@@ -35,6 +35,7 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
   const leave = async () => {
     setLeaving(true);
     if (lobby) await api.leaveLobby(lobby.id).catch(() => {});
+    if (race?.status === 'racing') toast('You left the race. Use "Rejoin race" on the home page to get back in before time runs out.', 'info');
     navigate('/');
   };
 
@@ -76,8 +77,8 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
           <span className="g-pill g-pill--lime hidden font-mono sm:inline-flex">ROOM {code}</span>
           <SoundToggle />
           {phase !== 'error' && (
-            <Button variant="ghost" icon="close" onClick={leave} disabled={leaving}>
-              Leave
+            <Button variant="ghost" icon="close" onClick={leave} disabled={leaving} aria-label="Leave the room">
+              <span className="hidden sm:inline">Leave</span>
             </Button>
           )}
         </>

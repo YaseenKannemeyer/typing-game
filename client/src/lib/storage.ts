@@ -51,3 +51,41 @@ export function saveBuild(saved: SavedBuild): boolean {
     return false;
   }
 }
+
+const ACTIVE_RACE_KEY = 'typeracer:active-race';
+
+/** The timed race this browser is racing in, so a player who leaves can rejoin it. */
+export interface ActiveRace {
+  code: string;
+  raceId: string;
+  /** races.end_at as epoch ms (server-aligned). */
+  endAt: number;
+  /** The racer's user id: only that identity can rejoin (guests are one per tab). */
+  userId: string;
+}
+
+export function saveActiveRace(race: ActiveRace) {
+  try {
+    localStorage.setItem(ACTIVE_RACE_KEY, JSON.stringify(race));
+  } catch {
+    // Storage blocked: no rejoin shortcut, the room code still works.
+  }
+}
+
+export function loadActiveRace(): ActiveRace | null {
+  try {
+    const r = JSON.parse(localStorage.getItem(ACTIVE_RACE_KEY) ?? 'null') as Partial<ActiveRace> | null;
+    if (!r || typeof r.code !== 'string' || !/^[A-Z0-9]{6}$/.test(r.code) || typeof r.endAt !== 'number' || typeof r.userId !== 'string' || typeof r.raceId !== 'string') return null;
+    return r as ActiveRace;
+  } catch {
+    return null;
+  }
+}
+
+export function clearActiveRace(raceId?: string) {
+  try {
+    if (!raceId || loadActiveRace()?.raceId === raceId) localStorage.removeItem(ACTIVE_RACE_KEY);
+  } catch {
+    // ignore
+  }
+}

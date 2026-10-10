@@ -123,12 +123,11 @@ export function Page({ children, actions }: { children: ReactNode; actions?: Rea
   return (
     <div className="min-h-screen bg-ink text-fg">
       <header className="border-b border-line">
-        <div className="mx-auto flex min-h-[68px] max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
+        {/* Phones: brand + actions on one row, nav on its own scrollable row. Desktop: one row. */}
+        <div className="app-header mx-auto max-w-6xl px-4">
           <Brand />
-          <div className="flex flex-wrap items-center gap-2">
-            <AppNav />
-            {actions}
-          </div>
+          <AppNav />
+          <div className="app-header-actions">{actions}</div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">{children}</main>

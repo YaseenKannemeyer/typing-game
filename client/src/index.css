@@ -51,8 +51,9 @@
   --color-silver: #c9dfeb;
   --color-bronze: #dc9d71;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* Self-hosted Geist (UI) + Geist Mono (passages, telemetry). Imported in main.tsx. */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Consolas, monospace;
 
   --radius-card: 14px; /* --g-radius-md */
 }
@@ -326,4 +327,211 @@
 .race-control > .w-pitboard,
 .race-control > div > .w-pitboard {
   height: 100%;
+}
+
+/* Home: rejoin a race this player left while it is still running. */
+.g-rejoin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid var(--g-lime);
+  border-radius: 14px;
+  background: #b9f46a12;
+}
+.g-rejoin strong {
+  display: block;
+  font-size: 18px;
+  margin: 6px 0 4px;
+}
+.g-rejoin p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--g-muted);
+  max-width: 560px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Polish pass: type, shell, race layout, trophies.
+ * Unlayered, so these refine the copied kit styles without editing them.
+ * ------------------------------------------------------------------------- */
+
+/* The kit names Inter but never loads it; point its tokens at the loaded faces. */
+:root {
+  --g-font: var(--font-sans);
+  --g-mono: var(--font-mono);
+}
+.g-title {
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.g-heading,
+.g-panel h2,
+.g-panel h3 {
+  text-wrap: balance;
+}
+.g-muted,
+.g-lead {
+  text-wrap: pretty;
+}
+
+/* Browser surfaces carry the palette too. */
+::selection {
+  background: var(--g-lime);
+  color: var(--g-ink);
+}
+input,
+textarea {
+  caret-color: var(--g-lime);
+}
+html {
+  scrollbar-color: var(--g-border) var(--g-bg);
+}
+
+/* Site header: brand + actions share a row on phones; nav gets its own swipeable row. */
+.app-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'brand actions' 'nav nav';
+  align-items: center;
+  column-gap: 16px;
+  padding-top: 10px;
+}
+.app-header > .g-brand {
+  grid-area: brand;
+}
+.app-header-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-header > .a-nav {
+  grid-area: nav;
+  flex-wrap: nowrap;
+  gap: 2px;
+  margin: 6px -16px 0;
+  padding: 0 10px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.app-header .a-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: color var(--g-fast) var(--g-ease), background-color var(--g-fast) var(--g-ease);
+}
+.app-header .a-nav a:hover {
+  color: var(--g-text);
+}
+@media (min-width: 900px) {
+  .app-header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'brand nav actions';
+    min-height: 68px;
+    padding-block: 8px;
+  }
+  .app-header > .a-nav {
+    justify-self: end;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+/* Home showroom: every model in one row on desktop, the first five on phones. */
+.showroom-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+.showroom-strip > :nth-child(n + 6) {
+  display: none;
+}
+@media (min-width: 768px) {
+  .showroom-strip {
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .showroom-strip > :nth-child(n + 6) {
+    display: block;
+  }
+}
+
+/* Race: a tighter circuit so the text stays in view; on phones the text comes before the track. */
+.race-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.race-typing {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.race-screen .w-circuit-sky {
+  height: 108px;
+  display: flex;
+  align-items: flex-end;
+}
+/* Shorter sky: keep street level and crop the empty sky instead of the buildings. */
+.race-screen .w-circuit-sky > svg {
+  height: auto;
+  flex-shrink: 0;
+}
+.race-screen .w-track-barrier {
+  display: none;
+}
+.race-screen .w-lane {
+  min-height: 84px;
+}
+@media (max-width: 767px) {
+  .race-typing {
+    order: 1;
+  }
+  .race-track {
+    order: 2;
+  }
+  .race-minimap {
+    order: 3;
+  }
+  .race-screen .w-circuit-sky {
+    height: 64px;
+  }
+  .race-screen .w-lane {
+    min-height: 70px;
+  }
+}
+
+/* Trophy unlocks rise from the bottom corner, clear of the header and the podium. */
+.a-achievement-region {
+  top: auto;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .a-achievement-region {
+    right: 24px;
+    bottom: 24px;
+  }
+}
+
+/* What each trophy is for, shown under it wherever it appears. */
+.trophy-rule {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--g-subtle);
+  text-wrap: pretty;
+}
+.a-achievement-toast .trophy-rule {
+  color: var(--g-muted);
 }

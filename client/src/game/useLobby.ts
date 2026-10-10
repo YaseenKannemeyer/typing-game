@@ -148,7 +148,9 @@ export function useLobby(code: string, name: string) {
         lobbyId.current = id;
         // Bring the player's last garage build into this lobby (cosmetic; best effort).
         const saved = loadBuild();
-        if (saved) {
+        // Cosmetics are locked once a race is running (e.g. rejoining mid-race).
+        const { data: room } = await requireSupabase().from('lobbies').select('status').eq('id', id).maybeSingle();
+        if (saved && room?.status === 'waiting') {
           await api.setVehicle(id, saved.build).catch(() => {});
           await api.setCarColor(id, saved.primary).catch(() => {});
         }

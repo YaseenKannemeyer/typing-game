@@ -63,6 +63,7 @@ export function TrophyRoom() {
             </div>
             <TrophyIcon trophy={id} size={96} className="mx-auto mt-1 block w-fit" />
             <p className="mt-2 text-center text-sm font-semibold">{TROPHIES[id].name}</p>
+            <p className="trophy-rule text-center">{TROPHIES[id].rule}</p>
           </button>
         ))}
       </div>

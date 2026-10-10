@@ -133,6 +133,7 @@ export function RecentTrophies({ recent }: { recent: Summary['recent'] }) {
           <TrophyIcon trophy={r.trophy} size={92} />
           <strong>{TROPHIES[r.trophy].name}</strong>
           <span>{TROPHIES[r.trophy].progression ? 'Progression' : 'Race award'}</span>
+          <p className="trophy-rule">{TROPHIES[r.trophy].rule}</p>
         </div>
       ))}
     </div>

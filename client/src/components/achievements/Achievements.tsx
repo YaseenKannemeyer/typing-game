@@ -121,6 +121,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
               <span className="g-eyebrow">{TROPHIES[active.trophy].progression ? 'ACHIEVEMENT UNLOCKED' : 'TROPHY UNLOCKED'}</span>
               <h2>{TROPHIES[active.trophy].name}</h2>
               <p>{active.statistic}</p>
+              <p className="trophy-rule">{TROPHIES[active.trophy].rule}</p>
               <span className="a-unlock-recipient">
                 {active.recipient} · {permanent ? 'Saved to your collection' : 'Save your progress to keep it'}
               </span>

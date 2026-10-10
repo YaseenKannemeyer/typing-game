@@ -23,6 +23,7 @@ import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
 import { Banner, Loading, Pill } from '../components/ui';
 import { api, lineSubmission } from '../lib/api';
 import { useServerNow } from '../lib/clock';
+import { clearActiveRace, saveActiveRace } from '../lib/storage';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
 import type { LiveProgress } from '../game/types';
@@ -164,6 +165,14 @@ export function Race({ state, sendProgress }: Props) {
     void sync(true);
   }, [raceId, isRacer, timeUp, started, sync]);
 
+  // Remember this race so the player can rejoin it from home after leaving.
+  const lobbyCode = lobby?.code;
+  useEffect(() => {
+    if (!raceId || !lobbyCode || !userId || !isRacer) return;
+    if (timeUp) clearActiveRace(raceId);
+    else saveActiveRace({ code: lobbyCode, raceId, endAt: endAt - clockOffset, userId });
+  }, [raceId, lobbyCode, userId, isRacer, timeUp, endAt, clockOffset]);
+
   // Cosmetic live progress for other players' cars.
   const myChars = typedCorrectChars(ts);
   const liveRef = useRef({ chars: myChars, errors: ts.errors });
@@ -268,7 +277,7 @@ export function Race({ state, sendProgress }: Props) {
   const minutes = Math.round(durationMs / 60_000);
 
   return (
-    <div className="space-y-4">
+    <div className="race-screen">
       <div className="g-between">
         <div>
           <p className="g-eyebrow" style={{ color: design.color }}>{design.tag}</p>
@@ -307,7 +316,7 @@ export function Race({ state, sendProgress }: Props) {
         </div>
       )}
 
-      <div className="relative">
+      <div className="race-track relative">
         <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} ruler={RULER} />
         {(!started || elapsed < GO_BANNER_MS) && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
@@ -316,14 +325,19 @@ export function Race({ state, sendProgress }: Props) {
         )}
       </div>
 
-      <Minimap
-        racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * LEADER_POSITION }))}
-        localId={userId}
-        endLabel="LEADER"
-      />
+      {/* Only when some racers don't have a lane on the track. */}
+      {racePlayers.length > cars.length && (
+        <div className="race-minimap">
+          <Minimap
+            racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * LEADER_POSITION }))}
+            localId={userId}
+            endLabel="LEADER"
+          />
+        </div>
+      )}
 
       {isRacer && (
-        <>
+        <div className="race-typing">
           <TypingPanel
             ref={inputRef}
             state={ts}
@@ -346,7 +360,7 @@ export function Race({ state, sendProgress }: Props) {
           <div className="race-control-below" aria-live="polite">
             {board && <PitBoard key={board.id} event={board} />}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

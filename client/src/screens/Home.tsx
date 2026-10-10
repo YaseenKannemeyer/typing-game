@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CAR_COLORS, MAX_PLAYERS, normalizeName } from '@race/shared';
 import { VEHICLE_MODELS } from '../art/vehicleArt';
 import { Car } from '../components/Car';
+import { RejoinRace } from '../components/RejoinRace';
 import { Banner, Button, Card, ErrorText, Page, PageTitle } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
 import { navigate } from '../lib/router';
@@ -49,9 +50,10 @@ export function Home() {
         title="Type it. Race it."
         lead={`Race up to ${MAX_PLAYERS} friends in real time. Same text, same clock: 1 to 5 minutes of non-stop typing. Highest WPM wins. No account needed.`}
       />
-      <div className="garage-card flex gap-2 overflow-hidden" aria-hidden>
+      <RejoinRace />
+      <div className="garage-card showroom-strip" aria-hidden>
         {SHOWROOM.map((v) => (
-          <Car key={v.model} vehicle={v} className="w-28 shrink-0" />
+          <Car key={v.model} vehicle={v} />
         ))}
       </div>
 
