@@ -18,6 +18,7 @@
 @import './styles/grid/typing.css' layer(components);
 @import './styles/grid/results.css' layer(components);
 @import './styles/grid/system.css' layer(components);
+@import './styles/grid/account.css' layer(components);
 
 /*
  * Design tokens taken from the GRID vehicle and trophy kits

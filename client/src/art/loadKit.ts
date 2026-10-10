@@ -24,3 +24,18 @@ export function loadGridKit<T>(...scripts: string[]): T {
   delete g.GridKit;
   return kit;
 }
+
+/** Test-only: loads the account/profile kit (kit 15) and returns its AccountKit API. */
+export function loadAccountKit<T>(): T {
+  const g = globalThis as unknown as { GridKit?: unknown; AccountKit?: unknown };
+  delete g.GridKit;
+  delete g.AccountKit;
+  for (const script of ['vendor/core.js', 'src/charts.js', 'src/account.js', 'src/profile.js']) {
+    const file = fileURLToPath(new URL(`../../../design-kits/account-profile-kit/${script}`, import.meta.url));
+    new Function(readFileSync(file, 'utf8'))();
+  }
+  const kit = g.AccountKit as T;
+  delete g.GridKit;
+  delete g.AccountKit;
+  return kit;
+}

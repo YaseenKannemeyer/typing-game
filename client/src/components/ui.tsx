@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { iconSvg, markSvg, type IconName } from '../art/gridArt';
+import { AppNav } from './AppNav';
 import { TrustedSvg } from './TrustedSvg';
 
 /* React versions of the GRID UI kit (02-ui/core.js, 01-brand/brand.js). */
@@ -122,9 +123,12 @@ export function Page({ children, actions }: { children: ReactNode; actions?: Rea
   return (
     <div className="min-h-screen bg-ink text-fg">
       <header className="border-b border-line">
-        <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between gap-3 px-4">
+        <div className="mx-auto flex min-h-[68px] max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
           <Brand />
-          <div className="flex items-center gap-2">{actions}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <AppNav />
+            {actions}
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">{children}</main>

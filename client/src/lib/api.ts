@@ -1,4 +1,4 @@
-import type { TypingState, VoteMode } from '@race/shared';
+import type { TrophyId, TypingState, VoteMode } from '@race/shared';
 import type { VehicleBuild } from '../art/vehicleArt';
 import { requireSupabase } from './supabase';
 
@@ -16,6 +16,17 @@ const MESSAGES: Record<string, string> = {
   voting_open: 'Voting is still open.',
   not_member: 'You are no longer in this lobby.',
   not_authenticated: 'Could not sign you in. Refresh and try again.',
+  invalid_email: 'Enter a valid email address.',
+  email_exists: 'That email already has an account. Sign in instead to bring your guest progress with you.',
+  invalid_credentials: "That email and password don't match an account.",
+  weak_password: 'Choose a stronger password (at least 8 characters).',
+  same_password: 'Choose a password different from your current one.',
+  email_rate_limited: 'Too many emails were sent just now. Please wait a few minutes and try again.',
+  email_not_confirmed: 'Confirm your email first. Check your inbox for the link.',
+  linking_disabled: 'Saving guest progress is not enabled on the server yet.',
+  account_required: 'You need an account for that. Save your progress first.',
+  profile_required: 'Finish setting up your profile first.',
+  invalid_avatar: 'Choose the car or initials avatar.',
   captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
 
@@ -78,4 +89,50 @@ export const api = {
     if (error) throw new ApiError(error.message);
   },
   serverNow: () => call<string>('server_now'),
+
+  // Phase 4: accounts and stats --------------------------------------------
+  mySummary: (days = 0) => call<Summary>('my_summary', { p_days: days }),
+  saveProfile: (displayName: string, avatar?: 'car' | 'initials') =>
+    call<Profile>('save_profile', { p_display_name: displayName, p_avatar: avatar ?? null }),
+  setProfileGarage: (build: VehicleBuild, color: string) =>
+    call<void>('set_profile_garage', { p_vehicle: build, p_color: color }),
+  leaderboard: (days: number, mode: string) => call<LeaderRow[]>('leaderboard', { p_days: days, p_mode: mode }),
+  /** Moves a verified guest's history to the signed-in account (server-checked). */
+  mergeGuest: async (guestAccessToken: string) => {
+    const { data, error } = await requireSupabase().functions.invoke('merge-guest', { body: { guest_token: guestAccessToken } });
+    if (error) throw new ApiError(error.message);
+    return data as { ok: boolean; already_merged: boolean; moved_races: number };
+  },
 };
+
+export interface Profile {
+  display_name: string;
+  handle: string;
+  avatar: 'car' | 'initials';
+  vehicle: Partial<VehicleBuild>;
+  car_color: string | null;
+  created_at: string;
+}
+
+export interface Summary {
+  anonymous: boolean;
+  member_since: string | null;
+  profile: Profile | null;
+  stats: { races: number; wins: number; best_wpm: number | null; trophies: number };
+  daily: { date: string; wpm: number | null; accuracy: number | null }[];
+  mode_bests: Record<string, number | null>;
+  trophy_counts: Partial<Record<TrophyId, number>>;
+  recent: { trophy: TrophyId; reason: string; race_id: string; at: string }[];
+}
+
+export interface LeaderRow {
+  rank: number;
+  display_name: string;
+  handle: string;
+  vehicle: Partial<VehicleBuild>;
+  car_color: string | null;
+  best_wpm: number;
+  accuracy: number;
+  achieved_at: string;
+  is_you: boolean;
+}

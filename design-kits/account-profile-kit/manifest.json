@@ -1,0 +1,33 @@
+{
+  "name": "GRID Account & Profile Kit",
+  "version": "1.0.0",
+  "kitNumber": 15,
+  "entry": "OPEN-ME.html",
+  "scripts": [
+    "vendor/core.js",
+    "vendor/brand.js",
+    "vendor/vehicles.js",
+    "vendor/trophies.js",
+    "src/charts.js",
+    "src/account.js",
+    "src/profile.js"
+  ],
+  "styles": [
+    "vendor/tokens.css",
+    "vendor/components.css",
+    "vendor/brand.css",
+    "vendor/vehicles.css",
+    "vendor/trophies.css",
+    "src/account-profile.css"
+  ],
+  "scope": "Presentation kit, not an authentication implementation",
+  "previews": [
+    "save",
+    "signup",
+    "signin",
+    "reset",
+    "profile",
+    "leaderboard",
+    "achievements"
+  ]
+}

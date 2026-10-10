@@ -97,9 +97,32 @@ async function main() {
   await bob.locator('.g-award').first().waitFor({ timeout: 20_000 });
   await shot(bob, '09-results-mobile');
 
+  // First-time trophies raise a server-confirmed "unlocked" toast.
+  await alice.locator('.a-achievement-toast').waitFor({ timeout: 15_000 });
+  await shot(alice, '08b-achievement-toast');
+  console.log('achievement toast:', (await alice.locator('.a-achievement-toast h2').textContent())?.trim());
+
   await alice.getByRole('button', { name: 'Back to lobby' }).click();
   await bob.getByText('The starting grid').waitFor();
   console.log('round trip complete');
+
+  // Phase 4 pages, as a guest who now has race history.
+  await alice.goto(`${base}/account`);
+  await alice.getByText('Save your guest progress').waitFor({ timeout: 15_000 });
+  await shot(alice, '10-account-save');
+  await bob.goto(`${base}/account`);
+  await bob.getByText('Save your guest progress').waitFor({ timeout: 15_000 });
+  await shot(bob, '10b-account-save-mobile');
+  await alice.getByRole('button', { name: 'Sign in', exact: true }).first().click();
+  await shot(alice, '11-account-signin');
+  await alice.goto(`${base}/leaderboard`);
+  await alice.locator('.a-hall').waitFor();
+  await alice.waitForTimeout(1500);
+  await shot(alice, '12-leaderboard');
+  await alice.goto(`${base}/profile`);
+  await alice.getByText('Make your progress permanent.').waitFor();
+  await shot(alice, '13-profile-guest');
+  console.log('phase 4 pages ok');
   await browser.close();
 }
 

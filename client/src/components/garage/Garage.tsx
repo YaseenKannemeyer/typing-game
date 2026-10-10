@@ -10,6 +10,7 @@ import {
 } from '../../art/vehicleArt';
 import { api, errorMessage } from '../../lib/api';
 import { saveBuild } from '../../lib/storage';
+import { requireSupabase } from '../../lib/supabase';
 import { buildOf, vehicleFor } from '../../game/vehicles';
 import { useVehicleAnimation } from '../../game/useVehicleAnimation';
 import type { LobbyPlayer } from '../../game/types';
@@ -71,6 +72,9 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
       if (primary !== me.car_color) await api.setCarColor(lobbyId, primary);
       const saved = await api.setVehicle(lobbyId, build);
       const stored = saveBuild({ build: saved, primary });
+      // Accounts also keep the build on their profile (cosmetic; best effort).
+      const { data } = await requireSupabase().auth.getSession();
+      if (data.session?.user.is_anonymous === false) void api.setProfileGarage(saved, primary).catch(() => {});
       setDirty(false);
       setStatus(stored ? 'Selection saved. You can keep editing while waiting in the lobby.' : 'Selection confirmed for this lobby. Browser storage is unavailable.');
     } catch (e) {

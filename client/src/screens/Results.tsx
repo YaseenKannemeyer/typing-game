@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { raceResultsFromRows, TROPHIES, type Award, type RaceResult } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
 import { Confetti, formatRaceTime, Podium, ResultsTable, type ResultRowView } from '../components/results/Results';
+import { useAchievements } from '../components/achievements/Achievements';
 import { AwardCard } from '../components/trophies/AwardCard';
 import { Button, Card, ErrorText, PageTitle, Pill, Skeleton } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
@@ -74,6 +75,28 @@ export function Results({ state }: { state: LobbyState }) {
       play('award-reveal');
     }
   }, [awarded, awards, userId, play]);
+
+  // "Unlocked" toasts: trophy types earned for the first time, and progression
+  // achievements. Only server-stored awards are used; ids dedupe across reloads.
+  const pushAchievement = useAchievements();
+  const myAwards = awards.get(userId ?? '');
+  const announced = useRef(false);
+  useEffect(() => {
+    if (!awarded || !myAwards?.length || !race || announced.current) return;
+    announced.current = true;
+    const myName = results.find((r) => r.id === userId)?.name ?? 'You';
+    void api
+      .mySummary(0)
+      .then((summary) => {
+        for (const a of myAwards) {
+          const firstTime = (summary.trophy_counts[a.trophy] ?? 0) === 1;
+          if (firstTime || TROPHIES[a.trophy].progression) {
+            pushAchievement({ eventId: `${race.id}:${a.trophy}`, trophy: a.trophy, statistic: a.reason, recipient: myName });
+          }
+        }
+      })
+      .catch(() => {});
+  }, [awarded, myAwards, race, results, userId, pushAchievement]);
 
   if (!race || !lobby) return null;
   const isHost = lobby.host_id === userId;
