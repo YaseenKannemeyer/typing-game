@@ -1,24 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import {
   computeStats,
-  FINISH_GRACE_MS,
   getVisibleCars,
-  passageLength,
+  lineWords,
+  lockedWords,
   PROGRESS_BROADCAST_MS,
   PROGRESS_SUBMIT_MS,
-  RACE_HARD_CAP_MS,
+  RACE_END_GRACE_MS,
   rankPlayers,
   resumeTypingState,
+  sectionOf,
   typedCorrectChars,
   wpm,
 } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
 import { CountdownFrame, MomentBanner } from '../components/race/Moments';
-import { Hud, Minimap } from '../components/race/Hud';
+import { formatElapsed, Hud, Minimap } from '../components/race/Hud';
 import { Track, type TrackCar } from '../components/Track';
 import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
 import { Banner, Loading, Pill } from '../components/ui';
-import { api } from '../lib/api';
+import { api, lineSubmission } from '../lib/api';
 import { useServerNow } from '../lib/clock';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
@@ -35,41 +36,48 @@ interface Props {
 /** Re-rank at most this often so lanes don't jitter on every keystroke. */
 const RANK_INTERVAL_MS = 250;
 const GO_BANNER_MS = 900;
+/** The leader's car sits just short of the flag; everyone else is placed relative to them. */
+const LEADER_POSITION = 0.94;
+const RULER = ['START', '25%', '50%', '75%', 'LEADER'] as const;
 
 export function Race({ state, sendProgress }: Props) {
   const { race, passage, racePlayers, players, live, userId, clockOffset, lobby } = state;
   const now = useServerNow(clockOffset, 100);
   const { play } = useSound();
   const startAt = race ? Date.parse(race.start_at) : 0;
+  const durationMs = (race?.duration_s ?? 60) * 1000;
+  const endAt = race?.end_at ? Date.parse(race.end_at) : startAt + durationMs;
   const myRow = racePlayers.find((p) => p.user_id === userId);
   const isRacer = !!myRow;
   const started = now >= startAt;
   const racing = race?.status === 'racing';
-  const serverFinished = !!myRow?.finished_at;
+  const timeUp = now >= endAt || race?.status === 'finished';
+  const strict = !!race?.zero_mistakes;
+  const elapsed = Math.min(durationMs, Math.max(0, now - startAt));
 
-  const typing = useTyping(
-    passage ?? '',
-    isRacer && started && racing && !serverFinished,
-    // After a refresh mid-race, resume from what the server already accepted.
-    () =>
-      resumeTypingState(passage ?? '', {
+  const typing = useTyping(passage ?? '', isRacer && started && racing && !timeUp, {
+    strict,
+    // Keystrokes are counted per tenth of the race time (Steady Hands).
+    section: () => sectionOf(Date.now() + clockOffset - startAt, durationMs),
+    // After a refresh mid-race, resume from the lines the server already locked in.
+    initial: () =>
+      resumeTypingState(passage ?? '', strict, {
         wordsDone: myRow?.words_done ?? 0,
+        lockedChars: myRow?.locked_chars ?? 0,
         keystrokes: myRow?.keystrokes ?? 0,
         errors: myRow?.errors ?? 0,
         deletions: myRow?.deletions ?? 0,
         sectionKeystrokes: myRow?.section_keystrokes ?? [],
         sectionErrors: myRow?.section_errors ?? [],
       }),
-  );
+  });
   const { state: ts } = typing;
-  const total = passageLength(ts.words);
-  const elapsed = Math.max(0, now - startAt);
   const inputRef = useRef<HTMLInputElement>(null);
   const [warning, setWarning] = useState<string | null>(null);
 
   useEffect(() => {
-    if (started && isRacer) inputRef.current?.focus();
-  }, [started, isRacer]);
+    if (started && isRacer && !timeUp) inputRef.current?.focus();
+  }, [started, isRacer, timeUp]);
 
   // Countdown sounds, keyed to the server-aligned start time.
   const countdown = Math.ceil((startAt - now) / 1000);
@@ -82,35 +90,77 @@ export function Race({ state, sendProgress }: Props) {
     play(value === 0 ? 'go-horn' : value === 1 ? 'countdown-final' : 'countdown-beep');
   }, [countdown, started, race, play]);
 
-  // Submit completed words in batches; the server validates and timestamps them.
+  // Server sync. Locked lines go first, in order; then the current line's
+  // finished words are sent as provisional progress (re-scored next time).
+  // When time runs out, everything typed on the current line is locked in.
   const tsRef = useRef(ts);
   tsRef.current = ts;
-  const submitted = useRef(myRow?.words_done ?? 0);
-  const inFlight = useRef(false);
-  const flush = useRef(async () => {});
-  flush.current = async () => {
-    const s = tsRef.current;
-    if (!race || inFlight.current || s.wordIndex <= submitted.current) return;
-    inFlight.current = true;
-    const from = submitted.current;
-    try {
-      const res = await api.submitProgress(race.id, from, s.words.slice(from, s.wordIndex), s);
-      submitted.current = res.words_done;
-      if (res.reason === 'too_fast') setWarning('Your input was rejected as impossibly fast.');
-    } catch {
-      // Network blip: the next tick retries from the same word.
-    } finally {
-      inFlight.current = false;
-    }
-  };
+  const serverDone = useRef(myRow?.words_done ?? 0);
+  const lastSent = useRef('');
+  const queue = useRef<Promise<void>>(Promise.resolve());
+  const busy = useRef(false);
+  const raceId = race?.id;
+  const sync = useCallback(
+    (final: boolean) => {
+      if (!raceId || (busy.current && !final)) return queue.current;
+      busy.current = true;
+      queue.current = queue.current
+        .then(async () => {
+          for (let guard = 0; guard < 50; guard++) {
+            const s = tsRef.current;
+            let from: number;
+            let words: string[];
+            let lock: boolean;
+            if (serverDone.current < lockedWords(s)) {
+              const idx = s.lines.findIndex((l) => l.start === serverDone.current);
+              const typed = idx >= 0 ? s.lockedTyped[idx] : null;
+              if (!typed) return;
+              from = serverDone.current;
+              words = typed.slice(0, lineWords(s, idx).length);
+              lock = true;
+            } else {
+              ({ from, words } = lineSubmission(s, final));
+              lock = final && words.length > 0;
+            }
+            const key = `${from}|${lock}|${words.join(' ')}|${s.keystrokes}|${s.errors}|${s.deletions}`;
+            if (key === lastSent.current) return;
+            const res = await api.submitTyping(raceId, from, words, lock, s);
+            lastSent.current = key;
+            serverDone.current = res.words_done;
+            if (res.reason === 'too_fast') setWarning('Your input was rejected as impossibly fast.');
+            if (!res.ok) return;
+            if (from === lockedWords(s)) return; // caught up: that was the current line
+          }
+        })
+        .catch(() => {
+          // Network blip: the next tick retries from the server's position.
+        })
+        .finally(() => {
+          busy.current = false;
+        });
+      return queue.current;
+    },
+    [raceId],
+  );
+
+  const syncing = isRacer && racing && started && !timeUp;
   useEffect(() => {
-    if (!isRacer || !racing) return;
-    const t = setInterval(() => void flush.current(), PROGRESS_SUBMIT_MS);
+    if (!syncing) return;
+    const t = setInterval(() => void sync(false), PROGRESS_SUBMIT_MS);
     return () => clearInterval(t);
-  }, [isRacer, racing]);
+  }, [syncing, sync]);
+  // Enter: send the locked line straight away.
+  const locked = lockedWords(ts);
   useEffect(() => {
-    if (ts.finished) void flush.current();
-  }, [ts.finished]);
+    if (syncing && locked > 0) void sync(false);
+  }, [locked, syncing, sync]);
+  // The final whistle: lock in whatever is on the current line.
+  const finalSent = useRef<string | null>(null);
+  useEffect(() => {
+    if (!raceId || !isRacer || !timeUp || !started || finalSent.current === raceId) return;
+    finalSent.current = raceId;
+    void sync(true);
+  }, [raceId, isRacer, timeUp, started, sync]);
 
   // Cosmetic live progress for other players' cars.
   const myChars = typedCorrectChars(ts);
@@ -123,35 +173,34 @@ export function Race({ state, sendProgress }: Props) {
       const { chars, errors } = liveRef.current;
       if (`${chars}:${errors}` === last) return;
       last = `${chars}:${errors}`;
-      sendProgress(userId, { chars, errors, wpm: wpm(chars, Date.now() + clockOffset - startAt) });
+      const ms = Math.min(durationMs, Date.now() + clockOffset - startAt);
+      sendProgress(userId, { chars, errors, wpm: wpm(chars, ms) });
     }, PROGRESS_BROADCAST_MS);
     return () => clearInterval(t);
-  }, [isRacer, racing, userId, sendProgress, clockOffset, startAt]);
+  }, [isRacer, racing, userId, sendProgress, clockOffset, startAt, durationMs]);
 
-  // Close the race once its deadline passes (any client may; the server checks).
-  const deadline = race
-    ? Math.min(startAt + RACE_HARD_CAP_MS, race.first_finish_at ? Date.parse(race.first_finish_at) + FINISH_GRACE_MS : Infinity)
-    : Infinity;
+  // Close the race once the timer (plus a moment for final lines) has run out.
+  // Any client may ask; the server checks the clock.
   const lastFinalize = useRef(0);
   useEffect(() => {
-    if (!race || !racing || now < deadline + 500 || now - lastFinalize.current < 3000) return;
+    if (!race || !racing || now < endAt + RACE_END_GRACE_MS || now - lastFinalize.current < 3000) return;
     lastFinalize.current = now;
     void api.finalizeRace(race.id).catch(() => {});
-  }, [race, racing, now, deadline]);
+  }, [race, racing, now, endAt]);
 
-  // Standings: everyone's best-known progress, re-ranked on a fixed cadence.
+  // Standings by correct characters, re-ranked on a fixed cadence. Cars are
+  // placed relative to the leader, who sits just short of the flag.
   const vehicles = useMemo(() => new Map(players.map((p, i) => [p.user_id, vehicleFor(p, i)])), [players]);
   const [order, setOrder] = useState<string[]>([]);
-  const standings = racePlayers.map((rp) => {
-    const isMe = rp.user_id === userId;
-    const chars = isMe ? myChars : Math.max(rp.correct_chars, live[rp.user_id]?.chars ?? 0);
-    const finishedMs = rp.finished_at ? Date.parse(rp.finished_at) - startAt : isMe && ts.finished ? elapsed : null;
-    return computeStats(
-      { id: rp.user_id, name: rp.name, correctChars: Math.min(chars, total), keystrokes: 0, errors: 0, finishedMs },
-      total,
-      elapsed,
-    );
-  });
+  const charsOf = (id: string, server: number) => (id === userId ? myChars : (live[id]?.chars ?? server));
+  const leaderChars = Math.max(0, ...racePlayers.map((rp) => charsOf(rp.user_id, rp.correct_chars)));
+  const standings = racePlayers.map((rp) =>
+    computeStats(
+      { id: rp.user_id, name: rp.name, correctChars: charsOf(rp.user_id, rp.correct_chars), keystrokes: 0, errors: 0, finishedMs: null },
+      leaderChars,
+      Math.max(1, elapsed),
+    ),
+  );
   const standingsRef = useRef(standings);
   standingsRef.current = standings;
   useEffect(() => {
@@ -171,40 +220,33 @@ export function Race({ state, sendProgress }: Props) {
     // Racers who left the lobby keep a neutral car.
     vehicle: vehicles.get(s.id) ?? vehicleFor({ name: s.name, car_color: '#748782', vehicle: {} }),
     rank: rankOf(s.id),
-    progress: s.progress,
+    progress: s.progress * LEADER_POSITION,
     wpm: s.netWpm,
     errors: s.id === userId ? ts.errors : (live[s.id]?.errors ?? 0),
-    finished: s.finishedMs !== null,
+    finished: timeUp && started,
     isMe: s.id === userId,
   }));
   const myRank = rankOf(userId ?? '');
   const myStats = computeStats(
-    {
-      id: 'me', name: 'me', correctChars: myChars, keystrokes: ts.keystrokes, errors: ts.errors,
-      finishedMs: ts.finished ? (myRow?.finished_at ? Date.parse(myRow.finished_at) - startAt : elapsed) : null,
-    },
-    total,
-    elapsed,
+    { id: 'me', name: 'me', correctChars: myChars, keystrokes: ts.keystrokes, errors: ts.errors, finishedMs: null },
+    leaderChars,
+    Math.max(1, elapsed),
   );
 
   // Sound + race moments for the local racer.
-  const prevMine = useRef({ errors: ts.errors, rank: myRank, finished: ts.finished });
+  const prevMine = useRef({ errors: ts.errors, rank: myRank, timeUp });
   useEffect(() => {
     const p = prevMine.current;
     if (started && isRacer) {
-      if (ts.finished && !p.finished) play('finish');
+      if (timeUp && !p.timeUp) play('finish');
       else if (ts.errors > p.errors) play('mistake');
       else if (myRank > 0 && p.rank > 0 && myRank < p.rank) play('overtake');
     }
-    prevMine.current = { errors: ts.errors, rank: myRank, finished: ts.finished };
-  }, [ts.errors, ts.finished, myRank, started, isRacer, play]);
+    prevMine.current = { errors: ts.errors, rank: myRank, timeUp };
+  }, [ts.errors, timeUp, myRank, started, isRacer, play]);
 
-  const finishTimes = useMemo(
-    () => racePlayers.filter((r) => r.finished_at).map((r) => Date.parse(r.finished_at!)),
-    [racePlayers],
-  );
-  const leader = ranked[0] ? { id: ranked[0].id, name: ranked[0].name } : null;
-  const moment = useRaceMoments({ started, leader, myRank, myFinished: ts.finished, finishTimes });
+  const leader = ranked[0] && leaderChars > 0 ? { id: ranked[0].id, name: ranked[0].name } : null;
+  const moment = useRaceMoments({ started, leader, myRank, timeUp: timeUp && started });
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -219,6 +261,7 @@ export function Race({ state, sendProgress }: Props) {
   const design = modeDesign(race.mode);
   const variant: TypingVariant = race.mode === 'coding' ? 'coding' : race.mode === 'shakespeare' ? 'shakespeare' : 'standard';
   const countdownValue = countdown > 3 ? 'READY' : (String(countdown) as '3' | '2' | '1');
+  const minutes = Math.round(durationMs / 60_000);
 
   return (
     <div className="space-y-4">
@@ -230,11 +273,14 @@ export function Race({ state, sendProgress }: Props) {
             {design.name}
           </h1>
         </div>
-        {isRacer ? <Pill lime>{racePlayers.length} RACERS</Pill> : <Pill>SPECTATING</Pill>}
+        <div className="g-row">
+          <Pill>{minutes} MIN</Pill>
+          {strict && <Pill>ZERO MISTAKES</Pill>}
+          {isRacer ? <Pill lime>{racePlayers.length} RACERS</Pill> : <Pill>SPECTATING</Pill>}
+        </div>
       </div>
 
       {!isRacer && <Banner tone="info">The race is under way. You'll be on the grid for the next one.</Banner>}
-      {isRacer && serverFinished && <Banner tone="success">Your race is complete. Watching the rest of the grid…</Banner>}
 
       {isRacer && (
         <Hud
@@ -243,13 +289,15 @@ export function Race({ state, sendProgress }: Props) {
           wpm={myStats.netWpm}
           accuracy={myStats.accuracy}
           mistakes={ts.errors}
-          elapsedMs={myStats.finishedMs ?? elapsed}
-          progress={myStats.progress}
+          elapsedMs={started ? Math.max(0, endAt - now) : durationMs}
+          timeLabel="TIME LEFT"
+          progress={elapsed / durationMs}
+          progressLabel="Race time used"
         />
       )}
 
       <div className="relative">
-        <Track cars={cars} total={racePlayers.length} started={started} scene={design.scene} />
+        <Track cars={cars} total={racePlayers.length} started={started} scene={design.scene} ruler={RULER} />
         {(!started || elapsed < GO_BANNER_MS) && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
             <CountdownFrame value={started ? 'GO!' : countdownValue} />
@@ -258,8 +306,9 @@ export function Race({ state, sendProgress }: Props) {
       </div>
 
       <Minimap
-        racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress }))}
+        racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * LEADER_POSITION }))}
         localId={userId}
+        endLabel="LEADER"
       />
 
       <div className="min-h-[86px]" aria-live="polite">
@@ -268,11 +317,22 @@ export function Race({ state, sendProgress }: Props) {
 
       {isRacer && (
         <>
-          <TypingPanel ref={inputRef} state={ts} onKeyDown={onKeyDown} variant={variant} waiting={!started || serverFinished} />
-          {ts.finished && (
-            <p className="g-small g-muted">
-              The race closes in at most {Math.max(0, Math.ceil((deadline - now) / 1000))}s.
-            </p>
+          <TypingPanel
+            ref={inputRef}
+            state={ts}
+            onKeyDown={onKeyDown}
+            variant={variant}
+            waiting={!started}
+            doneLabel={timeUp && started ? "TIME'S UP" : undefined}
+          />
+          {timeUp && started ? (
+            <p className="g-small g-muted">Time's up. Locking in the final lines and the official results…</p>
+          ) : (
+            started && (
+              <p className="g-small g-muted">
+                {formatElapsed(Math.max(0, endAt - now))} left. The text keeps going, so type until the clock stops.
+              </p>
+            )
           )}
           {warning && <Banner tone="warning">{warning}</Banner>}
         </>

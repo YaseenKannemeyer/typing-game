@@ -21,6 +21,7 @@ export interface LobbyState {
   players: LobbyPlayer[];
   votes: Vote[];
   race: Race | null;
+  /** The race's continuous text. */
   passage: string | null;
   racePlayers: RacePlayer[];
   live: Record<string, LiveProgress>;
@@ -49,7 +50,7 @@ const initial: LobbyState = {
 };
 
 const RACE_PLAYER_COLUMNS =
-  'user_id, name, words_done, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, rank, net_wpm, gross_wpm, accuracy, flagged, samples, awards';
+  'user_id, name, words_done, locked_chars, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, rank, net_wpm, gross_wpm, accuracy, flagged, samples, awards';
 
 /**
  * Joins a lobby and keeps its state in sync. The database is the source of
@@ -60,7 +61,8 @@ export function useLobby(code: string, name: string) {
   const [state, setState] = useState<LobbyState>(initial);
   const lobbyId = useRef<string | null>(null);
   const channel = useRef<RealtimeChannel | null>(null);
-  const passageCache = useRef(new Map<number, string>());
+  /** Race text by race id (fetched once per race; it can be several KB). */
+  const textCache = useRef(new Map<string, string>());
   const refreshing = useRef<Promise<void> | null>(null);
   const refreshAgain = useRef(false);
 
@@ -73,7 +75,7 @@ export function useLobby(code: string, name: string) {
     const id = lobbyId.current;
     if (!id) return;
     const [lobbyRes, playersRes, votesRes] = await Promise.all([
-      sb.from('lobbies').select('id, code, host_id, status, current_race_id, vote_ends_at, mode').eq('id', id).maybeSingle(),
+      sb.from('lobbies').select('id, code, host_id, status, current_race_id, vote_ends_at, mode, race_seconds, zero_mistakes').eq('id', id).maybeSingle(),
       sb.from('lobby_players').select('user_id, name, car_color, joined_at, streak, vehicle').eq('lobby_id', id).order('joined_at'),
       sb.from('lobby_votes').select('user_id, mode').eq('lobby_id', id),
     ]);
@@ -88,17 +90,17 @@ export function useLobby(code: string, name: string) {
     let passage: string | null = null;
     if (lobby.current_race_id) {
       const [raceRes, rpRes] = await Promise.all([
-        sb.from('races').select('id, passage_id, start_at, first_finish_at, ended_at, status, mode, awarded_at').eq('id', lobby.current_race_id).maybeSingle(),
+        sb.from('races').select('id, passage_id, start_at, end_at, duration_s, zero_mistakes, ended_at, status, mode, awarded_at').eq('id', lobby.current_race_id).maybeSingle(),
         sb.from('race_players').select(RACE_PLAYER_COLUMNS).eq('race_id', lobby.current_race_id),
       ]);
       race = raceRes.data as Race | null;
       racePlayers = (rpRes.data ?? []) as RacePlayer[];
       if (race) {
-        passage = passageCache.current.get(race.passage_id) ?? null;
+        passage = textCache.current.get(race.id) ?? null;
         if (passage === null) {
-          const { data } = await sb.from('passages').select('text').eq('id', race.passage_id).single();
-          passage = (data?.text as string | undefined) ?? null;
-          if (passage) passageCache.current.set(race.passage_id, passage);
+          const { data } = await sb.from('races').select('text').eq('id', race.id).single();
+          passage = (data?.text as string | null | undefined) ?? null;
+          if (passage) textCache.current.set(race.id, passage);
         }
       }
     }

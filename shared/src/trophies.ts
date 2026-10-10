@@ -1,11 +1,10 @@
 import {
   coefficientOfVariation,
-  openingWpm,
   rollingWpms,
   sectionAccuracies,
   stdDev,
-  timeToReach,
   valueAt,
+  wpmUntil,
 } from './samples';
 import { SECTIONS } from './typing';
 import type { PassageMode, PlayerId, RaceResult } from './types';
@@ -15,10 +14,14 @@ import type { PassageMode, PlayerId, RaceResult } from './types';
  * the typing race game". Inputs are server-verified race statistics; awards are
  * computed on the server after the race (supabase/functions/award-trophies).
  *
+ * Races are timed: everyone types continuous text until the clock stops, and
+ * rules that referred to the passage use the race time instead.
+ *
  * Global rules:
- *  - Only players who completed the passage qualify (flagged players never do).
+ *  - Only "finishers" qualify: racers still on the grid when the timer ended
+ *    who typed something (flagged players never do).
  *  - One winner per race trophy. Each trophy applies its own tie-breakers, then
- *    the official finishing order (server completion time, then event order).
+ *    the official order (net WPM, accuracy, fewer mistakes).
  *  - A trophy whose metric cannot be calculated is not awarded.
  *  - Unstoppable is a progression achievement, separate from race trophies.
  */
@@ -53,26 +56,26 @@ export interface TrophyInfo {
 }
 
 export const TROPHIES: Record<TrophyId, TrophyInfo> = {
-  gold: { name: 'Gold Champion', emoji: '🥇', category: 'podium', rule: 'Finish in 1st place based on official race completion time.' },
+  gold: { name: 'Gold Champion', emoji: '🥇', category: 'podium', rule: 'Finish 1st: the highest WPM when the timer ends (ties: accuracy, then fewer mistakes).' },
   silver: { name: 'Silver Runner-Up', emoji: '🥈', category: 'podium', rule: 'Finish in 2nd place.' },
   bronze: { name: 'Bronze Racer', emoji: '🥉', category: 'podium', rule: 'Finish in 3rd place.' },
-  speedDemon: { name: 'Speed Demon', emoji: '🔥', category: 'speed', rule: 'Highest average WPM across the entire passage.' },
+  speedDemon: { name: 'Speed Demon', emoji: '🔥', category: 'speed', rule: 'Highest raw WPM: every keystroke counts, mistakes included.' },
   fastestFingers: { name: 'Fastest Fingers', emoji: '⚡', category: 'speed', rule: 'Highest peak WPM in a rolling 5-second window.' },
   speedOverPower: { name: 'Speed Over Power', emoji: '💨', category: 'speed', rule: `Highest average WPM among finishers with accuracy of at least ${SPEED_OVER_POWER_MIN_ACCURACY}% but below ${SPEED_OVER_POWER_MAX_ACCURACY}%.` },
-  quickStarter: { name: 'Quick Starter', emoji: '🚀', category: 'speed', rule: 'Highest average WPM during the first 20% of the passage.' },
-  perfectionist: { name: 'Perfectionist', emoji: '💎', category: 'accuracy', rule: 'Finish with 100% accuracy and zero incorrect character attempts.' },
+  quickStarter: { name: 'Quick Starter', emoji: '🚀', category: 'speed', rule: 'Highest average WPM during the first 20% of the race time.' },
+  perfectionist: { name: 'Perfectionist', emoji: '💎', category: 'accuracy', rule: 'Race the whole time with 100% accuracy and zero incorrect character attempts. Ties go to the higher WPM.' },
   sharpShooter: { name: 'Sharp Shooter', emoji: '🎯', category: 'accuracy', rule: 'Highest accuracy among finishers who made at least one mistake.' },
-  cleanRun: { name: 'Clean Run', emoji: '✨', category: 'accuracy', rule: 'Complete the passage without backspace or delete and without any incorrect characters.' },
-  steadyHands: { name: 'Steady Hands', emoji: '🤲', category: 'accuracy', rule: 'Lowest variation (standard deviation) in accuracy across ten equal sections of the passage.' },
+  cleanRun: { name: 'Clean Run', emoji: '✨', category: 'accuracy', rule: 'Race the whole time without backspace or delete and without any incorrect characters.' },
+  steadyHands: { name: 'Steady Hands', emoji: '🤲', category: 'accuracy', rule: 'Lowest variation (standard deviation) in accuracy across ten equal slices of the race time.' },
   oopsFactory: { name: 'Oops Factory', emoji: '🙈', category: 'funny', rule: 'Most incorrect character attempts among finishers, including corrected ones.' },
   keyboardChaos: { name: 'Keyboard Chaos', emoji: '🌪️', category: 'funny', rule: `Most mistakes per 100 character attempts, with at least ${KEYBOARD_CHAOS_MIN_ATTEMPTS} attempts.` },
   slowAndSteady: { name: 'Slow and Steady', emoji: '🐢', category: 'funny', rule: 'Lowest average WPM among finishers.' },
-  lastButPersistent: { name: 'Last but Persistent', emoji: '🏳️', category: 'funny', rule: 'Last place among players who completed the passage (at least two must finish).' },
-  comebackKid: { name: 'Comeback Kid', emoji: '📈', category: 'special', rule: 'Most positions gained between reaching 20% of the passage and the final ranking (at least one).' },
+  lastButPersistent: { name: 'Last but Persistent', emoji: '🏳️', category: 'funny', rule: 'Last place among racers still on the grid when the timer ends (at least two).' },
+  comebackKid: { name: 'Comeback Kid', emoji: '📈', category: 'special', rule: 'Most positions gained between 20% of the race time and the final ranking (at least one).' },
   consistency: { name: 'Consistency King/Queen', emoji: '👑', category: 'special', rule: 'Lowest coefficient of variation in rolling 10-second WPM, with at least three windows.' },
   unstoppable: { name: 'Unstoppable', emoji: '🔁', category: 'special', rule: `Complete ${UNSTOPPABLE_STREAK} consecutive races in the same lobby without abandoning or disconnecting. Earned again every ${UNSTOPPABLE_STREAK} races.`, progression: true },
   codeWarrior: { name: 'Code Warrior', emoji: '👨‍💻', category: 'special', rule: 'Highest Coding Mode score: average WPM × accuracy ÷ 100.' },
-  participation: { name: 'Participation Trophy', emoji: '🎗️', category: 'special', rule: 'Complete the race without qualifying for any other trophy.' },
+  participation: { name: 'Participation Trophy', emoji: '🎗️', category: 'special', rule: 'Race to the final whistle without qualifying for any other trophy.' },
 };
 
 export interface Award {
@@ -83,7 +86,8 @@ export interface Award {
 
 export interface TrophyContext {
   mode: PassageMode;
-  passageLength: number;
+  /** Race length (the timer), in ms. */
+  durationMs: number;
 }
 
 const one = (n: number) => n.toFixed(1);
@@ -93,7 +97,6 @@ const ordinal = (n: number) => {
   const v = n % 100;
   return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]!);
 };
-const seconds = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
 
 /** A tie-breaker: larger values win. */
 type Key = (r: RaceResult) => number;
@@ -123,18 +126,10 @@ function pick(
   return scored[0];
 }
 
-/** Each player's position (1-based) among `field` at the moment they first reached `chars`. */
-function positionWhenReached(r: RaceResult, field: readonly RaceResult[], chars: number): number | null {
-  const t = timeToReach(r.samples, chars);
-  if (t === null) return null;
-  const ahead = field.filter((o) => {
-    if (o === r) return false;
-    const c = valueAt(o.samples, t, 1);
-    if (c !== chars) return c > chars;
-    const reached = timeToReach(o.samples, chars);
-    return reached !== null && reached < t;
-  }).length;
-  return ahead + 1;
+/** A player's position (1-based) among `field` by correct characters at `ms`. */
+function positionAt(r: RaceResult, field: readonly RaceResult[], ms: number): number {
+  const mine = valueAt(r.samples, ms, 1);
+  return field.filter((o) => o !== r && valueAt(o.samples, ms, 1) > mine).length + 1;
 }
 
 export function awardTrophies(
@@ -154,17 +149,17 @@ export function awardTrophies(
   // Podium ------------------------------------------------------------------
   (['gold', 'silver', 'bronze'] as const).forEach((trophy, i) => {
     const r = finishers[i];
-    if (r) give(r, trophy, `Finished ${ordinal(i + 1)} in ${seconds(r.finishedMs!)}`);
+    if (r) give(r, trophy, `${ordinal(i + 1)} place · ${one(r.netWpm)} WPM`);
   });
 
   // Speed -------------------------------------------------------------------
-  const demon = pick(finishers, (r) => r.netWpm, speedTies);
-  if (demon) give(demon.r, 'speedDemon', `${one(demon.value)} average WPM`);
+  const demon = pick(finishers, (r) => r.grossWpm, speedTies);
+  if (demon) give(demon.r, 'speedDemon', `${one(demon.value)} raw WPM`);
 
   const fingers = pick(
     finishers,
     (r) => {
-      const windows = rollingWpms(r.samples, r.finishedMs!, PEAK_WINDOW_MS);
+      const windows = rollingWpms(r.samples, ctx.durationMs, PEAK_WINDOW_MS);
       return windows.length ? Math.max(...windows) : null;
     },
     speedTies,
@@ -178,20 +173,21 @@ export function awardTrophies(
   );
   if (sop) give(sop.r, 'speedOverPower', `${one(sop.value)} WPM · ${one(sop.r.accuracy)}% accuracy`);
 
-  const starter = pick(finishers, (r) => openingWpm(r.samples, ctx.passageLength, QUICK_START_FRACTION), speedTies);
+  const opening = ctx.durationMs * QUICK_START_FRACTION;
+  const starter = pick(finishers, (r) => wpmUntil(r.samples, opening), speedTies);
   if (starter) give(starter.r, 'quickStarter', `${one(starter.value)} WPM · first 20%`);
 
   // Accuracy ----------------------------------------------------------------
   const flawless = finishers.filter((r) => r.errors === 0);
-  // Every flawless finisher has 100%: the earliest completion wins.
-  const perfect = pick(flawless, () => 0);
-  if (perfect) give(perfect.r, 'perfectionist', `100% accuracy · 0 mistakes`);
+  // Every flawless finisher has 100%: the higher WPM wins.
+  const perfect = pick(flawless, (r) => r.netWpm);
+  if (perfect) give(perfect.r, 'perfectionist', `100% accuracy · 0 mistakes · ${one(perfect.value)} WPM`);
 
   const sharp = pick(finishers.filter((r) => r.errors > 0), (r) => r.accuracy, [fewerMistakes]);
   if (sharp) give(sharp.r, 'sharpShooter', `${one(sharp.value)}% accuracy · ${plural(sharp.r.errors, 'mistake')}`);
 
-  const clean = pick(flawless.filter((r) => r.deletions === 0), () => 0);
-  if (clean) give(clean.r, 'cleanRun', '0 mistakes · 0 deletions');
+  const clean = pick(flawless.filter((r) => r.deletions === 0), (r) => r.netWpm);
+  if (clean) give(clean.r, 'cleanRun', `0 mistakes · 0 deletions · ${one(clean.value)} WPM`);
 
   const steady = pick(finishers, (r) => {
     const accs = sectionAccuracies(r.sectionKeystrokes, r.sectionErrors, SECTIONS);
@@ -217,14 +213,13 @@ export function awardTrophies(
 
   if (finishers.length >= 2) {
     const last = finishers[finishers.length - 1]!;
-    give(last, 'lastButPersistent', `${ordinal(finishers.length)} of ${finishers.length} finishers`);
+    give(last, 'lastButPersistent', `${ordinal(finishers.length)} of ${finishers.length} at the final whistle`);
   }
 
   // Special -----------------------------------------------------------------
-  const checkpoint = Math.ceil(ctx.passageLength * COMEBACK_CHECKPOINT_FRACTION);
+  const checkpoint = ctx.durationMs * COMEBACK_CHECKPOINT_FRACTION;
   const comeback = pick(finishers, (r) => {
-    const start = positionWhenReached(r, racing, checkpoint);
-    if (start === null) return null;
+    const start = positionAt(r, racing, checkpoint);
     const gained = start - (racing.indexOf(r) + 1);
     return gained >= 1 ? gained : null;
   });
@@ -234,7 +229,7 @@ export function awardTrophies(
   }
 
   const consistent = pick(finishers, (r) => {
-    const windows = rollingWpms(r.samples, r.finishedMs!, CONSISTENCY_WINDOW_MS);
+    const windows = rollingWpms(r.samples, ctx.durationMs, CONSISTENCY_WINDOW_MS);
     if (windows.length < MIN_CONSISTENCY_WINDOWS) return null;
     const cv = coefficientOfVariation(windows);
     return cv === null ? null : -cv;
@@ -248,7 +243,7 @@ export function awardTrophies(
 
   // Participation: any finisher without a race trophy.
   for (const r of finishers) {
-    if (!awards.has(r.id)) give(r, 'participation', 'Passage completed');
+    if (!awards.has(r.id)) give(r, 'participation', 'Raced to the final whistle');
   }
 
   // Progression achievement, independent of race trophies.

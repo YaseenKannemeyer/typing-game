@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
-import { HowTo, InviteLink, RoomCode, Roster, type RosterPlayer } from '../components/lobby/Lobby';
+import { HowTo, InviteLink, RaceSettings, RoomCode, Roster, type RosterPlayer } from '../components/lobby/Lobby';
 import { TrophyRoom } from '../components/trophies/TrophyRoom';
 import { Button, Card, ErrorText, PageTitle, Pill, SectionTitle } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
@@ -25,6 +25,7 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   const { lobby, players, userId } = state;
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [garageOpen, setGarageOpen] = useState(false);
   const garageRef = useRef<HTMLElement>(null);
   const roster = useMemo(() => rosterFrom(state), [state]);
@@ -43,6 +44,18 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
       setError(errorMessage(e));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const changeSettings = async (seconds: number, zeroMistakes: boolean) => {
+    setSaving(true);
+    setError(null);
+    try {
+      await api.setRaceSettings(lobby.id, seconds, zeroMistakes);
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -76,6 +89,17 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
             <div className="g-divider" />
             <p className="g-muted mb-4">Better with your crew. Share your invitation and save them a spot.</p>
             <InviteLink code={lobby.code} />
+          </Card>
+          <Card>
+            <div className="g-eyebrow">RACE RULES</div>
+            <h2 className="g-heading mb-4">Type until the clock stops.</h2>
+            <RaceSettings
+              seconds={lobby.race_seconds}
+              zeroMistakes={lobby.zero_mistakes}
+              editable={isHost}
+              busy={saving}
+              onChange={changeSettings}
+            />
           </Card>
           <Card>
             <div className="g-eyebrow">YOUR NEXT MOVE</div>
@@ -114,7 +138,7 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
       )}
 
       <section className="g-panel g-how-panel">
-        <div className="g-eyebrow">THREE STEPS TO THE FINISH</div>
+        <div className="g-eyebrow">HOW A TIMED RACE WORKS</div>
         <HowTo />
       </section>
 

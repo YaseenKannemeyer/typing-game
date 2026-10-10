@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { raceResultsFromRows, TROPHIES, type Award, type RaceResult } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
-import { Confetti, formatRaceTime, Podium, ResultsTable, type ResultRowView } from '../components/results/Results';
+import { Confetti, Podium, ResultsTable, type ResultRowView } from '../components/results/Results';
 import { useAchievements } from '../components/achievements/Achievements';
 import { AwardCard } from '../components/trophies/AwardCard';
 import { Button, Card, ErrorText, PageTitle, Pill, Skeleton } from '../components/ui';
@@ -11,7 +11,7 @@ import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
 
 export function Results({ state }: { state: LobbyState }) {
-  const { race, passage, racePlayers, players, lobby, userId } = state;
+  const { race, racePlayers, players, lobby, userId } = state;
   const { play } = useSound();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -19,13 +19,12 @@ export function Results({ state }: { state: LobbyState }) {
   // Ranks and stats are the server's; trophies were computed and stored by the
   // award-trophies Edge Function. The browser only displays them.
   const results = useMemo(() => {
-    if (!race || !passage) return [] as RaceResult[];
+    if (!race) return [] as RaceResult[];
     return raceResultsFromRows(racePlayers, {
-      passage,
       startAt: race.start_at,
       streaks: new Map(players.map((p) => [p.user_id, p.streak])),
     });
-  }, [race, passage, racePlayers, players]);
+  }, [race, racePlayers, players]);
   const awards = useMemo(
     () => new Map(racePlayers.filter((r) => r.awards.length).map((r) => [r.user_id, r.awards] as const)),
     [racePlayers],
@@ -55,7 +54,7 @@ export function Results({ state }: { state: LobbyState }) {
       wpm: status === 'dnf' ? null : r.netWpm,
       accuracy: status === 'dnf' ? null : r.accuracy,
       mistakes: status === 'dnf' ? null : r.errors,
-      time: finished ? formatRaceTime(r.finishedMs!) : null,
+      chars: status === 'dnf' ? null : r.correctChars,
       you: r.id === userId,
     };
   });
@@ -124,7 +123,7 @@ export function Results({ state }: { state: LobbyState }) {
       <PageTitle
         eyebrow={`${design.name} · Final results`}
         title="Every finish has a story."
-        lead="Official order, times and awards come from the server."
+        lead="Highest WPM when the clock stopped wins. Official order and awards come from the server."
       />
 
       <Card className="relative overflow-hidden">
@@ -134,7 +133,7 @@ export function Results({ state }: { state: LobbyState }) {
             <Confetti />
           </>
         ) : (
-          <p className="g-muted py-8 text-center">Nobody crossed the line this time.</p>
+          <p className="g-muted py-8 text-center">Nobody was still racing when the clock stopped.</p>
         )}
       </Card>
 
@@ -147,7 +146,7 @@ export function Results({ state }: { state: LobbyState }) {
           {!awarded ? (
             <Skeleton />
           ) : mine.race.length + mine.progression.length === 0 ? (
-            <p className="g-muted">{me.finishedMs === null ? 'Trophies are for finishers. Next race is yours.' : 'No trophies this time.'}</p>
+            <p className="g-muted">{me.finishedMs === null ? 'Trophies are for racers still on the grid when the clock stops. Next race is yours.' : 'No trophies this time.'}</p>
           ) : (
             <>
               <div className="g-grid-2">

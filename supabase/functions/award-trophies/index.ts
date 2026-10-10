@@ -12,9 +12,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import {
   awardTrophies,
-  passageLength,
   raceResultsFromRows,
-  splitWords,
   type Award,
   type PassageMode,
   type RacePlayerRow,
@@ -59,32 +57,29 @@ Deno.serve(async (req) => {
   const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
   const { data: race, error: raceError } = await admin
     .from('races')
-    .select('id, lobby_id, passage_id, start_at, status, mode, awarded_at')
+    .select('id, lobby_id, start_at, duration_s, status, mode, awarded_at')
     .eq('id', raceId)
     .single();
   if (raceError || !race) return json({ error: 'race_not_found' }, 404);
   if (race.status !== 'finished') return json({ error: 'race_not_finished' }, 409);
   if (race.awarded_at) return json({ ok: true, stored: false });
 
-  const [passageRes, rowsRes, membersRes] = await Promise.all([
-    admin.from('passages').select('text').eq('id', race.passage_id).single(),
+  const [rowsRes, membersRes] = await Promise.all([
     admin
       .from('race_players')
       .select('user_id, name, rank, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, net_wpm, gross_wpm, accuracy, flagged, samples')
       .eq('race_id', raceId),
     admin.from('lobby_players').select('user_id, streak').eq('lobby_id', race.lobby_id),
   ]);
-  if (passageRes.error || rowsRes.error || membersRes.error) return json({ error: 'load_failed' }, 500);
+  if (rowsRes.error || membersRes.error) return json({ error: 'load_failed' }, 500);
 
-  const passage = passageRes.data.text as string;
   const results = raceResultsFromRows(rowsRes.data as RacePlayerRow[], {
-    passage,
     startAt: race.start_at,
     streaks: new Map((membersRes.data ?? []).map((m) => [m.user_id as string, m.streak as number])),
   });
   const awards = awardTrophies(results, {
     mode: race.mode as PassageMode,
-    passageLength: passageLength(splitWords(passage)),
+    durationMs: ((race.duration_s as number | null) ?? 60) * 1000,
   });
 
   const payload: Record<string, Award[]> = Object.fromEntries(awards);

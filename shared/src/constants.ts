@@ -1,9 +1,13 @@
 export const MAX_PLAYERS = 15;
 export const MIN_PLAYERS_FOR_RACE = 2;
 export const VISIBLE_CARS = 4;
-/** After the first finisher, others get this long before the race is closed. */
-export const FINISH_GRACE_MS = 60_000;
-export const RACE_HARD_CAP_MS = 180_000;
+/** Race lengths the host can pick, in seconds (1–5 minutes). */
+export const RACE_DURATIONS = [60, 120, 180, 240, 300] as const;
+export const DEFAULT_RACE_SECONDS = 60;
+/** After the timer ends, clients wait this long for final lines before closing the race. */
+export const RACE_END_GRACE_MS = 2_500;
+/** Target width of one line of race text, in characters. */
+export const LINE_CHARS = 44;
 export const VOTE_DURATION_MS = 20_000;
 export const PROGRESS_BROADCAST_MS = 500;
 export const PROGRESS_SUBMIT_MS = 1_000;

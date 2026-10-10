@@ -47,7 +47,7 @@ export function Home() {
       <PageTitle
         eyebrow={`${MAX_PLAYERS} racers. One finish line.`}
         title="Type it. Race it."
-        lead={`Race up to ${MAX_PLAYERS} friends in real time. Same passage, same countdown. Only your typing decides who wins. No account needed.`}
+        lead={`Race up to ${MAX_PLAYERS} friends in real time. Same text, same clock: 1 to 5 minutes of non-stop typing. Highest WPM wins. No account needed.`}
       />
       <div className="garage-card flex gap-2 overflow-hidden" aria-hidden>
         {SHOWROOM.map((v) => (

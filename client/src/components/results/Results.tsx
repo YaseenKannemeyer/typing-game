@@ -17,7 +17,8 @@ export interface ResultRowView {
   wpm: number | null;
   accuracy: number | null;
   mistakes: number | null;
-  time: string | null;
+  /** Correct characters typed before the timer ran out. */
+  chars: number | null;
   you: boolean;
 }
 
@@ -47,7 +48,7 @@ export function Podium({ rows }: { rows: ResultRowView[] }) {
               {p.name}
               {p.you && <small> YOU</small>}
             </strong>
-            <span className="g-podium-time">{p.time}</span>
+            <span className="g-podium-time">{p.wpm === null ? '—' : `${Math.round(p.wpm)} WPM`}</span>
             <div className="g-podium-car">
               <Car vehicle={p.vehicle} animation={i === 0 ? 'winner' : 'finish'} />
             </div>
@@ -61,7 +62,7 @@ export function Podium({ rows }: { rows: ResultRowView[] }) {
   );
 }
 
-const STATUS = { finished: 'Finished', dnf: 'DNF', flagged: 'Under review' } as const;
+const STATUS = { finished: 'Finished', dnf: 'Left early', flagged: 'Under review' } as const;
 
 export function ResultsTable({ rows }: { rows: ResultRowView[] }) {
   return (
@@ -75,7 +76,7 @@ export function ResultsTable({ rows }: { rows: ResultRowView[] }) {
             <th scope="col">WPM</th>
             <th scope="col">Accuracy</th>
             <th scope="col">Mistakes</th>
-            <th scope="col">Time</th>
+            <th scope="col">Typed</th>
             <th scope="col">Status</th>
           </tr>
         </thead>
@@ -97,7 +98,7 @@ export function ResultsTable({ rows }: { rows: ResultRowView[] }) {
               <td data-label="WPM">{p.wpm === null ? '—' : Math.round(p.wpm)}</td>
               <td data-label="Accuracy">{p.accuracy === null ? '—' : `${p.accuracy.toFixed(1)}%`}</td>
               <td data-label="Mistakes">{p.mistakes ?? '—'}</td>
-              <td data-label="Time">{p.time ?? '—'}</td>
+              <td data-label="Typed">{p.chars === null ? '—' : `${p.chars.toLocaleString()} chars`}</td>
               <td data-label="Status">
                 <span className="g-pill">{STATUS[p.status]}</span>
               </td>

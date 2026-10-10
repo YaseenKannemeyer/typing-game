@@ -23,12 +23,15 @@ interface HudProps {
   wpm: number;
   accuracy: number;
   mistakes: number;
+  /** Shown in the time slot (elapsed in practice, time left in a timed race). */
   elapsedMs: number;
+  timeLabel?: string;
   /** 0..1 */
   progress: number;
+  progressLabel?: string;
 }
 
-export function Hud({ position, total, wpm, accuracy, mistakes, elapsedMs, progress }: HudProps) {
+export function Hud({ position, total, wpm, accuracy, mistakes, elapsedMs, timeLabel = 'TIME', progress, progressLabel = 'Passage progress' }: HudProps) {
   const p = Math.min(1, Math.max(0, progress));
   return (
     <div>
@@ -61,11 +64,11 @@ export function Hud({ position, total, wpm, accuracy, mistakes, elapsedMs, progr
           <strong>{mistakes}</strong>
         </div>
         <div className="g-stat">
-          <span>TIME</span>
+          <span>{timeLabel}</span>
           <strong>{formatElapsed(elapsedMs)}</strong>
         </div>
       </div>
-      <div className="g-progress" role="progressbar" aria-label="Passage progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p * 100)}>
+      <div className="g-progress" role="progressbar" aria-label={progressLabel} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p * 100)}>
         <span style={{ width: `${p * 100}%` }} />
       </div>
     </div>
@@ -80,7 +83,7 @@ export interface MinimapRacer {
 }
 
 /** Every racer on one strip (display only; ranking comes from the race state). */
-export function Minimap({ racers, localId }: { racers: MinimapRacer[]; localId: string | null }) {
+export function Minimap({ racers, localId, endLabel = 'FINISH' }: { racers: MinimapRacer[]; localId: string | null; endLabel?: string }) {
   return (
     <div className="g-mini-wrap">
       <div className="g-between">
@@ -103,7 +106,7 @@ export function Minimap({ racers, localId }: { racers: MinimapRacer[]; localId: 
             </span>
           );
         })}
-        <span className="g-mini-end">FINISH</span>
+        <span className="g-mini-end">{endLabel}</span>
       </div>
     </div>
   );

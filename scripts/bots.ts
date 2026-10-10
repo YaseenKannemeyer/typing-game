@@ -3,10 +3,12 @@
  *
  *   npm run bots -- [count=4]
  *
- * Bots create/join a lobby, pick car colours, vote on a mode, race at
- * different speeds, and one cheater tries to submit the whole passage
- * instantly. Verifies server validation, realtime events, that SQL results
- * match the shared TS ranking, and that every finisher earns a trophy.
+ * Bots create/join a lobby, pick car colours, set the race rules, vote on a
+ * mode and race for one timed minute at different speeds and mistake rates
+ * (locking each line like Enter does), while one cheater tries forged and
+ * impossibly fast submissions. Verifies server validation, realtime events,
+ * that SQL results match the shared TS ranking, and that every racer still
+ * on the grid at the final whistle earns a trophy.
  *
  * Each run creates `count` anonymous users; Supabase's default limit is
  * 30 anonymous sign-ins per hour per IP (Auth → Rate Limits).
@@ -21,7 +23,7 @@ import {
   type Award,
   type RacePlayerRow,
   computeStats,
-  passageLength,
+  layoutLines,
   rankPlayers,
   splitWords,
   TROPHIES,
@@ -81,28 +83,55 @@ async function rpcError(bot: Bot, fn: string, args: object): Promise<string | nu
   return error?.message ?? null;
 }
 
+const RACE_SECONDS = 60;
+
+type Counters = {
+  p_keystrokes: number;
+  p_errors: number;
+  p_deletions: number;
+  p_section_keystrokes: number[];
+  p_section_errors: number[];
+};
+const ZERO: Counters = {
+  p_keystrokes: 0, p_errors: 0, p_deletions: 0,
+  p_section_keystrokes: Array(SECTIONS).fill(0), p_section_errors: Array(SECTIONS).fill(0),
+};
+
+/** Deterministic: does bot `b` mistype word `i`? (one wrong letter, then moves on) */
+const isWrong = (b: Bot, i: number) => ((i * 7919 + b.wpm * 31) % 1000) / 1000 < b.errorRate * 4;
+
+/** What bot `b` typed for words [from, upto). */
+function typedAs(b: Bot, words: string[], from: number, upto: number): string[] {
+  return words.slice(from, upto).map((w, k) => (isWrong(b, from + k) ? (w[0] === '#' ? '%' : '#') + w.slice(1) : w));
+}
+
 /**
- * Cumulative counters as a real typist would report them after `chars` correct
- * characters at a given mistake rate. Each mistake is one wrong attempt at the
- * expected position, then deleted, so per-section counts only ever grow.
+ * When each word is finished (letters + separator) at the bot's speed, with
+ * cumulative counters as the typing engine would report them: a mistyped word
+ * is one wrong attempt; keystrokes go to the time slice they happen in.
  */
-function counters(chars: number, errorRate: number, len: number) {
+function plan(b: Bot, words: string[], durationMs: number): { at: number; counters: Counters }[] {
+  const perMs = (b.wpm * 5) / 60_000;
   const sk = Array<number>(SECTIONS).fill(0);
   const se = Array<number>(SECTIONS).fill(0);
-  let errors = 0;
-  for (let p = 0; p < chars; p++) {
-    const sec = sectionOf(p, len);
-    sk[sec]!++;
-    if (Math.floor((p + 1) * errorRate) > Math.floor(p * errorRate)) {
-      sk[sec]!++;
+  const out: { at: number; counters: Counters }[] = [];
+  let t = 0;
+  let k = 0;
+  let e = 0;
+  for (let i = 0; i < words.length; i++) {
+    const len = words[i]!.length + 1;
+    t += len / perMs;
+    if (t > durationMs) break;
+    const sec = sectionOf(t, durationMs);
+    k += len;
+    sk[sec]! += len;
+    if (isWrong(b, i)) {
+      e++;
       se[sec]!++;
-      errors++;
     }
+    out.push({ at: t, counters: { p_keystrokes: k, p_errors: e, p_deletions: 0, p_section_keystrokes: [...sk], p_section_errors: [...se] } });
   }
-  return {
-    p_keystrokes: chars + errors, p_errors: errors, p_deletions: errors,
-    p_section_keystrokes: sk, p_section_errors: se,
-  };
+  return out;
 }
 
 async function main() {
@@ -131,7 +160,7 @@ async function main() {
   const events: string[] = [];
   await host.sb.realtime.setAuth();
   const channel = host.sb.channel(`lobby:${code}`, { config: { private: true } });
-  for (const ev of ['vote:result', 'race:start', 'player:finished', 'race:end', 'race:awards']) {
+  for (const ev of ['vote:result', 'race:start', 'race:end', 'race:awards']) {
     channel.on('broadcast', { event: ev }, () => events.push(ev));
   }
   await new Promise<void>((resolve, reject) => {
@@ -161,6 +190,16 @@ async function main() {
     'garage build is sanitised server-side (unknown keys dropped)',
   );
 
+  // Race rules -------------------------------------------------------------
+  const settings = (b: Bot, seconds: number, zero: boolean) =>
+    rpcError(b, 'set_race_settings', { p_lobby_id: lobbyId, p_seconds: seconds, p_zero_mistakes: zero });
+  check((await settings(second, 120, true)) === 'not_host', 'only the host can change the race rules');
+  check((await settings(host, 90, false)) === 'invalid_duration', 'race length must be 1–5 whole minutes');
+  check((await settings(host, 300, true)) === null, 'host can set 5 minutes with zero-mistake mode');
+  const { data: rules } = await second.sb.from('lobbies').select('race_seconds, zero_mistakes').eq('id', lobbyId).single();
+  check(rules?.race_seconds === 300 && rules.zero_mistakes === true, 'members see the host\'s rules');
+  await settings(host, RACE_SECONDS, false);
+
   // Voting -----------------------------------------------------------------
   check((await rpcError(second, 'start_voting', { p_lobby_id: lobbyId })) === 'not_host', 'only host can start voting');
   await rpc(host, 'start_voting', { p_lobby_id: lobbyId });
@@ -180,85 +219,122 @@ async function main() {
   check(lobbyRow?.status === 'racing', 'closing the vote starts the race');
   const raceId = lobbyRow!.current_race_id as string;
   check((await rpcError(second, 'set_vehicle', { p_lobby_id: lobbyId, p_vehicle: {} })) === 'race_in_progress', 'garage locked during the race');
-  const { data: race } = await second.sb.from('races').select('start_at, passage_id, mode').eq('id', raceId).single();
+  const { data: race } = await second.sb.from('races').select('start_at, end_at, duration_s, zero_mistakes, text, mode').eq('id', raceId).single();
   check(race?.mode === winner, `race uses the winning mode (${race?.mode})`);
-  const { data: passage } = await second.sb.from('passages').select('text').eq('id', race!.passage_id).single();
-  check(!!passage?.text, 'racer can read the race passage');
-  const words = splitWords(passage!.text);
+  check(race?.duration_s === RACE_SECONDS && !race?.zero_mistakes, 'race uses the host\'s settings (1 min, mistakes allowed)');
+  check(!!race?.text && race.text.length >= RACE_SECONDS * 25, `race text is long enough that nobody runs out (${race?.text?.length} chars)`);
+  const words = splitWords(race!.text);
+  const lines = layoutLines(words);
   const startAt = Date.parse(race!.start_at);
-  console.log(`Race starts in ${((startAt - Date.now()) / 1000).toFixed(1)}s: "${passage!.text.slice(0, 50)}…"`);
+  const endAt = Date.parse(race!.end_at);
+  const durationMs = race!.duration_s * 1000;
+  check(endAt - startAt === durationMs, 'race ends exactly when the timer runs out');
+  console.log(`Race starts in ${((startAt - Date.now()) / 1000).toFixed(1)}s and lasts ${race!.duration_s}s: "${race!.text.slice(0, 50)}…"`);
 
-  const len = passageLength(words);
-  const firstWord = counters(words[0]!.length + 1, 0, len);
-  const early = await rpc<{ reason?: string }>(second, 'submit_progress', {
-    p_race_id: raceId, p_from_word: 0, p_words: [words[0]], ...firstWord,
+  const early = await rpc<{ reason?: string }>(second, 'submit_typing', {
+    p_race_id: raceId, p_from_word: 0, p_words: [words[0]], p_lock: false, ...ZERO,
   });
   check(early.reason === 'not_started', 'typing before GO rejected');
 
   await sleep(Math.max(0, startAt - Date.now()) + 300);
+  check((await rpc<boolean>(second, 'finalize_race', { p_race_id: raceId })) === false, 'race cannot be closed before the timer ends');
 
   await Promise.all(bots.map((b) => (b.cheater ? cheat(b) : race_(b))));
 
   async function cheat(b: Bot) {
     await sleep(1000);
-    const forged = await rpc<{ reason?: string }>(b, 'submit_progress', {
-      p_race_id: raceId, p_from_word: 0, p_words: [words[0]],
-      ...firstWord, p_section_keystrokes: [999, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    const base = { p_race_id: raceId, p_lock: false };
+    const zeroCounters = ZERO;
+    const forged = await rpc<{ reason?: string }>(b, 'submit_typing', {
+      ...base, p_from_word: 0, p_words: [words[0]], ...zeroCounters, p_keystrokes: 50, p_section_keystrokes: [999, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     });
     check(forged.reason === 'bad_counters', `${b.name} (cheater) section counts that don't add up rejected`);
-    const res = await rpc<{ ok: boolean; reason?: string }>(b, 'submit_progress', {
-      p_race_id: raceId, p_from_word: 0, p_words: words, ...counters(len, 0, len),
+    const free = await rpc<{ reason?: string }>(b, 'submit_typing', {
+      ...base, p_from_word: 0, p_words: words.slice(0, 5), ...zeroCounters,
     });
-    check(res.reason === 'too_fast', `${b.name} (cheater) instant finish rejected`);
-    const skip = await rpc<{ reason?: string }>(b, 'submit_progress', {
-      p_race_id: raceId, p_from_word: 3, p_words: [words[3]], ...counters(len, 0, len),
+    check(free.reason === 'bad_counters', `${b.name} (cheater) words without keystrokes rejected`);
+    const spaced = await rpc<{ reason?: string }>(b, 'submit_typing', {
+      ...base, p_from_word: 0, p_words: ['two words'], ...zeroCounters,
     });
-    check(skip.reason === 'out_of_sync', `${b.name} (cheater) word skip rejected`);
-    const wrong = await rpc<{ reason?: string }>(b, 'submit_progress', {
-      p_race_id: raceId, p_from_word: 0, p_words: ['wrong'], ...counters(len, 0, len),
+    check(spaced.reason === 'mismatch', `${b.name} (cheater) malformed word rejected`);
+    const skip = await rpc<{ reason?: string }>(b, 'submit_typing', {
+      ...base, p_from_word: 3, p_words: [words[3]], ...zeroCounters,
     });
-    check(wrong.reason === 'mismatch', `${b.name} (cheater) wrong word rejected`);
+    check(skip.reason === 'out_of_sync', `${b.name} (cheater) jumping ahead rejected`);
+    const n = lines[0]!.end;
+    const chars = words.slice(0, n).join(' ').length + 1;
+    const res = await rpc<{ reason?: string }>(b, 'submit_typing', {
+      ...base, p_lock: true, p_from_word: 0, p_words: words.slice(0, n),
+      p_keystrokes: chars * 20, p_errors: 0, p_deletions: 0,
+      p_section_keystrokes: [chars * 20, 0, 0, 0, 0, 0, 0, 0, 0, 0], p_section_errors: Array(SECTIONS).fill(0),
+    });
+    // A whole line in about a second is plausible; keep going until it isn't.
+    let flagged = res.reason === 'too_fast';
+    for (let i = 1; i < 6 && !flagged; i++) {
+      const from = lines[i]!.start;
+      const upto = lines[i + 3]!.end;
+      const total = words.slice(0, upto).join(' ').length + 1;
+      const r = await rpc<{ reason?: string }>(b, 'submit_typing', {
+        ...base, p_lock: true, p_from_word: from, p_words: words.slice(from, upto),
+        p_keystrokes: total * 20, p_errors: 0, p_deletions: 0,
+        p_section_keystrokes: [total * 20, 0, 0, 0, 0, 0, 0, 0, 0, 0], p_section_errors: Array(SECTIONS).fill(0),
+      });
+      flagged = r.reason === 'too_fast';
+      if (r.reason && !flagged) break;
+    }
+    check(flagged, `${b.name} (cheater) impossible speed rejected and flagged`);
     await rpc(b, 'leave_lobby', { p_lobby_id: lobbyId });
   }
 
   async function race_(b: Bot) {
-    const charsPerMs = (b.wpm * 5) / 60_000;
-    const raceStart = Date.now();
-    let done = 0;
-    const ends: number[] = [];
-    words.forEach((w, i) => ends.push((ends[i - 1] ?? 0) + w.length + (i < words.length - 1 ? 1 : 0)));
-    while (done < words.length) {
-      await sleep(1000);
-      const typed = (Date.now() - raceStart) * charsPerMs;
-      let target = done;
-      while (target < words.length && ends[target]! <= typed) target++;
-      if (target === done) continue;
-      const chars = ends[target - 1]!;
-      const res = await rpc<{ ok: boolean; reason?: string; words_done: number }>(b, 'submit_progress', {
-        p_race_id: raceId, p_from_word: done, p_words: words.slice(done, target),
-        ...counters(chars, b.errorRate, len),
+    const steps = plan(b, words, durationMs);
+    let done = 0; // words locked on the server
+    const send = async (from: number, upto: number, lock: boolean, at: Counters) => {
+      const res = await rpc<{ ok: boolean; reason?: string; words_done: number }>(b, 'submit_typing', {
+        p_race_id: raceId, p_from_word: from, p_words: typedAs(b, words, from, upto), p_lock: lock, ...at,
       });
-      if (!res.ok) {
-        check(false, `${b.name} submit rejected: ${res.reason}`);
-        return;
-      }
+      if (!res.ok) throw new Error(`${b.name} submit rejected: ${res.reason}`);
       done = res.words_done;
+    };
+    try {
+      for (;;) {
+        await sleep(1000);
+        const t = Math.min(durationMs, Date.now() - startAt);
+        const final = t >= durationMs;
+        const typed = steps.filter((s) => s.at <= t).length; // words finished so far
+        const at = steps[typed - 1]?.counters ?? ZERO;
+        // Lock every line that is fully typed, in order (Enter at the end of each).
+        let line = lines.findIndex((l) => l.start === done);
+        while (lines[line] && lines[line]!.end <= typed) {
+          await send(done, lines[line]!.end, true, at);
+          line++;
+        }
+        const end = Math.min(typed, lines[line]?.end ?? typed);
+        if (final) {
+          if (end > done) await send(done, end, true, at);
+          break;
+        }
+        if (end > done) await send(done, end, false, at);
+      }
+      console.log(`   ${b.name} raced to the final whistle (${b.wpm} wpm target, ${done} words locked)`);
+    } catch (e) {
+      check(false, (e as Error).message);
     }
-    console.log(`   ${b.name} finished (${b.wpm} wpm target)`);
   }
 
   // Results ---------------------------------------------------------------
+  await sleep(Math.max(0, endAt + 2600 - Date.now()));
+  await rpc(host, 'finalize_race', { p_race_id: raceId });
   let ended = false;
   for (let i = 0; i < 20 && !ended; i++) {
     const { data } = await second.sb.from('races').select('status').eq('id', raceId).single();
     ended = data?.status === 'finished';
     if (!ended) await sleep(500);
   }
-  check(ended, 'race auto-finalized when all remaining racers finished');
+  check(ended, 'race finalized when the timer ran out');
   await sleep(1000);
   check(events.includes('vote:result'), 'realtime: vote:result received');
   check(events.includes('race:start'), 'realtime: race:start received');
-  check(events.filter((e) => e === 'player:finished').length === count - 1, 'realtime: player:finished for each finisher');
   check(events.includes('race:end'), 'realtime: race:end received');
 
   const select = 'user_id, name, rank, net_wpm, gross_wpm, accuracy, errors, keystrokes, correct_chars, finished_at, flagged, samples';
@@ -270,8 +346,10 @@ async function main() {
   check(views.every((v) => JSON.stringify(v) === JSON.stringify(rows)), 'every racer sees identical results');
   check(rows.find((r) => r.name === bots.at(-1)!.name)?.flagged === true, 'cheater flagged');
   check(rows.filter((r) => r.finished_at).every((r) => (r.samples as Sample[]).length > 0), 'server recorded samples for finishers');
+  check(rows.filter((r) => !r.flagged).every((r) => r.finished_at === race!.end_at || Date.parse(r.finished_at) === endAt), 'everyone still racing at the final whistle is a finisher');
+  check(rows.find((r) => r.flagged)?.finished_at === null, 'the cheater who left is not a finisher');
 
-  const { data: finalRace } = await second.sb.from('races').select('start_at, ended_at').eq('id', raceId).single();
+  const { data: finalRace } = await second.sb.from('races').select('start_at').eq('id', raceId).single();
   const raceStartMs = Date.parse(finalRace!.start_at);
   const ts = rankPlayers(
     rows.map((r) =>
@@ -280,8 +358,8 @@ async function main() {
           id: r.user_id, name: r.name, correctChars: r.correct_chars, keystrokes: r.keystrokes,
           errors: r.errors, finishedMs: r.finished_at ? Date.parse(r.finished_at) - raceStartMs : null,
         } satisfies PlayerProgress,
-        len,
-        Date.parse(finalRace!.ended_at) - raceStartMs,
+        1,
+        durationMs,
       ),
     ),
   );
@@ -307,9 +385,9 @@ async function main() {
   const { data: stored } = await second.sb.from('race_players').select(fullSelect).eq('race_id', raceId);
   const storedAwards = new Map((stored ?? []).map((r) => [r.user_id as string, r.awards as Award[]]));
   const results: RaceResult[] = raceResultsFromRows(stored as RacePlayerRow[], {
-    passage: passage!.text, startAt: finalRace!.start_at, streaks: streakOf,
+    startAt: finalRace!.start_at, streaks: streakOf,
   });
-  const awards = awardTrophies(results, { mode: race!.mode, passageLength: len });
+  const awards = awardTrophies(results, { mode: race!.mode, durationMs });
   // Compare values, not JSON text: Postgres jsonb stores object keys in its own order.
   const canon = (list: Award[] = []) => list.map((a) => `${a.trophy}|${a.reason}`).join('\n');
   const mismatched = rows.filter((r) => canon(storedAwards.get(r.user_id)) !== canon(awards.get(r.user_id)));

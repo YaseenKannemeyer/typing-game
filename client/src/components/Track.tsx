@@ -27,21 +27,23 @@ interface Props {
   total: number;
   started: boolean;
   scene: SceneId;
+  /** Five ruler labels, start to finish. */
+  ruler?: readonly string[];
 }
 
+const RULER = ['START', '25%', '50%', '75%', 'FINISH'] as const;
+
 /** 06-track: scenery, ruler, four keyed lanes and the animated finish flag. */
-export function Track({ cars, total, started, scene }: Props) {
+export function Track({ cars, total, started, scene, ruler = RULER }: Props) {
   return (
     <div className="g-track" aria-label={`Race track, ${total} racers`}>
       <div className="g-track-scenery">
         <TrustedSvg markup={environmentSvg(scene)} />
       </div>
       <div className="g-track-ruler" aria-hidden="true">
-        <span>START</span>
-        <span>25%</span>
-        <span>50%</span>
-        <span>75%</span>
-        <span>FINISH</span>
+        {ruler.map((label, i) => (
+          <span key={i}>{label}</span>
+        ))}
       </div>
       <div className="g-track-lanes">
         {cars.map((car) => (

@@ -28,12 +28,12 @@ export function CountdownFrame({ value }: { value: 'READY' | '3' | '2' | '1' | '
     <div className="g-countdown-frame" aria-live="assertive">
       <Gantry phase={phase} lit={lit} />
       <strong key={value} className="g-countdown-number">{value}</strong>
-      <span className="g-eyebrow">{value === 'GO!' ? 'MAKE EVERY KEY COUNT' : 'EYES ON THE PASSAGE'}</span>
+      <span className="g-eyebrow">{value === 'GO!' ? 'MAKE EVERY KEY COUNT' : 'EYES ON THE TEXT'}</span>
     </div>
   );
 }
 
-export type MomentKind = 'finish' | 'leader' | 'gain' | 'photo';
+export type MomentKind = 'finish' | 'timeup' | 'leader' | 'gain' | 'photo';
 
 export interface Moment {
   kind: MomentKind;
@@ -45,6 +45,7 @@ export function MomentBanner({ moment }: { moment: Moment }) {
   const gain = Math.max(1, Math.round(moment.gain ?? 1));
   const variants: Record<MomentKind, [IconName, string, string]> = {
     finish: ['flag', 'FINISH!', 'You crossed the line.'],
+    timeup: ['flag', "TIME'S UP!", 'Pens down. Your last line is locked in.'],
     leader: ['crown', 'NEW LEADER', moment.name ? `${moment.name} takes the lead.` : 'The front of the pack has changed.'],
     gain: ['arrow', `+${gain} ${gain === 1 ? 'POSITION' : 'POSITIONS'}`, 'Keep that rhythm.'],
     photo: ['clock', 'PHOTO FINISH', 'Official server order decides the result.'],

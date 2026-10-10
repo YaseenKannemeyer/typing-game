@@ -57,6 +57,11 @@ export function rollingWpms(samples: readonly Sample[], endMs: number, windowMs:
   return out;
 }
 
+/** Net WPM from GO until `ms` (e.g. the first 20% of the race time). */
+export function wpmUntil(samples: readonly Sample[], ms: number): number | null {
+  return ms > 0 ? wpm(valueAt(samples, ms, CHARS), ms) : null;
+}
+
 /** Net WPM from GO until the first `fraction` of the passage was typed correctly. */
 export function openingWpm(samples: readonly Sample[], passageLength: number, fraction: number): number | null {
   const target = Math.ceil(passageLength * fraction);

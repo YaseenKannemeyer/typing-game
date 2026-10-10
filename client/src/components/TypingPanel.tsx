@@ -1,5 +1,5 @@
-import { forwardRef, useId, useMemo, type KeyboardEvent } from 'react';
-import { correctPrefixLength, hasError, typedCorrectChars, type TypingState } from '@race/shared';
+import { forwardRef, useId, type KeyboardEvent, type ReactNode } from 'react';
+import { canLock, hasError, lineWords, typedWords, type TypingState } from '@race/shared';
 
 export type TypingVariant = 'standard' | 'coding' | 'shakespeare';
 export type TypingPanelState = 'ready' | 'waiting' | 'error' | 'finished';
@@ -9,35 +9,105 @@ interface Props {
   onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
   variant?: TypingVariant;
   waiting?: boolean;
+  /** Shown instead of "finished" wording when the race clock has stopped. */
+  doneLabel?: string;
 }
 
 const HEAD: Record<TypingVariant, string> = {
-  standard: 'THE PASSAGE',
-  coding: 'passage.js',
+  standard: 'THE TEXT',
+  coding: 'stream.js',
   shakespeare: 'ACT I · THE STARTING LINE',
 };
 
+/** Lines shown after the current one. */
+const AHEAD = 3;
+
 /**
- * 09-typing panel styled by the kit, driven by the shared typing engine
- * (useTyping stays authoritative for corrections, counting and scoring).
+ * One word of a line: typed characters are right (typed) or wrong (error),
+ * extra characters past the word are wrong, and untyped ones are upcoming
+ * (or missed, once the player has moved past the word).
+ */
+function Word({ target, typed, active, past, space }: { target: string; typed: string | null; active: boolean; past: boolean; space: boolean }) {
+  const out: ReactNode[] = [];
+  const t = typed ?? '';
+  const len = Math.max(target.length, t.length);
+  for (let i = 0; i < len; i++) {
+    const want = target[i];
+    const got = t[i];
+    let cls: string;
+    if (want === undefined) cls = 'error extra';
+    else if (got === undefined) cls = active && i === t.length ? 'current' : past ? 'missed' : 'upcoming';
+    else cls = got === want ? 'typed' : 'error';
+    out.push(
+      <span key={i} className={cls}>
+        {want ?? got}
+      </span>,
+    );
+  }
+  if (space) {
+    const cls = past ? 'typed' : active && t.length >= target.length ? 'current' : 'upcoming';
+    out.push(
+      <span key="sp" className={cls}>
+        {' '}
+      </span>,
+    );
+  }
+  return <>{out}</>;
+}
+
+function Line({ targets, typed, active, past }: { targets: readonly string[]; typed: readonly string[] | null; active: boolean; past: boolean }) {
+  const current = active && typed ? typed.length - 1 : -1;
+  return (
+    <div className={`g-line ${active ? 'is-current' : past ? 'is-locked' : ''}`}>
+      {targets.map((w, k) => (
+        <Word
+          key={k}
+          target={w}
+          typed={typed ? (typed[k] ?? null) : past ? w : null}
+          active={k === current}
+          past={past || (active && k < current)}
+          space={k < targets.length - 1}
+        />
+      ))}
+      {active && current === targets.length - 1 && <span className="g-line-enter" aria-hidden="true">⏎</span>}
+    </div>
+  );
+}
+
+/**
+ * 09-typing panel styled by the kit, driven by the shared line engine: the
+ * current line is highlighted, mistakes stay red, Enter locks a line in.
  */
 export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPanel(
-  { state, onKeyDown, variant = 'standard', waiting = false },
+  { state, onKeyDown, variant = 'standard', waiting = false, doneLabel },
   ref,
 ) {
   const id = useId();
-  const passage = useMemo(() => state.words.join(' '), [state.words]);
-  const chars = useMemo(() => Array.from(passage), [passage]);
   const error = hasError(state);
-  const index = state.finished ? chars.length : typedCorrectChars(state);
-  const status: TypingPanelState = state.finished ? 'finished' : waiting ? 'waiting' : error ? 'error' : 'ready';
+  const done = state.finished || !!doneLabel;
+  const typed = typedWords(state);
+  const targets = lineWords(state);
+  const onLastWord = typed.length === targets.length;
+  const lockable = canLock(state);
+  const blocked = state.strict && !lockable && onLastWord && typed[typed.length - 1] !== '';
+  const status: TypingPanelState = done ? 'finished' : waiting ? 'waiting' : error ? 'error' : 'ready';
   const label = {
     waiting: 'WAITING FOR GO',
-    finished: 'PASSAGE COMPLETE',
-    error: 'TRY THAT CHARACTER AGAIN',
-    ready: 'READY TO TYPE',
+    finished: doneLabel ?? 'TEXT COMPLETE',
+    error: state.strict ? 'ZERO MISTAKES · FIX THIS WORD' : 'MISTAKE · KEEP GOING OR FIX IT',
+    ready: state.strict ? 'ZERO-MISTAKE MODE' : 'READY TO TYPE',
   }[status];
-  const wrong = state.input.length - correctPrefixLength(state);
+
+  const first = Math.max(0, state.lineIndex - 1);
+  const shown = state.lines.slice(first, state.lineIndex + 1 + AHEAD).map((_, j) => first + j);
+  const currentText = targets.join(' ');
+
+  let feedback = '';
+  if (done) feedback = doneLabel ?? 'Finished';
+  else if (waiting) feedback = 'Get ready';
+  else if (blocked) feedback = 'Fix the red words before you press Enter';
+  else if (onLastWord && typed[typed.length - 1] !== '') feedback = 'Press Enter to lock in this line';
+  else if (error) feedback = state.strict ? 'Fix this word with Backspace to move on' : 'Wrong letters stay red. Fix them with Backspace, or carry on';
 
   return (
     <section className={`g-typing g-typing--${variant}`}>
@@ -45,15 +115,21 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
         <span>{HEAD[variant]}</span>
         <span className="g-typing-state">{label}</span>
       </div>
-      <div className="g-passage" aria-hidden="true">
-        {chars.map((c, i) => (
-          <span key={i} className={i < index ? 'typed' : i === index ? (error ? 'current error' : 'current') : 'upcoming'}>
-            {c}
-          </span>
+      <div className="g-passage g-lines" aria-hidden="true">
+        {shown.map((i) => (
+          <Line
+            key={i}
+            targets={lineWords(state, i)}
+            typed={i < state.lineIndex ? (state.lockedTyped[i] ?? null) : i === state.lineIndex && !done ? typed : null}
+            active={i === state.lineIndex && !done}
+            past={i < state.lineIndex}
+          />
         ))}
       </div>
-      <label className="g-sr" htmlFor={id}>Type the passage</label>
-      <p className="g-sr" id={`${id}-instructions`}>{passage}</p>
+      <label className="g-sr" htmlFor={id}>Type the current line</label>
+      <p className="g-sr" id={`${id}-instructions`}>
+        Current line: {currentText}. Press Enter at the end of the line.
+      </p>
       <input
         ref={ref}
         id={id}
@@ -65,19 +141,18 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
         onKeyDown={onKeyDown}
         onPaste={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
-        disabled={waiting || state.finished}
+        disabled={waiting || done}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
         inputMode="text"
-        placeholder={waiting ? 'Waiting for the start…' : state.finished ? 'You made it.' : 'Click here and start typing…'}
+        enterKeyHint="enter"
+        placeholder={waiting ? 'Waiting for the start…' : done ? (doneLabel ?? 'You made it.') : 'Type the highlighted line, then press Enter…'}
       />
       <div className="g-typing-foot">
-        <span>Accuracy first. Speed follows.</span>
-        <span className="g-type-feedback" role="status">
-          {state.finished ? 'Finished' : error ? `Fix ${wrong === 1 ? 'the wrong character' : `${wrong} wrong characters`} with Backspace` : waiting ? 'Get ready' : ''}
-        </span>
+        <span>Space: next word · Backspace: fix · Enter: lock the line</span>
+        <span className="g-type-feedback" role="status">{feedback}</span>
       </div>
     </section>
   );

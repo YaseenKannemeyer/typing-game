@@ -1,121 +1,170 @@
 import { describe, expect, it } from 'vitest';
 import {
   backspace,
+  canLock,
   createTypingState,
-  currentTarget,
   hasError,
-  passageLength,
+  layoutLines,
+  lineWords,
+  lockedWords,
+  lockLine,
   resumeTypingState,
-  sectionOf,
+  scoreWords,
   SECTIONS,
+  sectionOf,
   typeChar,
   typedCorrectChars,
   type TypingState,
 } from '../src';
 
-const typeAll = (s: TypingState, text: string) => [...text].reduce(typeChar, s);
+const type = (s: TypingState, text: string, section = 0) => [...text].reduce((acc, c) => typeChar(acc, c, section), s);
 
-describe('typing engine', () => {
-  it('completes words including the trailing space', () => {
-    let s = createTypingState('the cat');
-    expect(currentTarget(s)).toBe('the ');
-    s = typeAll(s, 'the');
-    expect(s.wordIndex).toBe(0);
-    s = typeChar(s, ' ');
-    expect(s.wordIndex).toBe(1);
-    expect(s.completedChars).toBe(4);
-    expect(currentTarget(s)).toBe('cat');
+describe('layoutLines', () => {
+  it('wraps greedily at the width and keeps every word once', () => {
+    const words = 'aaa bbb ccc ddd eee'.split(' ');
+    expect(layoutLines(words, 7)).toEqual([
+      { start: 0, end: 2 },
+      { start: 2, end: 4 },
+      { start: 4, end: 5 },
+    ]);
   });
 
-  it('finishes on the last char without a trailing space', () => {
-    const s = typeAll(createTypingState('the cat'), 'the cat');
-    expect(s.finished).toBe(true);
-    expect(s.completedChars).toBe(passageLength(s.words));
-    expect(s.keystrokes).toBe(7);
-    expect(s.errors).toBe(0);
+  it('gives an over-long word its own line', () => {
+    expect(layoutLines(['a', 'abcdefghij', 'b'], 5)).toEqual([
+      { start: 0, end: 1 },
+      { start: 1, end: 2 },
+      { start: 2, end: 3 },
+    ]);
+  });
+});
+
+describe('free typing', () => {
+  const text = 'the cat sat';
+
+  it('counts correct words with their separators', () => {
+    const s = type(createTypingState(text), 'the cat sat');
+    expect(typedCorrectChars(s)).toBe(11);
+    expect(canLock(s)).toBe(true);
+    const locked = lockLine(s);
+    expect(locked.lockedChars).toBe(12); // Enter is the last word's separator
+    expect(locked.keystrokes).toBe(12);
+    expect(locked.errors).toBe(0);
+    expect(locked.finished).toBe(true);
+    expect(locked.input).toBe('');
   });
 
-  it('blocks progress until an error is corrected', () => {
-    let s = typeAll(createTypingState('hello world'), 'hx');
+  it('moves on past a wrong word, which earns nothing', () => {
+    const s = type(createTypingState(text), 'the cut sat');
+    expect(s.errors).toBe(1);
+    expect(typedCorrectChars(s)).toBe(4 + 3);
+    expect(lockLine(s).lockedChars).toBe(8);
+  });
+
+  it('Space on an unfinished word moves on and counts one mistake', () => {
+    const s = type(createTypingState(text), 'the ca ');
+    expect(s.input).toBe('the ca ');
+    expect(s.errors).toBe(1);
+  });
+
+  it('lets you go back and fix a word with Backspace', () => {
+    let s = type(createTypingState(text), 'the cut ');
+    s = backspace(backspace(backspace(s))); // remove ' ', 't', 'u'
+    expect(s.input).toBe('the c');
+    s = type(s, 'at sat');
+    expect(s.deletions).toBe(3);
+    expect(s.errors).toBe(1); // the corrected mistake still counts
+    expect(lockLine(s).lockedChars).toBe(12);
+  });
+
+  it('ignores Space before a word starts and at the end of the line', () => {
+    const s = type(createTypingState(text), ' the  cat sat ');
+    expect(s.input).toBe('the cat sat');
+  });
+
+  it('marks extra characters as mistakes', () => {
+    const s = type(createTypingState(text), 'thee');
     expect(hasError(s)).toBe(true);
-    expect(typedCorrectChars(s)).toBe(1);
-    s = typeAll(s, 'llo ');
-    expect(s.wordIndex).toBe(0);
-    expect(s.errors).toBe(5);
-    for (let i = 0; i < 5; i++) s = backspace(s);
-    s = typeAll(s, 'ello ');
-    expect(s.wordIndex).toBe(1);
-    expect(s.errors).toBe(5);
-    expect(s.keystrokes).toBe(11);
-    expect(s.deletions).toBe(5);
+    expect(s.errors).toBe(1);
   });
 
-  it('counts deletions only when backspace removes something', () => {
-    let s = typeAll(createTypingState('ab cd'), 'ab');
-    s = backspace(backspace(backspace(s)));
-    expect(s.deletions).toBe(2);
+  it('Enter only works on the last word of the line', () => {
+    const s = type(createTypingState(text), 'the cat');
+    expect(canLock(s)).toBe(false);
+    expect(lockLine(s)).toBe(s);
+    expect(canLock(type(s, ' s'))).toBe(true);
+  });
+});
+
+describe('zero-mistake mode', () => {
+  const text = 'the cat sat';
+
+  it('Space cannot leave a wrong word, but the attempt counts', () => {
+    const s = type(createTypingState(text, true), 'the cut ');
+    expect(s.input).toBe('the cut');
+    expect(s.errors).toBe(2); // 'u' and the blocked space
   });
 
-  it('backspace does not count as a keystroke and cannot cross words', () => {
-    let s = typeAll(createTypingState('ab cd'), 'ab ');
-    s = backspace(s);
-    expect(s.wordIndex).toBe(1);
-    expect(s.input).toBe('');
-    expect(s.keystrokes).toBe(3);
+  it('Enter needs every word right', () => {
+    const wrong = type(createTypingState(text, true), 'the cat sab');
+    expect(canLock(wrong)).toBe(false);
+    const fixed = type(backspace(wrong), 't');
+    expect(canLock(fixed)).toBe(true);
+    expect(lockLine(fixed).lockedChars).toBe(12);
+  });
+});
+
+describe('lines', () => {
+  const text = Array.from({ length: 30 }, (_, i) => `word${i}`).join(' ');
+
+  it('locking moves to the next line and keeps what was typed', () => {
+    let s = createTypingState(text);
+    const first = lineWords(s);
+    s = lockLine(type(s, first.join(' ')));
+    expect(s.lineIndex).toBe(1);
+    expect(lockedWords(s)).toBe(first.length);
+    expect(s.lockedTyped[0]).toEqual(first);
+    expect(s.finished).toBe(false);
+    expect(typedCorrectChars(s)).toBe(first.join(' ').length + 1);
   });
 
-  it('ignores input after finishing and caps runaway wrong input', () => {
-    let s = typeAll(createTypingState('a'), 'a');
-    expect(typeChar(s, 'b')).toBe(s);
-    s = typeAll(createTypingState('ab'), 'x'.repeat(50));
-    expect(s.input.length).toBe(12);
+  it('Backspace cannot reach into a locked line', () => {
+    let s = createTypingState(text);
+    s = lockLine(type(s, lineWords(s).join(' ')));
+    expect(backspace(s)).toBe(s);
   });
 
-  it('normalises extra whitespace in passages', () => {
-    const s = createTypingState('  one   two\nthree ');
-    expect(s.words).toEqual(['one', 'two', 'three']);
+  it('resumes from the server position after a reconnect', () => {
+    const fresh = createTypingState(text);
+    const done = fresh.lines[1]!.start;
+    const s = resumeTypingState(text, false, {
+      wordsDone: done, lockedChars: 50, keystrokes: 70, errors: 3, deletions: 2,
+      sectionKeystrokes: [70, 0, 0, 0, 0, 0, 0, 0, 0, 0], sectionErrors: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    });
+    expect(s.lineIndex).toBe(1);
+    expect(lockedWords(s)).toBe(done);
+    expect(typedCorrectChars(s)).toBe(50);
+    expect(s.lockedTyped).toEqual([null]);
   });
 });
 
 describe('sections', () => {
-  it('splits the passage into ten equal sections by character index', () => {
-    expect(sectionOf(0, 100)).toBe(0);
-    expect(sectionOf(9, 100)).toBe(0);
-    expect(sectionOf(10, 100)).toBe(1);
-    expect(sectionOf(99, 100)).toBe(9);
-    expect(sectionOf(500, 100)).toBe(9);
+  it('splits a length into ten equal slices', () => {
+    expect(sectionOf(0, 60_000)).toBe(0);
+    expect(sectionOf(5_999, 60_000)).toBe(0);
+    expect(sectionOf(6_000, 60_000)).toBe(1);
+    expect(sectionOf(70_000, 60_000)).toBe(SECTIONS - 1);
   });
 
-  it('attributes attempts and mistakes to the expected character position', () => {
-    // 'abcdefghij klmnopqrs' is 20 chars, so each section is 2 characters.
-    let s = createTypingState('abcdefghij klmnopqrs');
-    s = typeAll(s, 'abX');
-    expect(s.sectionKeystrokes.slice(0, 2)).toEqual([2, 1]);
-    expect(s.sectionErrors.slice(0, 2)).toEqual([0, 1]);
-    s = typeAll(backspace(s), 'cdefghij klmnopqrs');
-    expect(s.finished).toBe(true);
-    expect(s.sectionKeystrokes.reduce((a, b) => a + b)).toBe(s.keystrokes);
-    expect(s.sectionErrors.reduce((a, b) => a + b)).toBe(s.errors);
-    expect(s.sectionKeystrokes.every((n) => n > 0)).toBe(true);
-    expect(s.sectionKeystrokes).toHaveLength(SECTIONS);
+  it('attributes keystrokes to the slice the caller passes', () => {
+    const s = type(createTypingState('ab cd'), 'ax', 3);
+    expect(s.sectionKeystrokes[3]).toBe(2);
+    expect(s.sectionErrors[3]).toBe(1);
   });
 });
 
-describe('resumeTypingState', () => {
-  it('matches typing the same words from scratch', () => {
-    const typed = typeAll(backspace(typeAll(createTypingState('one two three'), 'ox')), 'ne two ');
-    const resumed = resumeTypingState('one two three', {
-      wordsDone: 2,
-      keystrokes: typed.keystrokes,
-      errors: typed.errors,
-      deletions: typed.deletions,
-      sectionKeystrokes: typed.sectionKeystrokes,
-      sectionErrors: typed.sectionErrors,
-    });
-    expect(resumed).toEqual(typed);
-  });
-  it('marks a fully completed passage as finished', () => {
-    const p = { wordsDone: 2, keystrokes: 3, errors: 0, deletions: 0, sectionKeystrokes: [], sectionErrors: [] };
-    expect(resumeTypingState('a b', p).finished).toBe(true);
+describe('scoreWords', () => {
+  it('matches the server: exact words earn length + 1', () => {
+    expect(scoreWords(['the', 'cut', 'sat'], ['the', 'cat', 'sat'])).toBe(8);
+    expect(scoreWords(['the', 'cat', 'sat', 'extra'], ['the', 'cat', 'sat'])).toBe(12);
   });
 });

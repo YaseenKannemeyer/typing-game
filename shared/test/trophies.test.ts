@@ -1,21 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import { awardTrophies, SECTIONS, type RaceResult, type Sample, type TrophyId } from '../src';
-import { results, steadySamples } from './helpers';
+import { results } from './helpers';
 
-const ctx = { mode: 'medium' as const, passageLength: 100 };
+/** A 20-second timed race keeps the fixtures small. */
+const D = 20_000;
+const ctx = { mode: 'medium' as const, durationMs: D };
 type Awards = ReturnType<typeof awardTrophies>;
 const ids = (a: Awards, id: string) => (a.get(id) ?? []).map((x) => x.trophy);
 const holders = (a: Awards, t: TrophyId) => [...a].filter(([, l]) => l.some((x) => x.trophy === t)).map(([id]) => id);
 const reason = (a: Awards, t: TrophyId) => [...a.values()].flat().find((x) => x.trophy === t)?.reason;
 
-/** A finisher typing `cps` chars/s with no mistakes (100-char passage). */
+/** One sample per second of a steady `cps` chars/s for the whole race. */
+const steady = (cps: number): Sample[] =>
+  Array.from({ length: D / 1000 }, (_, i) => [(i + 1) * 1000, cps * (i + 1), cps * (i + 1), 0] as const);
+
+/** A racer present at the final whistle, typing `cps` chars/s with no mistakes. */
 const finisher = (id: string, cps: number, over: Partial<RaceResult> = {}): Partial<RaceResult> & { id: string } => ({
   id,
-  finishedMs: (100 / cps) * 1000,
+  finishedMs: D,
   netWpm: cps * 12,
-  correctChars: 100,
-  keystrokes: 100,
-  samples: steadySamples(cps, 100),
+  grossWpm: cps * 12,
+  correctChars: cps * (D / 1000),
+  keystrokes: cps * (D / 1000),
+  samples: steady(cps),
   ...over,
 });
 const withErrors = (errors: number, keystrokes = 100 + errors) => ({
@@ -53,7 +60,7 @@ describe('global rules', () => {
 
   it('every award states the statistic that earned it', () => {
     const a = awardTrophies(results([finisher('a', 10), finisher('b', 8, withErrors(2))]), ctx);
-    expect(reason(a, 'speedDemon')).toBe('120.0 average WPM');
+    expect(reason(a, 'speedDemon')).toBe('120.0 raw WPM');
     for (const l of a.values()) for (const x of l) expect(x.reason.length).toBeGreaterThan(5);
   });
 
@@ -63,18 +70,29 @@ describe('global rules', () => {
 });
 
 describe('podium', () => {
-  it('goes to the first three finishers in official order', () => {
+  it('goes to the first three finishers in official order (highest WPM)', () => {
     const a = awardTrophies(results([finisher('a', 10), finisher('b', 8), finisher('c', 6), finisher('d', 5)]), ctx);
     expect([holders(a, 'gold'), holders(a, 'silver'), holders(a, 'bronze')]).toEqual([['a'], ['b'], ['c']]);
+    expect(reason(a, 'gold')).toBe('1st place · 120.0 WPM');
   });
 });
 
 describe('speed trophies', () => {
+  it('Speed Demon is the highest raw WPM, mistakes included', () => {
+    const a = awardTrophies(
+      results([finisher('accurate', 10), finisher('mashing', 8, { ...withErrors(60), grossWpm: 150 })]),
+      ctx,
+    );
+    expect(holders(a, 'gold')).toEqual(['accurate']);
+    expect(holders(a, 'speedDemon')).toEqual(['mashing']);
+    expect(reason(a, 'speedDemon')).toBe('150.0 raw WPM');
+  });
+
   it('Speed Demon ties go to higher accuracy, then fewer mistakes', () => {
     const a = awardTrophies(
       results([
-        finisher('sloppy', 10, { ...withErrors(10), netWpm: 100 }),
-        finisher('neat', 10, { ...withErrors(2), netWpm: 100 }),
+        finisher('sloppy', 10, { ...withErrors(10), grossWpm: 100 }),
+        finisher('neat', 10, { ...withErrors(2), grossWpm: 100 }),
       ]),
       ctx,
     );
@@ -83,9 +101,9 @@ describe('speed trophies', () => {
 
   it('Fastest Fingers uses the best full 5-second window', () => {
     // 'burst' averages less but has a much faster 5s stretch.
-    const burst: Sample[] = [[5000, 10, 10, 0], [10000, 90, 90, 0], [12000, 100, 100, 0]];
+    const burst: Sample[] = [[5000, 10, 10, 0], [10000, 90, 90, 0], [20000, 100, 100, 0]];
     const a = awardTrophies(
-      results([finisher('steady', 9), { id: 'burst', finishedMs: 12000, netWpm: 100, correctChars: 100, keystrokes: 100, samples: burst }]),
+      results([finisher('steady', 9), { id: 'burst', finishedMs: D, netWpm: 60, correctChars: 100, keystrokes: 100, samples: burst }]),
       ctx,
     );
     expect(holders(a, 'fastestFingers')).toEqual(['burst']);
@@ -105,18 +123,20 @@ describe('speed trophies', () => {
     expect(holders(a, 'speedOverPower')).toEqual(['inRange']);
   });
 
-  it('Quick Starter measures the first 20% and needs it reached', () => {
-    const fastStart: Sample[] = [[1000, 25, 25, 0], [20000, 100, 100, 0]];
+  it('Quick Starter measures the first 20% of the race time', () => {
+    // 60 chars in the first 4s = 180 WPM, against a steady 120 WPM.
+    const fastStart: Sample[] = [[4000, 60, 60, 0], [20000, 100, 100, 0]];
     const a = awardTrophies(
-      results([finisher('even', 10), { id: 'fast', finishedMs: 20000, netWpm: 60, correctChars: 100, keystrokes: 100, samples: fastStart }]),
+      results([finisher('even', 10), { id: 'fast', finishedMs: D, netWpm: 60, correctChars: 100, keystrokes: 100, samples: fastStart }]),
       ctx,
     );
     expect(holders(a, 'quickStarter')).toEqual(['fast']);
+    expect(reason(a, 'quickStarter')).toBe('180.0 WPM · first 20%');
   });
 });
 
 describe('accuracy trophies', () => {
-  it('Perfectionist and Clean Run go to the earliest qualifying finisher and can coincide', () => {
+  it('Perfectionist and Clean Run go to the fastest qualifying racer and can coincide', () => {
     const a = awardTrophies(
       results([
         finisher('fastSloppy', 12, withErrors(3)),
@@ -189,16 +209,16 @@ describe('funny trophies', () => {
 });
 
 describe('special trophies', () => {
-  it('Comeback Kid compares rank at 20% progress with final rank', () => {
-    // 'late' reaches 20% last of three but finishes first.
-    const late: Sample[] = [[4000, 20, 20, 0], [6000, 100, 100, 0]];
-    const mid: Sample[] = [[2000, 20, 20, 0], [8000, 100, 100, 0]];
-    const early: Sample[] = [[1000, 20, 20, 0], [9000, 100, 100, 0]];
+  it('Comeback Kid compares rank at 20% of the race time with final rank', () => {
+    // 'late' is last of three after 4s but first at the final whistle.
+    const late: Sample[] = [[4000, 10, 10, 0], [20000, 500, 500, 0]];
+    const mid: Sample[] = [[4000, 20, 20, 0], [20000, 400, 400, 0]];
+    const early: Sample[] = [[4000, 30, 30, 0], [20000, 300, 300, 0]];
     const a = awardTrophies(
       results([
-        { id: 'late', finishedMs: 6000, netWpm: 200, correctChars: 100, keystrokes: 100, samples: late },
-        { id: 'mid', finishedMs: 8000, netWpm: 150, correctChars: 100, keystrokes: 100, samples: mid },
-        { id: 'early', finishedMs: 9000, netWpm: 133, correctChars: 100, keystrokes: 100, samples: early },
+        { id: 'late', finishedMs: D, netWpm: 300, correctChars: 500, keystrokes: 500, samples: late },
+        { id: 'mid', finishedMs: D, netWpm: 240, correctChars: 400, keystrokes: 400, samples: mid },
+        { id: 'early', finishedMs: D, netWpm: 180, correctChars: 300, keystrokes: 300, samples: early },
       ]),
       ctx,
     );
@@ -213,15 +233,13 @@ describe('special trophies', () => {
 
   it('Consistency uses rolling 10s windows and needs at least three', () => {
     const bursty: Sample[] = [[3000, 10, 10, 0], [6000, 90, 90, 0], [20000, 100, 100, 0]];
-    const a = awardTrophies(
-      results([
-        finisher('tooShort', 10), // 10s run: one window only
-        { id: 'bursty', finishedMs: 20000, netWpm: 60, correctChars: 100, keystrokes: 100, samples: bursty },
-        finisher('steady', 5), // 20s at an even pace
-      ]),
-      ctx,
-    );
-    expect(holders(a, 'consistency')).toEqual(['steady']);
+    const list = results([
+      { id: 'bursty', finishedMs: D, netWpm: 60, correctChars: 100, keystrokes: 100, samples: bursty },
+      finisher('steady', 5),
+    ]);
+    expect(holders(awardTrophies(list, ctx), 'consistency')).toEqual(['steady']);
+    // An 11-second race only has two full 10s windows.
+    expect(holders(awardTrophies(list, { ...ctx, durationMs: 11_000 }), 'consistency')).toEqual([]);
   });
 
   it('Unstoppable is awarded on every third consecutive completion', () => {

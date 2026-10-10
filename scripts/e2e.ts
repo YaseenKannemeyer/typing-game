@@ -4,8 +4,10 @@
  *   npm run dev            # in another terminal (http://localhost:5173)
  *   npm run e2e -- [baseUrl] [outDir]
  *
- * Alice creates a lobby, Bob joins via the invite link, both customise cars,
- * vote, type the whole passage with real key events, and reach the results.
+ * Alice creates a lobby, Bob joins via the invite link, Bob customises his car,
+ * Alice sets the race rules, both vote, then type line after line with real
+ * key events (Enter locks each line) until the 1-minute timer ends, and both
+ * reach the results.
  * Screenshots of every screen are written to outDir.
  */
 import { mkdirSync } from 'node:fs';
@@ -18,17 +20,27 @@ mkdirSync(out, { recursive: true });
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const shot = (page: Page, name: string) => page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
 
-async function typePassage(page: Page, delay: number) {
-  const input = page.getByLabel('Type the passage');
+/** Types the highlighted line and presses Enter, over and over, until time runs out. */
+async function typeUntilTimeUp(page: Page, delay: number) {
+  const input = page.getByLabel('Type the current line');
   await input.waitFor();
   await page.waitForFunction(() => !(document.querySelector('.g-type-input') as HTMLInputElement).disabled, null, { timeout: 20_000 });
-  const passage = (await page.locator('.g-passage').textContent())!.trim();
   await input.focus();
   // One deliberate mistake, corrected, so the mistake animation and counters run.
   await page.keyboard.type('x', { delay });
   await page.keyboard.press('Backspace');
-  await page.keyboard.type(passage, { delay });
-  return passage;
+  let lines = 0;
+  for (;;) {
+    if (await input.isDisabled().catch(() => true)) break;
+    const line = (await page.locator('.g-line.is-current').textContent().catch(() => null))?.replace('⏎', '').trim();
+    if (!line) break;
+    // On the second line, leave one wrong letter in place: it stays red and the race carries on.
+    const text = lines === 1 ? (line[0] === 'q' ? 'z' : 'q') + line.slice(1) : line;
+    await page.keyboard.type(text, { delay });
+    await page.keyboard.press('Enter');
+    lines++;
+  }
+  return lines;
 }
 
 async function main() {
@@ -64,6 +76,12 @@ async function main() {
   await bob.getByLabel('Cosmetic effect').selectOption('neon');
   await bob.getByRole('button', { name: /Confirm vehicle/ }).click();
   await bob.getByText('Selection saved').waitFor();
+  // Race rules: the host flips zero-mistake mode on and off; Bob sees it live.
+  await alice.getByLabel('Zero-mistake mode').check();
+  await bob.getByText("On: you can't move past a wrong word").waitFor();
+  await alice.getByLabel('Zero-mistake mode').uncheck();
+  await bob.getByText('Off: mistakes turn red').waitFor();
+  await alice.getByRole('button', { name: '1 min' }).click();
   await alice.waitForTimeout(1500);
   await shot(alice, '03-waiting-room');
   await shot(bob, '04-waiting-room-mobile');
@@ -81,14 +99,17 @@ async function main() {
   await alice.locator('.g-countdown-number', { hasText: '2' }).waitFor({ timeout: 20_000 });
   await shot(alice, '06-countdown');
 
-  const racing = Promise.all([typePassage(alice, 70), typePassage(bob, 95)]);
-  await alice.waitForTimeout(9000);
+  const racing = Promise.all([typeUntilTimeUp(alice, 45), typeUntilTimeUp(bob, 80)]);
+  await alice.waitForTimeout(20_000);
   await shot(alice, '06b-race');
-  const [passage] = await racing;
-  console.log('typed:', passage.slice(0, 60), '…');
   await shot(bob, '07-race-mobile');
+  const [aliceLines, bobLines] = await racing;
+  console.log(`lines locked: alice ${aliceLines}, bob ${bobLines}`);
+  await shot(alice, '07b-time-up');
 
   await alice.getByText('Every finish has a story.').waitFor({ timeout: 30_000 });
+  const podium = (await alice.locator('.g-podium-time').allTextContents()).join(', ');
+  console.log('podium:', podium);
   // Trophies arrive from the server shortly after the race ends.
   await alice.locator('.g-award').first().waitFor({ timeout: 20_000 });
   await alice.waitForTimeout(800);

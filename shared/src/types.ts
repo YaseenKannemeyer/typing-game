@@ -9,18 +9,18 @@ export type LobbyStatus = 'waiting' | 'voting' | 'racing';
 export interface PlayerProgress {
   id: PlayerId;
   name: string;
-  /** Passage characters typed correctly (including spaces between words). */
+  /** Characters of correctly typed words, each with its separator. */
   correctChars: number;
   /** Character-producing keystrokes (backspace excluded). */
   keystrokes: number;
   /** Keystrokes that produced a wrong character, even if corrected later. */
   errors: number;
-  /** Ms from race start to finish, or null if not finished. */
+  /** Ms from race start to the end of the race for racers still present at the end, otherwise null. */
   finishedMs: number | null;
 }
 
 export interface PlayerStats extends PlayerProgress {
-  /** 0..1 */
+  /** 0..1, relative to the leader (timed races) or the passage (practice). */
   progress: number;
   netWpm: number;
   grossWpm: number;
@@ -45,9 +45,9 @@ export interface RaceResult extends RankedPlayer {
   samples: readonly Sample[];
   /** Backspace/delete presses that removed a character. */
   deletions: number;
-  /** Character attempts per passage section (SECTIONS entries). */
+  /** Character attempts per time slice of the race (SECTIONS entries). */
   sectionKeystrokes: readonly number[];
-  /** Incorrect attempts per passage section. */
+  /** Incorrect attempts per time slice. */
   sectionErrors: readonly number[];
   /** Consecutive completed races in this lobby, including this one. */
   streak: number;

@@ -113,3 +113,41 @@
   transform: translateX(-50%);
   z-index: 200;
 }
+
+/* Timed races: the text is shown as lines; Enter locks the highlighted one. */
+.g-lines {
+  white-space: normal;
+  overflow: hidden;
+}
+.g-line {
+  white-space: pre-wrap;
+  padding: 2px 10px;
+  margin: 0 -10px;
+  border-radius: 8px;
+  transition: opacity var(--g-fast, 0.15s);
+}
+.g-line.is-current {
+  background: #ffffff0d;
+}
+.g-line.is-locked {
+  opacity: 0.55;
+}
+.g-passage .missed {
+  color: #ffb3a8;
+  text-decoration: underline wavy var(--g-error);
+  text-underline-offset: 5px;
+}
+.g-passage .extra {
+  opacity: 0.8;
+}
+.g-line-enter {
+  margin-left: 0.4em;
+  color: var(--g-lime);
+  font-size: 0.75em;
+}
+.g-typing--shakespeare .g-line.is-current {
+  background: #00000010;
+}
+.g-typing--shakespeare .missed {
+  color: #7c2820;
+}

@@ -1,4 +1,4 @@
-import { SECTIONS, passageLength, splitWords } from './typing';
+import { SECTIONS } from './typing';
 import type { RaceResult, Sample } from './types';
 
 /** The race_players columns needed to rebuild verified results. */
@@ -21,7 +21,6 @@ export interface RacePlayerRow {
 }
 
 export interface RaceRowContext {
-  passage: string;
   /** races.start_at (server GO). */
   startAt: string;
   /** user_id → consecutive completions in this lobby. */
@@ -36,7 +35,8 @@ const sections = (v: number[] | null) => (v && v.length === SECTIONS ? v : Array
  */
 export function raceResultsFromRows(rows: readonly RacePlayerRow[], ctx: RaceRowContext): RaceResult[] {
   const startAt = Date.parse(ctx.startAt);
-  const len = passageLength(splitWords(ctx.passage));
+  // Progress is relative to whoever typed the most.
+  const most = Math.max(0, ...rows.map((r) => r.correct_chars));
   return rows
     .filter((r) => r.rank !== null)
     .sort((a, b) => a.rank! - b.rank!)
@@ -51,7 +51,7 @@ export function raceResultsFromRows(rows: readonly RacePlayerRow[], ctx: RaceRow
       sectionKeystrokes: sections(r.section_keystrokes),
       sectionErrors: sections(r.section_errors),
       finishedMs: r.finished_at ? Date.parse(r.finished_at) - startAt : null,
-      progress: len ? Math.min(1, r.correct_chars / len) : 0,
+      progress: most ? r.correct_chars / most : 0,
       netWpm: r.net_wpm ?? 0,
       grossWpm: r.gross_wpm ?? 0,
       accuracy: r.accuracy ?? 100,

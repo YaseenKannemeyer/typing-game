@@ -12,18 +12,20 @@ export function accuracy(keystrokes: number, errors: number): number {
 }
 
 /**
- * @param elapsedMs time since race start; ignored once the player has finished
- *                  (their finish time is used instead).
+ * @param reference   characters that count as full progress (the leader's
+ *                    total in a timed race, the passage length in practice).
+ * @param elapsedMs   time since race start; ignored once the player has
+ *                    finished (their finish time is used instead).
  */
 export function computeStats(
   p: PlayerProgress,
-  passageLength: number,
+  reference: number,
   elapsedMs: number,
 ): PlayerStats {
   const ms = p.finishedMs ?? elapsedMs;
   return {
     ...p,
-    progress: passageLength > 0 ? Math.min(1, p.correctChars / passageLength) : 0,
+    progress: reference > 0 ? Math.min(1, p.correctChars / reference) : 0,
     netWpm: wpm(p.correctChars, ms),
     grossWpm: wpm(p.keystrokes, ms),
     accuracy: accuracy(p.keystrokes, p.errors),

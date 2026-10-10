@@ -9,6 +9,10 @@ export interface Lobby {
   current_race_id: string | null;
   vote_ends_at: string | null;
   mode: VoteMode | null;
+  /** Race length the host picked (60–300). */
+  race_seconds: number;
+  /** Zero-mistake mode: a wrong word blocks you until it is fixed. */
+  zero_mistakes: boolean;
 }
 
 export interface LobbyPlayer {
@@ -25,7 +29,10 @@ export interface Race {
   id: string;
   passage_id: number;
   start_at: string;
-  first_finish_at: string | null;
+  /** The timer: the race ends here (null for races from before timed races). */
+  end_at: string | null;
+  duration_s: number | null;
+  zero_mistakes: boolean;
   ended_at: string | null;
   status: 'racing' | 'finished';
   mode: PassageMode;
@@ -36,7 +43,11 @@ export interface Race {
 export interface RacePlayer {
   user_id: string;
   name: string;
+  /** Words locked in with Enter. */
   words_done: number;
+  /** Correct characters on locked lines. */
+  locked_chars: number;
+  /** locked_chars plus the provisional current line. */
   correct_chars: number;
   keystrokes: number;
   errors: number;

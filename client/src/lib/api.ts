@@ -1,4 +1,4 @@
-import type { TrophyId, TypingState, VoteMode } from '@race/shared';
+import { lineWords, lockedWords, typedWords, type TrophyId, type TypingState, type VoteMode } from '@race/shared';
 import type { VehicleBuild } from '../art/vehicleArt';
 import { requireSupabase } from './supabase';
 
@@ -27,6 +27,7 @@ const MESSAGES: Record<string, string> = {
   account_required: 'You need an account for that. Save your progress first.',
   profile_required: 'Finish setting up your profile first.',
   invalid_avatar: 'Choose the car or initials avatar.',
+  invalid_duration: 'Pick a race length between 1 and 5 minutes.',
   captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
 
@@ -49,9 +50,27 @@ async function call<T>(fn: string, args: Record<string, unknown> = {}): Promise<
 
 export interface SubmitResult {
   ok: boolean;
-  reason?: 'race_not_active' | 'not_started' | 'out_of_sync' | 'mismatch' | 'bad_counters' | 'too_fast';
+  reason?: 'race_not_active' | 'not_started' | 'race_over' | 'out_of_sync' | 'mismatch' | 'bad_counters' | 'too_fast';
+  /** Words locked in so far. */
   words_done: number;
-  finished?: boolean;
+  correct_chars?: number;
+}
+
+/**
+ * The words a submit covers: a locked line (all typed words), or the current
+ * line's finished words (provisional; the word being typed is left out).
+ * `final` sends everything typed, used when the timer runs out.
+ */
+export function lineSubmission(s: TypingState, final = false): { from: number; words: string[] } {
+  const typed = typedWords(s);
+  const targets = lineWords(s);
+  let words = (final ? typed.filter((w, i) => w !== '' || i < typed.length - 1) : typed.slice(0, -1)).slice(0, targets.length);
+  // Zero-mistake races reject any wrong word, so stop before the first one.
+  if (s.strict) {
+    const wrong = words.findIndex((w, i) => w !== targets[i]);
+    if (wrong >= 0) words = words.slice(0, wrong);
+  }
+  return { from: lockedWords(s), words };
 }
 
 export const api = {
@@ -72,11 +91,15 @@ export const api = {
     call<string>('start_race', { p_lobby_id: lobbyId, p_mode: mode ?? null }),
   returnToLobby: (lobbyId: string) => call<void>('return_to_lobby', { p_lobby_id: lobbyId }),
   finalizeRace: (raceId: string) => call<boolean>('finalize_race', { p_race_id: raceId }),
-  submitProgress: (raceId: string, fromWord: number, words: string[], s: TypingState) =>
-    call<SubmitResult>('submit_progress', {
+  setRaceSettings: (lobbyId: string, seconds: number, zeroMistakes: boolean) =>
+    call<void>('set_race_settings', { p_lobby_id: lobbyId, p_seconds: seconds, p_zero_mistakes: zeroMistakes }),
+  /** Sends the words typed from `fromWord`; `lock` locks them in (Enter). */
+  submitTyping: (raceId: string, fromWord: number, words: string[], lock: boolean, s: TypingState) =>
+    call<SubmitResult>('submit_typing', {
       p_race_id: raceId,
       p_from_word: fromWord,
       p_words: words,
+      p_lock: lock,
       p_keystrokes: s.keystrokes,
       p_errors: s.errors,
       p_deletions: s.deletions,

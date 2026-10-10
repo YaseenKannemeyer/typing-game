@@ -32,7 +32,8 @@ export function Practice() {
       id: 'me', name: 'me', correctChars: typedCorrectChars(state), keystrokes: state.keystrokes,
       errors: state.errors, finishedMs: state.finished ? elapsed : null,
     },
-    passageLength(state.words),
+    // Every correct word earns its characters plus a separator (Space or Enter).
+    passageLength(state.words) + 1,
     elapsed,
   );
 

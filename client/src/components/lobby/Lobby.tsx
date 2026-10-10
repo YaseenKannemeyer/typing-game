@@ -1,4 +1,4 @@
-import { MAX_PLAYERS } from '@race/shared';
+import { MAX_PLAYERS, RACE_DURATIONS } from '@race/shared';
 import type { VehicleProps } from '../../art/vehicleArt';
 import { lobbyLink } from '../../lib/router';
 import { Car } from '../Car';
@@ -97,9 +97,9 @@ export function InviteLink({ code }: { code: string }) {
 }
 
 const STEPS = [
-  ['keyboard', '01', 'Type the passage', 'Every correct character moves your car.'],
-  ['bolt', '02', 'Find your rhythm', 'Accuracy matters as much as raw speed.'],
-  ['flag', '03', 'Finish your way', 'Every finisher takes home an award.'],
+  ['keyboard', '01', 'Type until the clock stops', 'The text never runs out. Every correct word moves your car.'],
+  ['bolt', '02', 'Mistakes turn red', 'Fix them with Backspace or keep going. Press Enter to lock in each line.'],
+  ['flag', '03', 'Highest WPM wins', 'Everyone still racing at the final whistle takes home an award.'],
 ] as const;
 
 export function HowTo() {
@@ -115,6 +115,55 @@ export function HowTo() {
           <p>{p}</p>
         </div>
       ))}
+    </div>
+  );
+}
+
+interface RaceSettingsProps {
+  seconds: number;
+  zeroMistakes: boolean;
+  /** Only the host can change the rules; everyone else sees them. */
+  editable: boolean;
+  busy?: boolean;
+  onChange?: (seconds: number, zeroMistakes: boolean) => void;
+}
+
+/** Race length (1–5 minutes) and zero-mistake mode, chosen by the host. */
+export function RaceSettings({ seconds, zeroMistakes, editable, busy = false, onChange }: RaceSettingsProps) {
+  return (
+    <div className="g-stack">
+      <div>
+        <span className="g-eyebrow">RACE LENGTH</span>
+        <div className="g-row mt-2" role="group" aria-label="Race length">
+          {RACE_DURATIONS.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className="g-filter"
+              aria-pressed={s === seconds}
+              disabled={!editable || busy}
+              onClick={() => onChange?.(s, zeroMistakes)}
+            >
+              {s / 60} min
+            </button>
+          ))}
+        </div>
+      </div>
+      <label className="g-switch">
+        <input
+          type="checkbox"
+          checked={zeroMistakes}
+          disabled={!editable || busy}
+          onChange={(e) => onChange?.(seconds, e.target.checked)}
+        />
+        <span>
+          <strong>Zero-mistake mode</strong>
+          <span className="g-small g-muted block">
+            {zeroMistakes ? "On: you can't move past a wrong word until it's fixed." : 'Off: mistakes turn red and you can keep going.'}
+          </span>
+        </span>
+      </label>
+      {!editable && <p className="g-small g-muted">The host sets the rules for the race.</p>}
     </div>
   );
 }
