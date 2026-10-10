@@ -9,6 +9,7 @@ import {
   destinationSceneSvg,
   finishStripeSvg,
   kerbSvg,
+  roadSurfaceSvg,
   startGridSvg,
   type DestinationId,
 } from '../art/worldArt';
@@ -51,7 +52,17 @@ const ART = {
   grid: decorative(startGridSvg()),
   stripe: decorative(finishStripeSvg()),
   flag: decorative(circuitFlagSvg()),
+  // 17-circuit asphalt (grain, edge lines, tyre marks), stretched to each lane.
+  road: laneRoad(false),
+  roadWet: laneRoad(true),
 };
+
+/** The kit's road minus its dashed bottom line: the lane's own dashed separator already draws it. */
+function laneRoad(wet: boolean) {
+  return decorative(roadSurfaceSvg({ wet }))
+    .replace('<svg ', '<svg preserveAspectRatio="none" ')
+    .replace('<path d="M0 149H1200" stroke="#d2d9ba" stroke-width="2" stroke-dasharray="20 18"/>', '');
+}
 
 /**
  * 17-circuit: destination scenery, barrier, distance ruler and up to four
@@ -117,6 +128,9 @@ function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boo
         <small>{Math.round(car.wpm)} WPM</small>
       </div>
       <div className={`w-road ${wet ? 'wet' : ''}`} aria-label={`${car.name}, position ${car.rank}, ${pct} percent`}>
+        <div className="w-road-surface">
+          <TrustedSvg markup={wet ? ART.roadWet : ART.road} />
+        </div>
         <div className="w-grid-paint">
           <TrustedSvg markup={ART.grid} />
         </div>
