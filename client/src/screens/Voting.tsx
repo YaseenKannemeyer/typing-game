@@ -49,7 +49,7 @@ export function Voting({ state }: { state: LobbyState }) {
   }
 
   return (
-    <>
+    <div className="voting-screen">
       <div className="g-voting-head gap-6">
         <PageTitle title="Pick your kind of fast." lead="One racer, one vote. Choose the challenge for the whole grid." />
         <TimerRing seconds={remaining} total={VOTE_DURATION_MS / 1000} />
@@ -61,7 +61,7 @@ export function Voting({ state }: { state: LobbyState }) {
         <Pill>{lobby.destination ? destinationInfo(lobby.destination).name.toUpperCase() : 'SCENERY MATCHES THE MODE'}</Pill>
         <p className="g-small g-muted">You can change your vote until time runs out. Ties are broken by the server.</p>
       </div>
-      <div className="g-grid-3">
+      <div className="g-grid-3 vote-options">
         {MODE_DESIGN.map((mode) => (
           <ModeCard
             key={mode.id}
@@ -84,6 +84,6 @@ export function Voting({ state }: { state: LobbyState }) {
         </div>
       )}
       <ErrorText>{error}</ErrorText>
-    </>
+    </div>
   );
 }

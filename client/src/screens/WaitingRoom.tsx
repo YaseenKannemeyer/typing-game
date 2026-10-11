@@ -10,6 +10,7 @@ import { Button, Card, ErrorText, PageTitle, Pill, SectionTabs, type SectionTab 
 import { api, errorMessage } from '../lib/api';
 import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
+import { prefersReducedMotion } from '../art/motion';
 
 type RoomTab = 'destination' | 'garage' | 'how' | 'trophies';
 const TROPHY_COUNT = Object.keys(TROPHIES).length;
@@ -81,7 +82,10 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
 
   const openGarage = () => {
     setTab('garage');
-    requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    requestAnimationFrame(() => {
+      tabsRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      tabsRef.current?.querySelector<HTMLButtonElement>('[role="tab"][aria-selected="true"]')?.focus({ preventScroll: true });
+    });
   };
 
   // Everything below the paddock lives in one tab set, so the room stays short on phones.
@@ -117,34 +121,38 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
   ];
 
   return (
-    <>
+    <div className="waiting-screen">
       <PageTitle
-        eyebrow="Waiting room"
         title="The crew is coming together."
         lead="Choose your ride. Share the code. We'll meet you on the starting line."
       />
 
-      <div className="g-lobby-grid">
-        <section>
+      <div className="room-command">
+        <div><span className="room-command-label">Private room</span><strong>{lobby.code}</strong><span>{players.length} of {MAX_PLAYERS} racers</span></div>
+        <div className="room-command-actions"><Button variant="secondary" icon="gear" onClick={openGarage}>Open garage</Button><Button icon="arrow" disabled={!isHost || !canStart || saving} loading={busy} onClick={startVote}>{isHost ? 'Start mode vote' : 'Waiting for the host'}</Button></div>
+        <p>{!isHost ? 'The host will start the vote. Make yourself at home.' : canStart ? 'Your crew is here. Start a vote when everyone is ready.' : 'Invite at least one more racer to get started.'}</p>
+        <ErrorText>{error}</ErrorText>
+      </div>
+      <div className="g-lobby-grid room-grid">
+        <section className="room-roster">
           <div className="g-between">
             <h2 className="g-heading">
               The paddock <span className="g-muted g-small">{players.length} / {MAX_PLAYERS} parked</span>
             </h2>
-            <Pill lime>PRIVATE PADDOCK</Pill>
+            <Pill lime>{players.length < MAX_PLAYERS ? `${MAX_PLAYERS - players.length} OPEN SEATS` : 'FULL GRID'}</Pill>
           </div>
           <Paddock players={roster} />
         </section>
 
         <aside className="g-stack">
-          <Card>
+          <Card className="room-invite">
             <RoomCode code={lobby.code} />
             <div className="g-divider" />
             <p className="g-muted mb-4">Better with your crew. Share your invitation and save them a spot.</p>
             <InviteLink code={lobby.code} />
           </Card>
-          <Card>
-            <div className="g-eyebrow">RACE RULES</div>
-            <h2 className="g-heading mb-4">Type until the clock stops.</h2>
+          <Card className="room-rules">
+            <h2 className="g-heading mb-4">Race settings</h2>
             <RaceSettings
               seconds={rules.seconds}
               zeroMistakes={rules.zero}
@@ -153,32 +161,12 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
               onChange={changeSettings}
             />
           </Card>
-          <Card>
-            <h2 className="g-heading">Ready when you are.</h2>
-            <p className="g-muted mb-4">Customize your vehicle, then join the vote.</p>
-            <div className="g-stack">
-              <Button variant="secondary" icon="gear" onClick={openGarage}>
-                Open garage
-              </Button>
-              <Button icon="arrow" disabled={!isHost || !canStart} loading={busy} onClick={startVote}>
-                {isHost ? 'Start mode vote' : 'Waiting for the host'}
-              </Button>
-            </div>
-            <p className="g-small g-muted mt-3">
-              {!isHost
-                ? 'You can keep choosing your ride until voting starts.'
-                : canStart
-                  ? 'Only the host can start the vote.'
-                  : 'You need at least one more racer to start.'}
-            </p>
-            <ErrorText>{error}</ErrorText>
-          </Card>
         </aside>
       </div>
 
       <section ref={tabsRef} className="scroll-mt-4" aria-label="Room details">
         <SectionTabs label="Room details" tabs={tabs} value={tab} onChange={setTab} />
       </section>
-    </>
+    </div>
   );
 }

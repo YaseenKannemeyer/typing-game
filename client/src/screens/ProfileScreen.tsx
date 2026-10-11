@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_BUILD, normalizeVehicle } from '../art/vehicleArt';
+import { normalizeLivery } from '../art/worldArt';
 import { ChartCard, EditNameDialog, ModeBests, ProfileHeader, RecentTrophies, TrendCharts } from '../components/profile/Profile';
 import { Clubhouse } from '../components/trophies/Clubhouse';
 import { Banner, Button, Card, Loading, Page, PageTitle } from '../components/ui';
@@ -79,7 +80,10 @@ export function ProfileScreen() {
     );
   }
 
-  const vehicle = normalizeVehicle({ ...DEFAULT_BUILD, ...profile.vehicle, primary: profile.car_color ?? '#ff683b', playerName: profile.display_name });
+  const vehicle = {
+    ...normalizeVehicle({ ...DEFAULT_BUILD, ...profile.vehicle, primary: profile.car_color ?? '#ff683b', playerName: profile.display_name }),
+    ...normalizeLivery(profile.vehicle),
+  };
   const saveProfile = (name: string, avatar?: 'car' | 'initials') => async () => {
     setBusy(true);
     setEditError(null);

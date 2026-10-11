@@ -135,7 +135,7 @@ export function Results({ state }: { state: LobbyState }) {
   const mine = split(awards.get(userId ?? ''));
 
   return (
-    <div className="space-y-8">
+    <div className="results-screen space-y-8">
       <PageTitle
         eyebrow={`${design.name} · Final results`}
         title="Every finish has a story."

@@ -38,7 +38,8 @@ export function Practice() {
   );
 
   return (
-    <section className="g-stack">
+    <section className="practice-section" id="practice" aria-label="Practice lap">
+      <div className="practice-heading">
       <SectionTitle
         title="Practice lap"
         aside={
@@ -47,6 +48,9 @@ export function Practice() {
           </Button>
         }
       />
+      <p className="g-muted">Find your rhythm before the lights go out. No timer, no rivals, just you and the keys.</p>
+      </div>
+      <div className="practice-workspace">
       <Dashboard
         wpm={stats.netWpm}
         accuracy={stats.accuracy}
@@ -65,6 +69,7 @@ export function Practice() {
           onKeyDown(e);
         }}
       />
+      </div>
     </section>
   );
 }

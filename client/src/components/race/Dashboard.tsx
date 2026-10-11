@@ -1,76 +1,39 @@
-import { useMemo } from 'react';
-import { wpmGaugeSvg } from '../../art/worldArt';
-import { TrustedSvg } from '../TrustedSvg';
 import { formatElapsed } from './Hud';
-
-/* React version of 22-dashboard/dashboard.js. Real typing units only. */
+import { Speedometer } from './Speedometer';
 
 interface Props {
   wpm: number;
   accuracy: number;
   mistakes: number;
-  /** Omit in practice (no position). */
   position?: number;
   total?: number;
   timeLabel: string;
   timeMs: number;
-  /** 0..1 */
   progress: number;
   progressLabel: string;
   running: boolean;
 }
 
-/** Needle stops at this WPM; the number always shows the real value. */
-const GAUGE_MAX = 160;
-
+/** Real typing units, with quiet live updates and readable labels at every width. */
 export function Dashboard({ wpm, accuracy, mistakes, position, total, timeLabel, timeMs, progress, progressLabel, running }: Props) {
-  const rounded = Math.round(wpm);
-  const gauge = useMemo(() => wpmGaugeSvg(rounded, GAUGE_MAX), [rounded]);
   const p = Math.min(1, Math.max(0, progress));
   return (
-    <section className="w-dashboard" aria-label="Live telemetry">
-      <div className="w-gauge">
-        <TrustedSvg markup={gauge} />
+    <section className={`w-dashboard telemetry ${position === undefined ? 'telemetry--practice' : ''}`} aria-label="Live telemetry">
+      <div className="telemetry-speed">
+        <span>Typing speed</span>
+        <Speedometer wpm={wpm} />
+        <span className={`telemetry-status ${running ? 'is-running' : ''}`}><i aria-hidden="true" />{p >= 1 ? 'Complete' : running ? 'In motion' : 'Ready to type'}</span>
       </div>
-      <div className="w-dash-main">
-        <div className="w-dash-kicker">
-          LIVE TELEMETRY <span>{running ? '● RUNNING' : '○ STANDBY'}</span>
-        </div>
-        <div className="w-dash-stats" style={position === undefined ? { gridTemplateColumns: 'repeat(3, 1fr)' } : undefined}>
-          {position !== undefined && (
-            <div>
-              <span>POSITION</span>
-              <strong>
-                P{position}
-                <small> / {total}</small>
-              </strong>
-            </div>
-          )}
-          <div>
-            <span>{timeLabel}</span>
-            <strong>{formatElapsed(timeMs)}</strong>
-          </div>
-          <div>
-            <span>ACCURACY</span>
-            <strong>
-              {accuracy.toFixed(1)}
-              <small>%</small>
-            </strong>
-          </div>
-          <div>
-            <span>MISTAKES</span>
-            <strong>{mistakes}</strong>
-          </div>
-        </div>
-        <div className="w-dash-progress" role="progressbar" aria-label={progressLabel} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p * 100)}>
-          <span style={{ width: `${p * 100}%` }} />
-        </div>
-        <div className="w-dash-progress-label">
-          <span>{progressLabel.toUpperCase()}</span>
-          <strong>{Math.round(p * 100)}%</strong>
-        </div>
+      <div className="telemetry-body">
+        <dl className="telemetry-stats">
+          {position !== undefined && <div><dt>Position</dt><dd>P{position}<small> / {total}</small></dd></div>}
+          <div><dt>{timeLabel === 'TIME LEFT' ? 'Time left' : 'Elapsed'}</dt><dd>{formatElapsed(timeMs)}</dd></div>
+          <div><dt>Accuracy</dt><dd>{accuracy.toFixed(1)}<small>%</small></dd></div>
+          <div><dt>Mistakes</dt><dd>{mistakes}</dd></div>
+        </dl>
+        <div className="telemetry-progress-copy"><span>{progressLabel}</span><strong>{Math.round(p * 100)}%</strong></div>
+        <div className="telemetry-progress" role="progressbar" aria-label={progressLabel} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p * 100)}><span style={{ transform: `scaleX(${p})` }} /></div>
       </div>
-      {/* Announce position changes, not every WPM tick. */}
       {position !== undefined && <p className="g-sr" aria-live="polite">Position {position} of {total}</p>}
     </section>
   );

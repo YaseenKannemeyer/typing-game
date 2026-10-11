@@ -2,6 +2,7 @@ import { useId, useRef, type ButtonHTMLAttributes, type KeyboardEvent, type Reac
 import { iconSvg, markSvg, type IconName } from '../art/gridArt';
 import { AppNav } from './AppNav';
 import { TrustedSvg } from './TrustedSvg';
+import { navigate } from '../lib/router';
 
 /* React versions of the GRID UI kit (02-ui/core.js, 01-brand/brand.js). */
 
@@ -71,7 +72,7 @@ export function SectionTitle({ eyebrow, title, aside }: { eyebrow?: string; titl
 
 export function PageTitle({ eyebrow, title, lead }: { eyebrow?: string; title: ReactNode; lead?: ReactNode }) {
   return (
-    <div>
+    <div className="page-title">
       {eyebrow && <p className="g-eyebrow">{eyebrow}</p>}
       <h1 className="g-title">{title}</h1>
       {lead && <p className="g-muted">{lead}</p>}
@@ -119,18 +120,19 @@ export function Loading({ label = 'Preparing the starting grid' }: { label?: str
   );
 }
 
-export function Page({ children, actions }: { children: ReactNode; actions?: ReactNode }) {
+export function Page({ children, actions, className = '' }: { children: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <div className="min-h-screen bg-ink text-fg">
-      <header className="border-b border-line">
+    <div className={`app-shell bg-ink text-fg ${className}`}>
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <header className="app-topbar">
         {/* Phones: brand + actions on one row, nav on its own scrollable row. Desktop: one row. */}
         <div className="app-header mx-auto max-w-6xl px-4">
-          <Brand />
+          <a className="app-brand-link" href="/" aria-label="GRID home" onClick={(e) => { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); navigate('/'); } }}><Brand /></a>
           <AppNav />
           <div className="app-header-actions">{actions}</div>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">{children}</main>
+      <main id="main-content" tabIndex={-1} className="app-main mx-auto max-w-6xl space-y-8 px-4 py-8">{children}</main>
     </div>
   );
 }

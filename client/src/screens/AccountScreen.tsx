@@ -50,7 +50,10 @@ function guestFrom(summary: Summary | null): GuestView | null {
     races: summary.stats.races,
     wins: summary.stats.wins,
     trophies: summary.stats.trophies,
-    vehicle: normalizeVehicle({ ...DEFAULT_BUILD, ...(saved?.build ?? {}), primary: saved?.primary ?? '#ff683b', playerName: loadName() || 'Guest' }),
+    vehicle: {
+      ...normalizeVehicle({ ...DEFAULT_BUILD, ...(saved?.build ?? {}), primary: saved?.primary ?? '#ff683b', playerName: loadName() || 'Guest' }),
+      ...normalizeLivery(saved?.build ?? {}),
+    },
   };
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { MOTION } from '../art/motion';
 import { laneLeft } from '../art/vehicleAnchors';
 import type { VehicleProps } from '../art/vehicleArt';
@@ -70,6 +70,7 @@ function laneRoad(wet: boolean) {
  * so at progress 1 every model's bumper meets the finish stripe.
  */
 export function Track({ cars, total, started, destination, ruler = RULER }: Props) {
+  const reducedMotion = useReducedMotion();
   const sky = useMemo(() => decorative(destinationSceneSvg(destination)), [destination]);
   return (
     <section className="w-circuit" aria-label={`Race track, ${total} racers`}>
@@ -87,7 +88,7 @@ export function Track({ cars, total, started, destination, ruler = RULER }: Prop
           // Keyed by player id: lanes swap with a FLIP layout animation, cars never remount.
           <motion.div
             key={car.id}
-            layout="position"
+            layout={reducedMotion ? false : 'position'}
             transition={{ layout: { duration: MOTION.ms.laneSwap / 1000, ease: MOTION.easing.standard } }}
             className={`w-lane ${car.isMe ? 'is-you' : ''}`}
           >

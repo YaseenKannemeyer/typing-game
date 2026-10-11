@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { TROPHIES } from '@race/shared';
 import { avatarSvg, lineChartSvg, modeBestsHtml } from '../../art/accountArt';
 import type { VehicleProps } from '../../art/vehicleArt';
@@ -62,28 +62,38 @@ export function EditNameDialog({ initial, busy, error, onSave, onCancel }: {
   onCancel: () => void;
 }) {
   const [name, setName] = useState(initial);
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const element = dialog.current!;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    element.showModal();
+    return () => {
+      element.close();
+      opener?.focus();
+    };
+  }, []);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#09120bcc] p-4" role="dialog" aria-modal="true" aria-labelledby="edit-name-title">
+    <dialog ref={dialog} className="a-edit-dialog" aria-labelledby="edit-name-title" onCancel={(e) => { e.preventDefault(); if (!busy) onCancel(); }}>
       <form
-        className="a-edit-dialog g-stack"
+        className="g-stack"
         onSubmit={(e) => {
           e.preventDefault();
-          onSave(name);
+          if (!busy) onSave(name);
         }}
       >
         <h2 id="edit-name-title">Edit display name</h2>
         <label className="g-field">
           Display name
-          <input className="g-input" autoFocus value={name} onChange={(e) => setName(e.target.value)} maxLength={16} />
+          <input className="g-input" autoFocus value={name} onChange={(e) => setName(e.target.value)} maxLength={16} disabled={busy} aria-invalid={!!error} aria-describedby={error ? 'edit-name-error' : 'edit-name-hint'} />
         </label>
-        <span className="g-small g-muted">2–16 letters, numbers, spaces, _ . or -. Shown on the leaderboard.</span>
-        <ErrorText>{error}</ErrorText>
+        <span id="edit-name-hint" className="g-small g-muted">2–16 letters, numbers, spaces, _ . or -. Shown on the leaderboard.</span>
+        <div id="edit-name-error"><ErrorText>{error}</ErrorText></div>
         <div className="g-row">
           <Button type="submit" loading={busy}>Save</Button>
-          <Button variant="ghost" onClick={onCancel}>Cancel</Button>
+          <Button variant="ghost" onClick={onCancel} disabled={busy}>Cancel</Button>
         </div>
       </form>
-    </div>
+    </dialog>
   );
 }
 
