@@ -4,6 +4,8 @@ import { modeDesign } from '../art/gridArt';
 import { Confetti, FinishVenue, ResultsTable, type ResultRowView } from '../components/results/Results';
 import { useAchievements } from '../components/achievements/Achievements';
 import { AwardCard } from '../components/trophies/AwardCard';
+import { RaceDebrief } from '../components/experience/Debrief';
+import { ChampionshipStandings } from '../components/experience/Championship';
 import { PitBoard, useControlBoard } from '../components/race/RaceControl';
 import { Button, Card, ErrorText, PageTitle, Pill, Skeleton } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
@@ -61,6 +63,7 @@ export function Results({ state }: { state: LobbyState }) {
   });
 
   const me = results.find((r) => r.id === userId);
+  const myRow = racePlayers.find((r) => r.user_id === userId);
   const iWon = rows.find((r) => r.status === 'finished')?.id === userId;
   const sounded = useRef({ winner: false, awards: false });
   useEffect(() => {
@@ -178,6 +181,12 @@ export function Results({ state }: { state: LobbyState }) {
         <h2 className="g-heading">Official standings</h2>
         <ResultsTable rows={rows} />
       </section>
+
+      {state.championship && state.championship.status !== 'cancelled' && state.championship.committed.length > 0 && (
+        <ChampionshipStandings championship={state.championship} myId={userId} />
+      )}
+
+      {race && myRow && <RaceDebrief race={race} me={myRow} passage={state.passage} />}
 
       {me && (
         <section className="g-stack">

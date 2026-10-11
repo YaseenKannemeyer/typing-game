@@ -4,6 +4,7 @@
     { "source": "/account", "destination": "/index.html" },
     { "source": "/profile", "destination": "/index.html" },
     { "source": "/leaderboard", "destination": "/index.html" },
+    { "source": "/first-lap", "destination": "/index.html" },
     { "source": "/r/:code", "destination": "/index.html" },
     { "source": "/r/:code/", "destination": "/index.html" },
     { "source": "/r/:code/watch", "destination": "/index.html" },

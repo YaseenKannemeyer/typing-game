@@ -22,7 +22,7 @@ import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
 import { Banner, Loading, Pill } from '../components/ui';
 import { api, lineSubmission } from '../lib/api';
 import { useServerNow } from '../lib/clock';
-import { clearActiveRace, saveActiveRace } from '../lib/storage';
+import { clearActiveRace, loadRaceMistakes, saveActiveRace, saveRaceMistakes } from '../lib/storage';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
 import { useTyping } from '../game/useTyping';
@@ -58,7 +58,20 @@ export function Race({ state }: Props) {
   const strict = !!race?.zero_mistakes;
   const elapsed = Math.min(durationMs, Math.max(0, now - startAt));
 
+  // Incorrect attempts per passage word, for this racer's debrief.
+  const mistakes = useRef<Record<number, number> | null>(null);
+  const onMistake = useCallback(
+    (word: number) => {
+      if (!race) return;
+      mistakes.current ??= loadRaceMistakes(race.id);
+      mistakes.current[word] = (mistakes.current[word] ?? 0) + 1;
+      saveRaceMistakes(race.id, mistakes.current);
+    },
+    [race],
+  );
+
   const typing = useTyping(passage ?? '', isRacer && started && racing && !timeUp, {
+    onMistake,
     strict,
     // Keystrokes are counted per tenth of the race time (Steady Hands).
     section: () => sectionOf(Date.now() + clockOffset - startAt, durationMs),
@@ -272,6 +285,11 @@ export function Race({ state }: Props) {
           </h1>
         </div>
         <div className="g-row">
+          {state.championship?.status === 'running' && (
+            <Pill lime>
+              ROUND {Math.min(state.championship.rounds, state.championship.committed.length + 1)} / {state.championship.rounds}
+            </Pill>
+          )}
           <Pill>{minutes} MIN</Pill>
           {strict && <Pill>ZERO MISTAKES</Pill>}
           {isRacer ? <Pill lime>{racePlayers.length} RACERS</Pill> : <Pill>SPECTATING</Pill>}

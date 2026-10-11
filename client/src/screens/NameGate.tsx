@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { normalizeName } from '@race/shared';
 import { Button, Card, ErrorText, Page, PageTitle } from '../components/ui';
 import { navigate } from '../lib/router';
-import { saveName } from '../lib/storage';
+import { firstLapDone, saveName } from '../lib/storage';
 
 /** Shown when someone opens an invite link without a saved name. */
 export function NameGate({ code, onName }: { code: string; onName: (name: string) => void }) {
@@ -39,6 +39,21 @@ export function NameGate({ code, onName }: { code: string; onName: (name: string
             <Button type="submit" icon="arrow">Join the grid</Button>
             <Button variant="ghost" onClick={() => navigate('/')}>Cancel</Button>
           </div>
+          {!firstLapDone() && (
+            <p className="g-small g-muted">
+              First time racing?{' '}
+              <a
+                href={`/first-lap?next=/r/${code}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/first-lap?next=/r/${code}`);
+                }}
+              >
+                Take a 30-second first lap
+              </a>{' '}
+              (optional).
+            </p>
+          )}
         </form>
       </Card>
     </Page>

@@ -89,3 +89,71 @@ export function clearActiveRace(raceId?: string) {
     // ignore
   }
 }
+
+const MISTAKES_KEY = 'typeracer:race-mistakes';
+
+/**
+ * Incorrect attempts per passage word for this browser's latest race (kit 27
+ * debrief coaching). Only the last race is kept. Coaching only: official
+ * stats come from the server.
+ */
+export function loadRaceMistakes(raceId: string): Record<number, number> {
+  try {
+    const raw = JSON.parse(localStorage.getItem(MISTAKES_KEY) ?? 'null') as { raceId?: unknown; counts?: unknown } | null;
+    if (raw?.raceId !== raceId || typeof raw.counts !== 'object' || raw.counts === null) return {};
+    const out: Record<number, number> = {};
+    for (const [k, v] of Object.entries(raw.counts as Record<string, unknown>)) {
+      if (/^\d+$/.test(k) && typeof v === 'number' && v > 0) out[Number(k)] = Math.floor(v);
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+export function saveRaceMistakes(raceId: string, counts: Record<number, number>) {
+  try {
+    localStorage.setItem(MISTAKES_KEY, JSON.stringify({ raceId, counts }));
+  } catch {
+    // Storage blocked: the debrief shows its "not recorded" state.
+  }
+}
+
+const DRILL_KEY = 'typeracer:practice-drill';
+
+/** A drill handed from the race debrief to the practice screen (one use). */
+export function saveDrill(text: string) {
+  try {
+    sessionStorage.setItem(DRILL_KEY, text);
+  } catch {
+    // ignore
+  }
+}
+
+export function takeDrill(): string | null {
+  try {
+    const t = sessionStorage.getItem(DRILL_KEY);
+    sessionStorage.removeItem(DRILL_KEY);
+    return t && t.trim() ? t.trim().slice(0, 300) : null;
+  } catch {
+    return null;
+  }
+}
+
+const FIRST_LAP_KEY = 'typeracer:first-lap-done';
+
+export function firstLapDone(): boolean {
+  try {
+    return localStorage.getItem(FIRST_LAP_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function markFirstLapDone() {
+  try {
+    localStorage.setItem(FIRST_LAP_KEY, '1');
+  } catch {
+    // ignore
+  }
+}

@@ -110,6 +110,20 @@ async function main() {
   await shot(alice, '03-waiting-room');
   await shot(bob, '04-waiting-room-mobile');
 
+  // Championship (kit 25): the host sets up a 2-round event and locks it; Bob sees it read-only.
+  alice.on('dialog', (d) => void d.accept());
+  await alice.getByRole('button', { name: 'Set up event' }).click();
+  await alice.getByRole('heading', { name: 'Event setup' }).waitFor();
+  await alice.getByRole('button', { name: '2 rounds' }).click();
+  // The server confirms the change (revision bump) before the third round disappears.
+  await alice.locator('.x-rounds li').nth(2).waitFor({ state: 'detached', timeout: 10_000 });
+  await alice.locator('.x-rounds li').nth(1).waitFor();
+  await alice.getByRole('button', { name: 'Lock rules and start' }).click();
+  await bob.getByRole('heading', { name: 'Event running' }).waitFor();
+  await alice.getByText('RULES LOCKED').waitFor();
+  await shot(alice, '19-championship-locked');
+  console.log('championship locked');
+
   await alice.getByRole('button', { name: /Start mode vote/ }).click();
   await bob.getByText('Pick your kind of fast.').waitFor();
   await alice.locator('.g-mode', { hasText: 'Easy' }).click();
@@ -135,6 +149,7 @@ async function main() {
   })();
   const racing = Promise.all([typeUntilTimeUp(alice, 45), bobRace]);
   await alice.waitForTimeout(20_000);
+  await alice.getByText('ROUND 1 / 2').waitFor();
   await shot(alice, '06b-race');
   // Spectator during the race: lanes, live standings, keyboard featuring, presentation.
   await carol.getByRole('heading', { name: 'Race on.' }).waitFor();
@@ -186,9 +201,71 @@ async function main() {
   await shot(alice, '08b-achievement-toast');
   console.log('achievement toast:', (await alice.locator('.a-achievement-toast h2').textContent())?.trim());
 
+  // Championship round 1 is committed by the server; points are shown, not sent.
+  await alice.getByText('1 of 2 rounds committed').waitFor({ timeout: 20_000 });
+  const champ = (await alice.locator('.x-champ-table tbody').textContent())?.replace(/\s+/g, ' ');
+  console.log('championship after round 1:', champ);
+  if (!champ?.includes('15')) throw new Error('the round winner should have 15 points');
+
+  // Debrief (kit 27): real timeline, previous best scope, problem words from Bob's own typing.
+  await alice.getByRole('heading', { name: /A strong finish|Fast start|A steady race|Your race, in numbers/ }).waitFor();
+  if (!(await alice.locator('.x-chart').count())) throw new Error('debrief should draw a timeline');
+  await alice.getByRole('button', { name: 'Accuracy' }).click();
+  await alice.locator('.x-chart rect').first().waitFor();
+  await alice.getByRole('button', { name: 'WPM' }).click();
+  console.log('debrief comparison:', (await alice.locator('.x-stats').first().textContent())?.replace(/\s+/g, ' '));
+  await alice.locator('.x-debrief').scrollIntoViewIfNeeded();
+  await shot(alice, '20-debrief');
+  await bob.locator('.x-word-list li').first().waitFor({ timeout: 10_000 });
+  console.log('bob problem words:', (await bob.locator('.x-word-list').textContent())?.replace(/\s+/g, ' '));
+  await shot(bob, '20b-debrief-mobile');
+
   await alice.getByRole('button', { name: 'Back to lobby' }).click();
   await bob.getByRole('heading', { name: /The paddock/ }).waitFor();
   console.log('round trip complete');
+  await alice.getByRole('heading', { name: 'Event running' }).waitFor();
+  await alice.getByRole('button', { name: 'Cancel event' }).click();
+  await bob.getByRole('heading', { name: 'Run a championship' }).waitFor();
+  console.log('championship cancelled by host');
+
+  // Practice drill from the debrief, editable before it starts (kit 27 → 29).
+  await carol.goto(`${base}/first-lap`);
+  await carol.getByRole('heading', { name: /Small steps/ }).waitFor();
+  // First lap (kit 28): a fixed mistake still counts.
+  const lapInput = carol.getByLabel('Type the current line');
+  await lapInput.focus();
+  await carol.keyboard.type('Fix', { delay: 40 });
+  await carol.keyboard.press('Backspace');
+  await carol.keyboard.type('nd your rhythm, then race.', { delay: 30 });
+  await carol.keyboard.press('Enter');
+  await carol.getByText('Lap complete. You are ready to race.').waitFor();
+  const lapMistakes = await carol.locator('.x-stat', { hasText: 'Mistakes' }).locator('strong').textContent();
+  if (lapMistakes?.trim() !== '1') throw new Error(`first lap should keep 1 mistake after correction, saw ${lapMistakes}`);
+  await carol.getByLabel('High contrast').check();
+  await carol.getByLabel('Reduce motion').check();
+  await carol.locator('input[type="range"]').fill('30');
+  if ((await carol.evaluate(() => document.documentElement.dataset.contrast)) !== 'high') throw new Error('high contrast not applied');
+  await shot(carol, '21-first-lap-comfort');
+  await carol.reload();
+  await carol.getByLabel('High contrast').waitFor();
+  if (!(await carol.getByLabel('High contrast').isChecked())) throw new Error('comfort settings should persist');
+  console.log('first lap + comfort ok');
+
+  // Ghost practice (kit 29): a drill lap is saved privately, then raced against.
+  await alice.goto(`${base}/`);
+  await alice.getByRole('button', { name: /Steady pace/ }).click();
+  await alice.getByRole('heading', { name: 'Steady pace' }).waitFor();
+  await alice.getByText(/No ghost for this text yet|Looking for your saved lap/).first().waitFor();
+  await typeUntilTimeUp(alice, 20, 5);
+  await alice.getByText(/New best lap saved as your ghost|Your ghost is still faster/).waitFor({ timeout: 15_000 });
+  await alice.getByRole('button', { name: 'Restart lap' }).click();
+  await alice.getByText(/YOUR BEST LAP/).waitFor({ timeout: 15_000 });
+  await alice.getByLabel('Type the current line').focus();
+  await alice.keyboard.type('Keep a steady', { delay: 120 });
+  await alice.waitForTimeout(600);
+  await alice.locator('.x-ghost-track').scrollIntoViewIfNeeded();
+  await shot(alice, '22-ghost-practice');
+  console.log('ghost practice ok');
 
   // Phase 4 pages, as a guest who now has race history.
   await alice.goto(`${base}/account`);

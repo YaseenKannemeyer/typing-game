@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { HEARTBEAT_MS, VOTE_MODES, type VoteMode } from '@race/shared';
-import { api, errorCode, errorMessage } from '../lib/api';
+import { api, errorCode, errorMessage, type Championship } from '../lib/api';
 import { measureClockOffset } from '../lib/clock';
 import { loadBuild } from '../lib/storage';
 import { ensureSession, requireSupabase } from '../lib/supabase';
@@ -29,6 +29,8 @@ export interface LobbyState {
   /** Server time minus local time, in ms. */
   clockOffset: number;
   voteResult: VoteMode | null;
+  /** The room's latest championship (kit 25), or null. */
+  championship: Championship | null;
 }
 
 const initial: LobbyState = {
@@ -47,6 +49,7 @@ const initial: LobbyState = {
   online: new Set(),
   clockOffset: 0,
   voteResult: null,
+  championship: null,
 };
 
 const RACE_PLAYER_COLUMNS =
@@ -87,10 +90,12 @@ export function useLobby(code: string, name: string) {
     const sb = requireSupabase();
     const id = lobbyId.current;
     if (!id) return;
-    const [lobbyRes, playersRes, votesRes] = await Promise.all([
+    const [lobbyRes, playersRes, votesRes, championship] = await Promise.all([
       sb.from('lobbies').select('id, code, host_id, status, current_race_id, vote_ends_at, mode, race_seconds, zero_mistakes, destination').eq('id', id).maybeSingle(),
       sb.from('lobby_players').select('user_id, name, car_color, joined_at, streak, vehicle').eq('lobby_id', id).order('joined_at'),
       sb.from('lobby_votes').select('user_id, mode').eq('lobby_id', id),
+      // undefined = couldn't load (e.g. mid-rejoin): keep the last known event.
+      api.lobbyChampionship(id).catch(() => undefined),
     ]);
     const lobby = lobbyRes.data as Lobby | null;
     if (!lobby) {
@@ -130,6 +135,7 @@ export function useLobby(code: string, name: string) {
       // Fresh race: drop stale live progress from the previous one.
       live: s.race?.id === race?.id ? s.live : {},
       voteResult: lobby.status === 'voting' ? null : s.voteResult,
+      championship: championship === undefined ? s.championship : championship,
     }));
   }, [fail]);
 

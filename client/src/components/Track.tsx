@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { motion, useReducedMotion, useSpring, useTransform } from 'framer-motion';
+import { motion, useReducedMotionConfig, useSpring, useTransform } from 'framer-motion';
 import { MOTION } from '../art/motion';
 import { laneLeft } from '../art/vehicleAnchors';
 import type { VehicleProps } from '../art/vehicleArt';
@@ -75,7 +75,7 @@ function laneRoad(wet: boolean) {
  * so at progress 1 every model's bumper meets the finish stripe.
  */
 export function Track({ cars, total, started, destination, ruler = RULER, lanes = 0 }: Props) {
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotionConfig();
   const sky = useMemo(() => decorative(destinationSceneSvg(destination)), [destination]);
   return (
     <section className="w-circuit" aria-label={`Race track, ${total} racers`}>
@@ -145,7 +145,7 @@ function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boo
 
   const progress = Math.min(1, Math.max(0, car.progress));
   const pct = Math.round(car.percent ?? progress * 100);
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotionConfig();
   // Cars never roll backwards: a downward correction (e.g. after a rejoin) holds the car until it catches up.
   const furthest = useRef(0);
   if (!started) furthest.current = 0;

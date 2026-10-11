@@ -1,0 +1,178 @@
+/* Race-day identity. Presentation only; the kits own their artwork and behavior. */
+body .app-shell { --race-paper: #e9eedb; --race-ink: #16251b; }
+body .app-topbar { border-top: 4px solid var(--g-lime); border-bottom-color: #536344; }
+body .app-header .app-brand-link .g-brand { font-weight: 900; font-style: italic; }
+body .app-header .app-brand-link .g-brand small { font-style: normal; }
+body .app-header .a-nav a { text-transform: uppercase; font-weight: 700; letter-spacing: .04em; font-size: 11px; }
+body .app-header .a-nav a[aria-current=page] { background: var(--g-lime); color: var(--race-ink); }
+body .app-shell :is(.g-title, .g-heading, .lb-intro h1, .a-auth-story > h1) { font-weight: 850; letter-spacing: -.035em; }
+body .app-shell :is(.g-title, .lb-intro h1) { text-transform: uppercase; font-style: italic; line-height: 1.12; }
+body .app-shell .g-btn { font-weight: 750; border-radius: 6px; }
+body .app-shell .g-btn--primary { border-color: #c9fa8f; }
+body .app-shell .g-pill { font-family: var(--g-mono); font-weight: 500; }
+body .app-shell .g-panel { border-top-color: #70805a; }
+body .app-shell .room-command { background: #273822; border-color: #769252; }
+body .app-shell .room-command strong { font-style: italic; font-weight: 800; }
+body .app-shell .w-bay-top { font-weight: 700; border-bottom: 1px solid #4b6143; }
+body .app-shell .g-mode > h3 { font-weight: 850; font-style: italic; text-transform: uppercase; }
+body .app-shell .telemetry-speed { background: #243420; }
+body .app-shell .telemetry-stats dt { text-transform: uppercase; font-size: 10px; letter-spacing: .045em; }
+body .app-shell .g-results-table thead { text-transform: uppercase; letter-spacing: .055em; }
+body .app-shell .w-pitboard > strong { font-style: italic; font-weight: 850; }
+
+/* The arrival is an illustrated race poster paired with a pit-entry ticket. */
+body .home-page .home-hero { gap: 48px; align-items: stretch; }
+body .home-page .home-story h1 { font-size: clamp(62px, 6.4vw, 92px); font-weight: 900; font-style: italic; line-height: 1.04; text-transform: uppercase; letter-spacing: -.04em; padding-right: .1em; }
+body .home-page .home-story h1 > span { display: block; }
+body .home-page .home-story > p { margin-top: 18px; }
+.home-race-format { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 22px; color: #becab2; font-size: 11px; }
+.home-race-format > span { display: inline-flex; align-items: center; gap: 7px; }
+.home-race-format strong { color: var(--g-text); font: 600 15px var(--g-mono); }
+.home-race-format svg { color: var(--g-lime); }
+body .home-page .home-showcase { margin-top: 22px; border: 1px solid #627650; border-radius: 12px; }
+.home-race-number { position: absolute; right: 22px; top: 12px; font: italic 900 76px/1 var(--g-font); letter-spacing: -.04em; color: #e9eedb; opacity: .65; -webkit-text-stroke: 1px #253725; pointer-events: none; }
+body .home-page .home-showcase-controls { background: #142219; border-top: 1px solid #526347; }
+body .home-page .home-showcase-controls strong { font-weight: 800; font-style: italic; text-transform: uppercase; letter-spacing: .015em; }
+body .home-page .home-entry { position: relative; background: var(--race-paper); color: var(--race-ink); border: 1px solid #f4f7eb; padding: 28px 30px 40px; overflow: hidden; align-self: center; }
+body .home-page .home-entry::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: conic-gradient(var(--race-ink) 25%, transparent 0 50%, var(--race-ink) 0 75%, transparent 0) 0 0 / 16px 16px; opacity: .85; }
+body .home-page .home-entry-heading { color: var(--race-ink); padding-bottom: 20px; border-bottom: 1px dashed #87967c; gap: 12px; }
+body .home-page .home-entry-heading > span { color: #43533d; font-size: 11px; }
+body .home-page .home-entry-heading .home-entry-label { display: flex; align-items: center; gap: 8px; color: var(--race-ink); text-transform: uppercase; font-weight: 850; font-size: 12px; }
+body .home-page .home-entry h2 { font-size: 32px; font-weight: 850; line-height: 1.08; letter-spacing: -.03em; }
+body .home-page .home-entry > p { color: #495b43; }
+body .home-page .home-entry .g-field { color: #354630; font-weight: 650; }
+body .home-page .home-entry .g-input { color: var(--race-ink); background: #f6f8ed; border-color: #879879; }
+body .home-page .home-entry .g-input::placeholder { color: #5d6d52; }
+body .home-page .home-entry .g-btn--primary { background: var(--race-ink); border-color: var(--race-ink); color: var(--g-lime); text-transform: uppercase; letter-spacing: .045em; }
+body .home-page .home-entry .g-btn--primary:hover:not(:disabled) { background: #2c4227; }
+body .home-page .home-entry .g-btn--secondary { color: var(--race-ink); background: #d6dfc7; border-color: #879879; }
+body .home-page .home-entry .g-btn--secondary:hover:not(:disabled) { background: #c4d3b0; }
+body .home-page .home-entry :is(button, a, input):focus-visible { outline-color: #3b631f; }
+body .home-page .home-entry .g-input:focus { border-color: #3b631f; box-shadow: 0 0 0 2px #3b631f26; }
+body .home-page .home-form-divider, body .home-page .home-entry-note { color: #4f6045; }
+body .home-page .home-form-divider::before, body .home-page .home-form-divider::after { background: #acb99e; }
+body .home-page .home-entry .g-field-error { color: #992d20; }
+body .home-page .home-lineup { border-top: 1px solid #536344; padding-top: 28px; }
+body .home-page .home-lineup h2 { font-weight: 850; font-style: italic; text-transform: uppercase; }
+body .home-page .home-lineup-cars { background: #18271d; padding: 14px 8px 20px; border-block: 1px solid #3c5138; }
+body .home-page .home-lineup-cars button { border-radius: 6px; }
+body .home-page .home-lineup-cars button[aria-pressed=true] { background: #2d4227; border-color: #b9f46a; }
+body .home-page .practice-heading .g-heading { font-weight: 850; font-style: italic; text-transform: uppercase; }
+body .home-page .home-footer { border-top: 2px solid #738659; }
+@media (max-width: 1100px) {
+  body .home-page .home-hero { gap: 28px; }
+  body .home-page .home-story h1 { font-size: 66px; }
+  body .home-page .home-entry { padding-inline: 24px; }
+  body .home-page .home-entry h2 { font-size: 29px; }
+}
+@media (max-width: 900px) and (min-width: 701px) {
+  body .home-page .home-story h1 { font-size: 56px; }
+  .home-race-format { gap: 10px 16px; }
+  .home-race-number { font-size: 58px; }
+}
+@media (max-width: 700px) {
+  body .home-page .home-hero { gap: 28px; }
+  body .home-page .home-story h1 { font-size: clamp(54px, 14vw, 86px); }
+  body .home-page .home-entry { width: 100%; padding: 24px 24px 36px; }
+  body .home-page .home-entry h2 { font-size: 30px; }
+  .home-race-format { gap: 10px 18px; font-size: 10px; }
+  .home-race-number { font-size: 54px; right: 16px; top: 12px; }
+  body .home-page .home-lineup h2 { font-size: 20px; }
+  body .app-header .a-nav a { font-size: 10px; padding-inline: 12px; }
+}
+@media (max-width: 360px) {
+  body .home-page .home-entry { padding-inline: 20px; }
+  body .home-page .home-entry h2 { font-size: 27px; }
+}
+
+/* The same venue surrounds every route, including recovery and empty states. */
+body .app-shell { display: flex; flex-direction: column; }
+body .app-shell .app-main { width: 100%; flex: 1; }
+body .app-topbar::after { content: ''; display: block; height: 6px; background: conic-gradient(#b6c5a6 25%, #22331f 0 50%, #b6c5a6 0 75%, #22331f 0) 0 0 / 12px 12px; opacity: .6; }
+.race-site-footer { display: flex; align-items: center; gap: 24px; padding: 24px max(24px, calc((100vw - 1216px) / 2)); border-top: 1px solid #415537; background: #16241a; color: #aab99d; font: 11px var(--g-mono); letter-spacing: .08em; }
+.race-footer-mark { display: inline-flex; align-items: center; gap: 10px; color: var(--g-lime); font: italic 850 16px var(--g-font); letter-spacing: -.02em; }
+.race-footer-checks { margin-left: auto; width: 64px; height: 16px; background: conic-gradient(#b6c5a6 25%, transparent 0 50%, #b6c5a6 0 75%, transparent 0) 0 0 / 16px 16px; }
+body .is-presenting .race-site-footer { display: none; }
+body .app-shell :is(.page-title, .g-system-state) { position: relative; }
+body .app-shell .page-title { padding-bottom: 22px; border-bottom: 1px solid #526446; }
+body .app-shell .page-title::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 72px; height: 5px; background: var(--g-lime); transform: skewX(-22deg); transform-origin: left; }
+body .app-shell :is(.a-auth-story > h1, .a-form-heading h2, .a-profile-toolbar > h2, .a-card-heading h2, .w-clubhouse-header h2, .g-system-state h1, .g-loading h2, .sp-title h2, .sp-winner h2, .x-panel-heading h2, .x-intro h1) { font-weight: 850; font-style: italic; text-transform: uppercase; letter-spacing: -.03em; line-height: 1.12; }
+body .app-shell :is(.g-system-state, .g-loading) { padding-block: 48px; }
+body .app-shell .g-system-state h1 { font-size: clamp(30px, 4vw, 48px); }
+
+/* Membership forms read as credentials issued at the paddock. */
+body .app-shell .a-auth-form-panel { background: var(--race-paper); color: var(--race-ink); --g-text: #16251b; --g-muted: #4f6045; --g-lime: #36591e; border-color: #f4f7eb; border-top: 6px solid #8ab645; }
+body .app-shell .a-auth-form-panel :is(.g-muted, .g-field, .a-form-note, .a-form-heading p) { color: #495b43; }
+body .app-shell .a-auth-form-panel .g-input { background: #f6f8ed; color: #16251b; border-color: #879879; }
+body .app-shell .a-auth-form-panel .g-input::placeholder { color: #5d6d52; }
+body .app-shell .a-auth-form-panel .g-btn--primary { background: #16251b; color: #b9f46a; border-color: #16251b; }
+body .app-shell .a-auth-form-panel .g-btn--primary:hover:not(:disabled) { background: #2c4227; }
+body .app-shell .a-auth-form-panel .g-btn--ghost { color: #36591e; }
+body .app-shell .a-auth-form-panel .a-auth-tabs { background: #d8e1ca; border-color: #98a78b; }
+body .app-shell .a-auth-form-panel .a-auth-tabs button { color: #46573b; font-weight: 700; }
+body .app-shell .a-auth-form-panel .a-auth-tabs button[aria-pressed=true] { background: #23381e; color: #e9eedb; }
+body .app-shell .a-auth-form-panel .g-field-error { color: #992d20; }
+body .app-shell .a-guest-summary { border-color: #718855; background: #23331f; }
+body .app-shell .a-guest-name { font-weight: 850; font-style: italic; }
+
+/* Driver credentials, lap records, trophy shelves and victory lane. */
+body .app-shell .a-profile-header { border-top: 6px solid var(--g-lime); border-radius: 0 0 16px 16px; background: #21351f; }
+body .app-shell .a-profile-identity h1 { font-weight: 900; font-style: italic; line-height: 1.12; }
+body .app-shell .a-profile-art { border-radius: 10px; background: #344a2d; }
+body .app-shell .a-profile-metrics { border-top: 1px dashed #789264; }
+body .app-shell .a-profile-metrics strong { font-style: italic; font-weight: 750; }
+body .app-shell .a-chart-card { border-top: 3px solid #708651; border-radius: 0 0 12px 12px; }
+body .app-shell .a-card-heading { padding-bottom: 14px; border-bottom: 1px solid #3c5135; margin-bottom: 18px; }
+body .app-shell .w-clubhouse-header { border-bottom: 1px solid #526446; padding-bottom: 22px; margin-bottom: 24px; }
+body .app-shell .w-cabinet { border-color: #4c613b; background: #20301f; }
+body .app-shell .w-cabinet-slot.earned { background: #2a3e23; }
+body .app-shell .lb-hall { border-top: 6px solid var(--g-lime); background: #20321e; }
+body .app-shell .lb-champion-place { border-bottom: 1px dashed #6a8056; padding-bottom: 12px; }
+body .app-shell .lb-champion-place > span { font: italic 850 28px var(--g-font); }
+body .app-shell .lb-champion > strong { font-style: italic; }
+body .app-shell .lb-table thead { background: #2b3c25; text-transform: uppercase; letter-spacing: .06em; }
+body .app-shell .lb-rank { font-style: italic; font-weight: 800; color: #c0d2ab; }
+body .app-shell .results-screen .g-results-table thead { background: #2b3c25; }
+body .app-shell .w-podium-list { padding-top: 16px; border-top: 1px dashed #789264; }
+body .app-shell .g-position-badge { font-style: italic; font-weight: 850; border-radius: 5px; }
+
+/* Garage signs, pit passes and mode boards remain part of the same club. */
+body .app-shell .section-tabs-list [role=tab] { font-weight: 750; text-transform: uppercase; font-size: 12px; letter-spacing: .035em; }
+body .app-shell .w-station-tabs { border-bottom: 1px solid #4c613b; }
+body .app-shell .w-station-tabs button { font-weight: 750; text-transform: uppercase; }
+body .app-shell .w-workshop { border-color: #708651; }
+body .app-shell .w-workshop-footer { color: #c0d2ab; letter-spacing: .045em; }
+body .app-shell .w-bay-top { background: #293e23; }
+body .app-shell .w-bay-top > span:first-child { font: italic 800 14px var(--g-font); }
+body .app-shell .w-destination-card h3 { font-weight: 850; font-style: italic; }
+body .app-shell .g-mode.selected { border-top: 5px solid var(--g-lime); padding-top: 20px; }
+body .app-shell .g-vote-reveal h2 { font-style: italic; font-weight: 900; text-transform: uppercase; }
+
+/* Broadcast and experience kits share the finish-line vocabulary. */
+body .app-shell .sp-top { background: #dce6cd; color: #16251b; border-bottom: 4px solid #8aad58; }
+body .app-shell .sp-brand { font-style: italic; }
+body .app-shell .sp-brand span { color: #37582a; }
+body .app-shell .sp-feed--live { color: #37582a; }
+body .app-shell .sp-feed--delayed, body .app-shell .sp-feed--reconnecting { color: #795000; }
+body .app-shell .sp-clock { color: #16251b; font-style: italic; font-weight: 850; }
+body .app-shell .sp-pos { font-weight: 800; font-style: italic; }
+body .app-shell .sp-featured h3 { font-style: italic; font-weight: 850; }
+body .app-shell .sp-winner { background: #253a20; border-top: 6px solid #b9f46a; }
+body .app-shell .sp-footer { border-top: 1px dashed #72875e; }
+body .app-shell .x-panel { border-top-color: #8ba363; background: #1c2d20; }
+body .app-shell .x-debrief-score { font-style: italic; font-weight: 850; }
+body .app-shell .x-table thead, body .app-shell .x-champ-table thead { background: #2b3c25; text-transform: uppercase; letter-spacing: .04em; }
+body .app-shell .x-rounds strong { font-style: italic; }
+@media (max-width: 700px) {
+  .race-site-footer { padding: 22px 16px; gap: 12px; flex-wrap: wrap; }
+  .race-footer-mark { font-size: 14px; }
+  .race-site-footer > span:nth-child(2) { font-size: 9px; }
+  .race-footer-checks { width: 32px; }
+  body .app-shell .page-title { padding-bottom: 18px; }
+  body .app-shell .section-tabs-list [role=tab] { font-size: 11px; }
+  body .app-shell .lb-champion-place > span { font-size: 22px; }
+  body .app-shell .g-mode.selected { padding-top: 16px; }
+}
+body .app-shell .sp-top .g-btn--ghost { color: #16251b; border-color: #879879; }
+body .app-shell .sp-top .g-btn--ghost:hover { background: #c7d6b6; }
+body .app-shell .sp-top button:focus-visible { outline-color: #36591e; }

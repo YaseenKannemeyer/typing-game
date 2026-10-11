@@ -1,5 +1,5 @@
 import { useEffect, useState, type AnimationEvent } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { useReducedMotionConfig } from 'framer-motion';
 import { CAR_COLORS, MAX_PLAYERS, normalizeName } from '@race/shared';
 import { MODEL_GEOMETRY } from '../art/vehicleArt';
 import { decorative, destinationSceneSvg, roadSurfaceSvg, type DestinationId } from '../art/worldArt';
@@ -49,7 +49,7 @@ function Exhaust() {
 }
 
 function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: number) => void }) {
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotionConfig();
   const count = MODEL_GEOMETRY.length;
   const model = MODEL_GEOMETRY[selected]!;
   const [paused, setPaused] = useState(false);
@@ -111,6 +111,7 @@ function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: 
         ))}
         <div className="home-road-dashes" />
       </div>
+      <span className="home-race-number" aria-hidden="true">{String(selected + 1).padStart(2, '0')}</span>
       {cars.map((c) => (
         <div key={c.id} className={`home-showcase-car is-${c.phase}`} aria-hidden="true" onAnimationEnd={finished(c.id)}>
           <div className="home-car-body">
@@ -199,10 +200,15 @@ export function Home() {
       <div className="home-story">
         <h1>Type it. <span>Race it.</span></h1>
         <p>Same text. Same clock. A little friendly rivalry.<br className="home-desktop-break" /> Race up to {MAX_PLAYERS} friends. Let your typing do the talking.</p>
+        <div className="home-race-format" aria-label="Race format">
+          <span><strong>{MAX_PLAYERS}</strong> racer grid</span>
+          <span><strong>1–5</strong> minute races</span>
+          <span><Icon name="flag" size={16} /> Highest WPM wins</span>
+        </div>
         <Showroom selected={selectedCar} onSelect={setSelectedCar} />
       </div>
       <section className="home-entry" aria-labelledby="home-entry-title">
-        <div className="home-entry-heading"><Icon name="flag" size={24} /><span>No account needed</span></div>
+        <div className="home-entry-heading"><span className="home-entry-label"><Icon name="flag" size={24} /> Race entry</span><span>No account needed</span></div>
         <h2 id="home-entry-title">Your grid is waiting.</h2>
         <p>Create a private room, or jump into a friend’s race.</p>
       {supabase ? (
@@ -250,7 +256,10 @@ export function Home() {
               <Button type="submit" variant="secondary" icon="arrow" disabled={busy}>Join</Button>
             </form>
           <div id="home-entry-error"><ErrorText>{error}</ErrorText></div>
-          <p className="home-entry-note">1–5 minute races. Highest WPM wins.</p>
+          <p className="home-entry-note">
+            1–5 minute races. Highest WPM wins.{' '}
+            <a href="/first-lap" onClick={(e) => { e.preventDefault(); navigate('/first-lap'); }}>First lap &amp; typing comfort</a>
+          </p>
         </div>
       ) : (
         <div className="home-offline"><p>Multiplayer is unavailable right now. The practice track is always open.</p><a className="g-btn g-btn--primary" href="#practice">Take a practice lap <Icon name="arrow" /></a></div>

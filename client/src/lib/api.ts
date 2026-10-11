@@ -32,6 +32,14 @@ const MESSAGES: Record<string, string> = {
   invalid_destination: 'Pick one of the six destinations.',
   invalid_duration: 'Pick a race length between 1 and 5 minutes.',
   spectators_full: 'This room has too many spectators right now. Try again in a minute.',
+  not_in_race: 'You were not in that race.',
+  invalid_ghost: 'That practice lap could not be saved.',
+  invalid_rounds: 'Pick between 2 and 5 rounds.',
+  championship_exists: 'This room already has a championship.',
+  no_championship: 'There is no open championship in this room.',
+  championship_locked: 'The championship rules are locked.',
+  stale_revision: 'Someone changed the championship just now. Showing the latest version.',
+  invalid_action: 'That action is not available.',
   captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
 
@@ -118,6 +126,31 @@ export const api = {
     if (error) throw new ApiError(error.message);
   },
   serverNow: () => call<string>('server_now'),
+  /** Best earlier result in the same mode and race length (this race excluded). */
+  myPreviousBest: (raceId: string) => call<{ best_wpm: number | null; races: number }>('my_previous_best', { p_race_id: raceId }),
+  savePracticeGhost: (passageHash: string, rulesVersion: string, durationMs: number, trace: readonly (readonly [number, number])[]) =>
+    call<{ saved: boolean; best_ms: number }>('save_practice_ghost', {
+      p_passage_hash: passageHash, p_rules_version: rulesVersion, p_duration_ms: durationMs, p_trace: trace,
+    }),
+  /** The caller's saved lap for this exact passage and rules version (RLS: owner only). */
+  loadPracticeGhost: async (passageHash: string, rulesVersion: string) => {
+    const { data, error } = await requireSupabase()
+      .from('practice_ghosts')
+      .select('duration_ms, trace, created_at')
+      .eq('passage_hash', passageHash)
+      .eq('rules_version', rulesVersion)
+      .maybeSingle();
+    if (error) throw new ApiError(error.message);
+    return data as { duration_ms: number; trace: unknown; created_at: string } | null;
+  },
+  deletePracticeGhost: async (passageHash: string, rulesVersion: string) => {
+    const { error } = await requireSupabase().from('practice_ghosts').delete().eq('passage_hash', passageHash).eq('rules_version', rulesVersion);
+    if (error) throw new ApiError(error.message);
+  },
+  lobbyChampionship: (lobbyId: string) => call<Championship | null>('lobby_championship', { p_lobby_id: lobbyId }),
+  createChampionship: (lobbyId: string, rounds: number) => call<void>('create_championship', { p_lobby_id: lobbyId, p_rounds: rounds }),
+  updateChampionship: (lobbyId: string, action: 'rounds' | 'lock' | 'cancel', expectedRevision: number, rounds?: number) =>
+    call<void>('update_championship', { p_lobby_id: lobbyId, p_action: action, p_expected_revision: expectedRevision, p_rounds: rounds ?? null }),
   /** Registers as a spectator (heartbeat) and returns the room's public snapshot. */
   watchLobby: (code: string) => call<WatchSnapshot>('watch_lobby', { p_code: code }),
 
@@ -177,4 +210,23 @@ export interface LeaderRow {
   accuracy: number;
   achieved_at: string;
   is_you: boolean;
+}
+
+/** Kit 25 championship, as the server reports it (points and standings are server-derived). */
+export interface Championship {
+  id: string;
+  status: 'setup' | 'running' | 'complete' | 'cancelled';
+  rounds: number;
+  revision: number;
+  /** Points by official rank (index 0 = P1); DNF and flagged score 0. */
+  points: number[];
+  committed: { round: number; race_id: string; mode: string }[];
+  standings: {
+    user_id: string;
+    name: string;
+    total: number;
+    /** Shared for equal totals. */
+    position: number;
+    rounds: Record<string, { points: number; status: 'finished' | 'dnf' | 'flagged' }>;
+  }[];
 }

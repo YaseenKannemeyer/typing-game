@@ -8,3 +8,5 @@ export * from './trophies';
 export * from './typing';
 export * from './names';
 export * from './results';
+export * from './debrief';
+export * from './ghost';

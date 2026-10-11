@@ -133,6 +133,11 @@ export function Page({ children, actions, className = '' }: { children: ReactNod
         </div>
       </header>
       <main id="main-content" tabIndex={-1} className="app-main mx-auto max-w-6xl space-y-8 px-4 py-8">{children}</main>
+      <footer className="race-site-footer">
+        <span className="race-footer-mark"><Icon name="flag" size={20} /> GRID MOTOR CLUB</span>
+        <span>TYPE. RACE. REPEAT.</span>
+        <span className="race-footer-checks" aria-hidden="true" />
+      </footer>
     </div>
   );
 }

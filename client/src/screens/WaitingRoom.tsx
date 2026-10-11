@@ -4,6 +4,7 @@ import { Garage } from '../components/garage/Garage';
 import { DestinationPicker } from '../components/lobby/Destinations';
 import { HowTo, InviteLink, RaceSettings, RoomCode, WatchLink, type RosterPlayer } from '../components/lobby/Lobby';
 import { Paddock } from '../components/lobby/Paddock';
+import { ChampionshipHostPanel } from '../components/experience/Championship';
 import type { DestinationId } from '../art/worldArt';
 import { TrophyRoom } from '../components/trophies/TrophyRoom';
 import { Button, Card, ErrorText, PageTitle, Pill, SectionTabs, type SectionTab } from '../components/ui';
@@ -28,7 +29,7 @@ export function rosterFrom(state: LobbyState): RosterPlayer[] {
   }));
 }
 
-export function WaitingRoom({ state }: { state: LobbyState }) {
+export function WaitingRoom({ state, refresh }: { state: LobbyState; refresh: () => Promise<void> }) {
   const { lobby, players, userId } = state;
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -163,6 +164,7 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
               onChange={changeSettings}
             />
           </Card>
+          <ChampionshipHostPanel lobbyId={lobby.id} championship={state.championship} isHost={isHost} myId={userId} refresh={refresh} />
         </aside>
       </div>
 

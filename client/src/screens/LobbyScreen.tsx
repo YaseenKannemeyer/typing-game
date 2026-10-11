@@ -18,7 +18,7 @@ interface Props {
 }
 
 export function LobbyScreen({ code, name, onChangeName }: Props) {
-  const { state, retry } = useLobby(code, name);
+  const { state, retry, refresh } = useLobby(code, name);
   const { phase, error, errorKind, lobby, race, userId, connected } = state;
   const [leaving, setLeaving] = useState(false);
   const toast = useToast();
@@ -67,7 +67,7 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
   } else if (race?.status === 'finished') {
     body = <Results state={state} />;
   } else {
-    body = <WaitingRoom state={state} />;
+    body = <WaitingRoom state={state} refresh={refresh} />;
   }
 
   return (

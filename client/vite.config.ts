@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 const NAME = 'GRID';
 const DESCRIPTION = 'Race up to 15 friends in real time. Same passage, same countdown. Only your typing decides who wins.';
 /** Public, indexable pages. Rooms, account and profile pages are private and send noindex (vercel.json). */
-const PAGES = ['/', '/leaderboard'];
+const PAGES = ['/', '/leaderboard', '/first-lap'];
 
 /**
  * Everything that needs the absolute public URL (VITE_PUBLIC_URL, e.g. https://grid.example.com):
@@ -77,6 +77,7 @@ function siteMeta(publicUrl: string | undefined): Plugin {
 
 - [Home](${link('/')}): create a room, join one with a code, or practise solo
 - [Hall of Fame](${link('/leaderboard')}): fastest racers this week, this month and of all time
+- [First lap](${link('/first-lap')}): a short tutorial on how mistakes are counted, plus text size, contrast and motion settings
 `,
       );
       // Vercel serves 404.html (with a 404 status) for unknown paths; it boots the app, which shows the 404 screen.

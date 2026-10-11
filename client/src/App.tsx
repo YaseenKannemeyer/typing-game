@@ -12,6 +12,7 @@ const AccountScreen = lazy(() => import('./screens/AccountScreen').then((m) => (
 const ProfileScreen = lazy(() => import('./screens/ProfileScreen').then((m) => ({ default: m.ProfileScreen })));
 const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })));
 const SpectatorScreen = lazy(() => import('./screens/SpectatorScreen').then((m) => ({ default: m.SpectatorScreen })));
+const FirstLap = lazy(() => import('./screens/FirstLap').then((m) => ({ default: m.FirstLap })));
 const LobbyScreen = lazy(() => import('./screens/LobbyScreen').then((m) => ({ default: m.LobbyScreen })));
 
 const HOME_META: PageMeta = {
@@ -22,6 +23,11 @@ const HOME_META: PageMeta = {
 const ROUTE_META: Record<string, PageMeta> = {
   '/account': { title: 'Account', description: 'Sign in or save your guest progress to keep your trophies, charts and hall of fame spot.' },
   '/profile': { title: 'Your profile', description: 'Your race history, WPM and accuracy charts, and trophy cabinet.' },
+  '/first-lap': {
+    title: 'Your first lap',
+    description: 'Learn how GRID counts mistakes in a 30-second lap, and set the text size, contrast and motion that suit you.',
+    canonical: '/first-lap',
+  },
   '/leaderboard': {
     title: 'Hall of Fame',
     description: 'The fastest GRID typists this week, this month and of all time, ranked by WPM.',
@@ -63,6 +69,7 @@ export default function App() {
     if (path === '/account') return <AccountScreen />;
     if (path === '/profile') return <ProfileScreen />;
     if (path === '/leaderboard') return <LeaderboardScreen />;
+    if (path === '/first-lap') return <FirstLap />;
     // Spectators need no name: watching never joins the room.
     if (watch) return <SpectatorScreen key={watch} code={watch} />;
     if (!code) return <NotFound />;
