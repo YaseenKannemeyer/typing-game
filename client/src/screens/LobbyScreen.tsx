@@ -18,7 +18,7 @@ interface Props {
 }
 
 export function LobbyScreen({ code, name, onChangeName }: Props) {
-  const { state, sendProgress, retry } = useLobby(code, name);
+  const { state, retry } = useLobby(code, name);
   const { phase, error, errorKind, lobby, race, userId, connected } = state;
   const [leaving, setLeaving] = useState(false);
   const toast = useToast();
@@ -63,7 +63,7 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
   } else if (lobby.status === 'voting') {
     body = <Voting state={state} />;
   } else if (race?.status === 'racing') {
-    body = <Race key={race.id} state={state} sendProgress={sendProgress} />;
+    body = <Race key={race.id} state={state} />;
   } else if (race?.status === 'finished') {
     body = <Results state={state} />;
   } else {

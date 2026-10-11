@@ -163,6 +163,8 @@ async function main() {
   for (const ev of ['vote:result', 'race:start', 'race:end', 'race:awards']) {
     channel.on('broadcast', { event: ev }, () => events.push(ev));
   }
+  const relayed = new Set<string>();
+  channel.on('broadcast', { event: 'progress' }, ({ payload }) => relayed.add((payload as { id: string }).id));
   await new Promise<void>((resolve, reject) => {
     channel.subscribe((status, err) => {
       if (status === 'SUBSCRIBED') resolve();
@@ -184,6 +186,25 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2000));
   check(!events.includes('vote:result'), 'member cannot forge server events');
   await second.sb.removeChannel(forger);
+
+  // Players may share presence on the lobby topic but not broadcast on it.
+  const heard: string[] = [];
+  const listen = host.sb.channel(`lobby:${code}`, { config: { private: true } });
+  listen.on('broadcast', { event: 'progress' }, () => heard.push('progress'));
+  const spoofer = second.sb.channel(`lobby:${code}`, { config: { private: true } });
+  for (const c of [listen, spoofer]) {
+    await new Promise<void>((resolve, reject) => {
+      c.subscribe((status, err) => {
+        if (status === 'SUBSCRIBED') resolve();
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(err ?? new Error(status));
+      });
+    });
+  }
+  await spoofer.send({ type: 'broadcast', event: 'progress', payload: { id: host.id, chars: 9999, wpm: 999 } });
+  await new Promise((r) => setTimeout(r, 2000));
+  check(heard.length === 0, 'members cannot broadcast fake progress');
+  await host.sb.removeChannel(listen);
+  await second.sb.removeChannel(spoofer);
 
   // Colours ----------------------------------------------------------------
   const { data: colorRows } = await second.sb.from('lobby_players').select('user_id, car_color');
@@ -350,6 +371,7 @@ async function main() {
   check(events.includes('vote:result'), 'realtime: vote:result received');
   check(events.includes('race:start'), 'realtime: race:start received');
   check(events.includes('race:end'), 'realtime: race:end received');
+  check(relayed.size > 0 && [...relayed].every((id) => bots.some((b) => b.id === id)), 'server relays verified progress for racers');
 
   const select = 'user_id, name, rank, net_wpm, gross_wpm, accuracy, errors, keystrokes, correct_chars, finished_at, flagged, samples';
   const views = await Promise.all(

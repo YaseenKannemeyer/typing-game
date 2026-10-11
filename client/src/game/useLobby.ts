@@ -52,7 +52,7 @@ const initial: LobbyState = {
 const RACE_PLAYER_COLUMNS =
   'user_id, name, words_done, locked_chars, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, rank, net_wpm, gross_wpm, accuracy, flagged, samples, awards';
 
-/** Live progress from another player's broadcast, or null if it is malformed. */
+/** Live progress relayed by the server, or null if it is malformed. */
 function parseProgress(payload: unknown): ({ id: string } & LiveProgress) | null {
   const p = payload as Record<string, unknown> | null;
   const num = (v: unknown, max: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, 0), max) : null);
@@ -65,8 +65,9 @@ function parseProgress(payload: unknown): ({ id: string } & LiveProgress) | null
 /**
  * Joins a lobby and keeps its state in sync. The database is the source of
  * truth: server events arrive on `lobby:<CODE>:server`, a topic members can
- * read but not write, and trigger a re-fetch. `lobby:<CODE>` carries presence
- * and player `progress` broadcasts, which only animate cars.
+ * read but not write, and trigger a re-fetch. `progress` events there carry
+ * each racer's server-checked position and animate the cars. `lobby:<CODE>`
+ * carries presence only.
  */
 export function useLobby(code: string, name: string) {
   const [state, setState] = useState<LobbyState>(initial);
@@ -195,21 +196,17 @@ export function useLobby(code: string, name: string) {
           const mode = (payload as { mode?: unknown } | null)?.mode;
           if (VOTE_MODES.includes(mode as VoteMode)) setState((s) => ({ ...s, voteResult: mode as VoteMode }));
         });
+        server.on('broadcast', { event: 'progress' }, ({ payload }) => {
+          const p = parseProgress(payload);
+          // Our own car follows local typing, which is ahead of the server.
+          if (!p || p.id === userId) return;
+          setState((s) => ({ ...s, live: { ...s.live, [p.id]: { chars: p.chars, wpm: p.wpm, errors: p.errors } } }));
+        });
         server.subscribe(onStatus('server'));
         serverChannel.current = server;
 
         const ch = sb.channel(`lobby:${code}`, {
           config: { private: true, presence: { key: userId } },
-        });
-        ch.on('broadcast', { event: 'progress' }, ({ payload }) => {
-          const p = parseProgress(payload);
-          // Players can't be impersonated on their own screen; strangers are ignored.
-          if (!p || p.id === userId) return;
-          setState((s) =>
-            s.racePlayers.some((r) => r.user_id === p.id)
-              ? { ...s, live: { ...s.live, [p.id]: { chars: p.chars, wpm: p.wpm, errors: p.errors } } }
-              : s,
-          );
         });
         ch.on('presence', { event: 'sync' }, () =>
           setState((s) => ({ ...s, online: new Set(Object.keys(ch.presenceState())) })),
@@ -240,10 +237,6 @@ export function useLobby(code: string, name: string) {
     };
   }, [code, name, refresh, fail]);
 
-  const sendProgress = useCallback((id: string, progress: LiveProgress) => {
-    void channel.current?.send({ type: 'broadcast', event: 'progress', payload: { id, ...progress } });
-  }, []);
-
   /** Manual retry for the reconnecting state: re-fetch and resubscribe. */
   const retry = useCallback(() => {
     void refresh();
@@ -251,5 +244,5 @@ export function useLobby(code: string, name: string) {
     serverChannel.current?.subscribe();
   }, [refresh]);
 
-  return { state, refresh, sendProgress, retry };
+  return { state, refresh, retry };
 }

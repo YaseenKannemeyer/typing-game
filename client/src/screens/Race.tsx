@@ -4,14 +4,12 @@ import {
   getVisibleCars,
   lineWords,
   lockedWords,
-  PROGRESS_BROADCAST_MS,
   PROGRESS_SUBMIT_MS,
   RACE_END_GRACE_MS,
   rankPlayers,
   resumeTypingState,
   sectionOf,
   typedCorrectChars,
-  wpm,
 } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
 import { CountdownFrame } from '../components/race/Moments';
@@ -26,14 +24,12 @@ import { useServerNow } from '../lib/clock';
 import { clearActiveRace, saveActiveRace } from '../lib/storage';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
-import type { LiveProgress } from '../game/types';
 import { useTyping } from '../game/useTyping';
 import { destinationFor } from '../game/destinations';
 import { vehicleFor } from '../game/vehicles';
 
 interface Props {
   state: LobbyState;
-  sendProgress: (id: string, p: LiveProgress) => void;
 }
 
 /** Re-rank at most this often so lanes don't jitter on every keystroke. */
@@ -43,7 +39,7 @@ const GO_BANNER_MS = 900;
 const LEADER_POSITION = 0.94;
 const RULER = ['START', '25%', '50%', '75%', 'LEADER'] as const;
 
-export function Race({ state, sendProgress }: Props) {
+export function Race({ state }: Props) {
   const { race, passage, racePlayers, players, live, userId, clockOffset, lobby } = state;
   const now = useServerNow(clockOffset, 100);
   const { play } = useSound();
@@ -173,22 +169,7 @@ export function Race({ state, sendProgress }: Props) {
     else saveActiveRace({ code: lobbyCode, raceId, endAt: endAt - clockOffset, userId });
   }, [raceId, lobbyCode, userId, isRacer, timeUp, endAt, clockOffset]);
 
-  // Cosmetic live progress for other players' cars.
   const myChars = typedCorrectChars(ts);
-  const liveRef = useRef({ chars: myChars, errors: ts.errors });
-  liveRef.current = { chars: myChars, errors: ts.errors };
-  useEffect(() => {
-    if (!isRacer || !racing || !userId) return;
-    let last = '';
-    const t = setInterval(() => {
-      const { chars, errors } = liveRef.current;
-      if (`${chars}:${errors}` === last) return;
-      last = `${chars}:${errors}`;
-      const ms = Math.min(durationMs, Date.now() + clockOffset - startAt);
-      sendProgress(userId, { chars, errors, wpm: wpm(chars, ms) });
-    }, PROGRESS_BROADCAST_MS);
-    return () => clearInterval(t);
-  }, [isRacer, racing, userId, sendProgress, clockOffset, startAt, durationMs]);
 
   // Close the race once the timer (plus a moment for final lines) has run out.
   // Any client may ask; the server checks the clock.

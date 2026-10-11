@@ -9,7 +9,6 @@ export const RACE_END_GRACE_MS = 2_500;
 /** Target width of one line of race text, in characters. */
 export const LINE_CHARS = 44;
 export const VOTE_DURATION_MS = 20_000;
-export const PROGRESS_BROADCAST_MS = 500;
 export const PROGRESS_SUBMIT_MS = 1_000;
 export const HEARTBEAT_MS = 15_000;
 export const NAME_MIN = 2;
