@@ -22,3 +22,12 @@ export function lobbyCodeFromPath(path: string): string | null {
 export function lobbyLink(code: string): string {
   return `${window.location.origin}/r/${code}`;
 }
+
+/** `/r/CODE/watch`: the read-only spectator view of a room. */
+export function watchCodeFromPath(path: string): string | null {
+  return /^\/r\/([A-Za-z0-9]{6})\/watch\/?$/.exec(path)?.[1]?.toUpperCase() ?? null;
+}
+
+export function watchLink(code: string): string {
+  return `${window.location.origin}/r/${code}/watch`;
+}

@@ -1,0 +1,28 @@
+{
+  "name": "GRID Race Experience Expansion",
+  "version": "1.0.0",
+  "kits": [
+    "26-spectator",
+    "27-debrief",
+    "28-first-race",
+    "29-ghost-practice",
+    "25-host-extension"
+  ],
+  "scripts": [
+    "vendor/vehicles.js",
+    "shared/core.js",
+    "26-spectator/spectator.js",
+    "27-debrief/debrief.js",
+    "28-first-race/comfort.js",
+    "29-ghost-practice/ghost.js",
+    "25-host-extension/host.js",
+    "showroom/app.js"
+  ],
+  "styles": [
+    "vendor/tokens.css",
+    "vendor/vehicles.css",
+    "shared/experience.css"
+  ],
+  "entry": "OPEN-ME.html",
+  "scope": "Presentation and local interaction examples. Not integrated with a live game."
+}

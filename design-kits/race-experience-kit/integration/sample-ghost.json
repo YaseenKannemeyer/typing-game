@@ -1,0 +1,50 @@
+{
+  "example": true,
+  "passage": "Find your rhythm. Keep your eyes on the road.",
+  "passageVersion": "demo-v1",
+  "mode": "medium",
+  "rulesVersion": "demo-strict-v1",
+  "elapsedBasis": "first-input-to-completion",
+  "samples": [
+    {
+      "t": 0,
+      "progress": 0
+    },
+    {
+      "t": 3,
+      "progress": 0.1
+    },
+    {
+      "t": 6,
+      "progress": 0.2
+    },
+    {
+      "t": 9,
+      "progress": 0.28
+    },
+    {
+      "t": 12,
+      "progress": 0.43
+    },
+    {
+      "t": 15,
+      "progress": 0.53
+    },
+    {
+      "t": 18,
+      "progress": 0.61
+    },
+    {
+      "t": 21,
+      "progress": 0.72
+    },
+    {
+      "t": 24,
+      "progress": 0.88
+    },
+    {
+      "t": 27,
+      "progress": 1
+    }
+  ]
+}

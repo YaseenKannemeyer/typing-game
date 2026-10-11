@@ -53,7 +53,7 @@ const RACE_PLAYER_COLUMNS =
   'user_id, name, words_done, locked_chars, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, rank, net_wpm, gross_wpm, accuracy, flagged, samples, awards';
 
 /** Live progress relayed by the server, or null if it is malformed. */
-function parseProgress(payload: unknown): ({ id: string } & LiveProgress) | null {
+export function parseProgress(payload: unknown): ({ id: string } & LiveProgress) | null {
   const p = payload as Record<string, unknown> | null;
   const num = (v: unknown, max: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, 0), max) : null);
   const chars = num(p?.chars, 100_000);

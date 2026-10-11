@@ -1,0 +1,105 @@
+/*
+ * Kit 26 spectator broadcast (design-kits/race-experience-kit/shared/experience.css
+ * .broadcast*, .standings*, .featured-driver, .winner-reveal), scoped to .sp-*
+ * and mapped onto the GRID tokens. The kit's global resets are not imported.
+ */
+
+.sp-broadcast { background: #0e1913; border: 1px solid #566b4d; border-radius: 16px; overflow: hidden; }
+
+.sp-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid #466040; background: #243821; }
+.sp-brand { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
+.sp-brand span { color: var(--g-lime); font-size: 12px; letter-spacing: 1px; }
+.sp-top-right { display: flex; align-items: center; gap: 18px; }
+.sp-clock { font-size: 25px; font-weight: 750; font-variant-numeric: tabular-nums; font-family: var(--g-mono); }
+
+.sp-feed { display: inline-flex; align-items: center; gap: 7px; font-family: var(--g-mono); font-size: 11px; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid currentColor; }
+.sp-feed::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.sp-feed--live { color: var(--g-lime); }
+.sp-feed--delayed, .sp-feed--reconnecting { color: var(--g-warning); }
+.sp-feed--live::before { animation: sp-pulse 1.6s ease-in-out infinite; }
+@keyframes sp-pulse { 50% { opacity: .35; } }
+
+.sp-layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; }
+.sp-main { padding: 24px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+
+.sp-title > span { font-family: var(--g-mono); font-size: 11px; letter-spacing: 2px; color: var(--g-lime); }
+.sp-title h2 { margin: 8px 0; font-size: 36px; line-height: 1.05; letter-spacing: -.5px; }
+.sp-title p { margin: 0; font-size: 13px; color: var(--g-muted); }
+
+.sp-notice { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.sp-notice > :first-child { flex: 1 1 260px; }
+
+.sp-empty { display: grid; gap: 8px; }
+.sp-roster { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 8px 0 0; }
+.sp-roster li { padding: 4px 10px; border-radius: 999px; background: var(--g-panel-raised); font-size: 13px; overflow-wrap: anywhere; }
+
+/* Standings: every racer, featured row in lime. */
+.sp-sidebar { border-left: 1px solid var(--g-border); padding: 20px 14px; background: #17241a; min-width: 0; }
+.sp-standings-label { display: flex; justify-content: space-between; margin: 0 9px 12px; font-family: var(--g-mono); font-size: 11px; letter-spacing: 1.5px; color: var(--g-muted); }
+.sp-standings-empty { margin: 0 9px; }
+.sp-standings { list-style: none; padding: 0; margin: 0; }
+.sp-standings li { margin: 2px 0; }
+.sp-standings button { position: relative; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 8px; align-items: center; width: 100%; padding: 9px 9px 11px; border: 0; border-radius: 6px; background: transparent; color: var(--g-text); font: inherit; font-size: 13px; text-align: left; cursor: pointer; overflow: hidden; }
+.sp-standings button:hover { background: #22331f; }
+.sp-standings button:focus-visible { outline: 2px solid var(--g-lime); outline-offset: -2px; }
+.sp-standings button > i { position: absolute; left: 9px; bottom: 3px; height: 2px; background: #526a43; transition: width .3s ease; }
+.sp-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-standings strong { font-variant-numeric: tabular-nums; }
+.sp-standings small { font-size: 10px; color: var(--g-muted); }
+.sp-pos { font-family: var(--g-mono); color: #9eb18f; }
+.sp-standings li.is-featured button { background: var(--g-lime); color: var(--g-ink); }
+.sp-standings li.is-featured small, .sp-standings li.is-featured .sp-pos { color: #33432b; }
+.sp-standings li.is-featured button > i { background: #33432b; }
+
+/* Featured racer card. */
+.sp-featured { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding-top: 20px; border-top: 1px solid #405539; }
+.sp-featured-car svg { width: 100%; height: auto; overflow: visible; }
+.sp-featured h3 { margin: 4px 0 6px; font-size: 24px; overflow-wrap: anywhere; }
+.sp-featured p { margin: 0; font-size: 13px; color: var(--g-muted); }
+.sp-featured > strong { font-size: 34px; line-height: 1; text-align: right; color: var(--g-lime); font-variant-numeric: tabular-nums; }
+.sp-featured > strong small { display: block; margin-top: 7px; font-size: 10px; letter-spacing: 2px; }
+
+/* Winner reveal: official results only. */
+.sp-winner { text-align: center; padding: 40px 24px; border: 1px solid #708047; border-radius: 18px; background: radial-gradient(ellipse at 50% 20%, #3f5030, #142017 70%); }
+.sp-winner-crown { color: var(--g-gold); margin: 12px 0; display: flex; justify-content: center; }
+.sp-winner h2 { margin: 8px 0; font-size: clamp(36px, 6vw, 64px); line-height: 1; overflow-wrap: anywhere; }
+.sp-winner-car { max-width: 360px; margin: 16px auto; }
+.sp-winner-car svg { width: 100%; height: auto; overflow: visible; }
+.sp-winner-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 420px; margin: 0 auto; }
+.sp-winner-stats dt { font-size: 12px; color: var(--g-muted); }
+.sp-winner-stats dd { margin: 4px 0 0; font-size: 28px; font-weight: 750; font-variant-numeric: tabular-nums; }
+
+.sp-footer { display: flex; justify-content: space-between; gap: 10px; padding: 12px 24px; background: #253521; font-family: var(--g-mono); font-size: 10px; letter-spacing: 1.3px; color: #b7c5a9; }
+
+/* Presentation: no site chrome, bigger type for projectors (1280×720 up). */
+.is-presenting .app-topbar { display: none; }
+.is-presenting .app-main { max-width: none; padding: 16px; }
+.is-presenting .sp-broadcast { min-height: calc(100dvh - 32px); display: flex; flex-direction: column; }
+.is-presenting .sp-layout { flex: 1; grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 380px); }
+.is-presenting .sp-title h2 { font-size: clamp(40px, 3.6vw, 64px); }
+.is-presenting .sp-title p { font-size: 17px; }
+.is-presenting .sp-clock { font-size: clamp(28px, 2.6vw, 44px); }
+.is-presenting .sp-standings button { font-size: clamp(16px, 1.3vw, 22px); padding: 10px 10px 12px; }
+.is-presenting .sp-featured h3 { font-size: clamp(28px, 2.4vw, 40px); }
+.is-presenting .sp-featured > strong { font-size: clamp(40px, 3.4vw, 60px); }
+.is-presenting .sp-footer { font-size: 12px; }
+
+/* Tablets and phones: standings stack under the lanes. */
+@media (max-width: 900px) {
+  .sp-layout, .is-presenting .sp-layout { grid-template-columns: minmax(0, 1fr); }
+  .sp-sidebar { border-left: 0; border-top: 1px solid var(--g-border); }
+}
+@media (max-width: 600px) {
+  .sp-top { padding: 12px 16px; flex-wrap: wrap; }
+  .sp-top-right { gap: 10px; }
+  .sp-clock { font-size: 20px; }
+  .sp-main { padding: 16px; }
+  .sp-title h2 { font-size: 28px; }
+  .sp-featured { grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; }
+  .sp-featured > strong { font-size: 26px; }
+  .sp-footer { flex-direction: column; padding: 12px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-feed--live::before { animation: none; }
+  .sp-standings button > i { transition: none; }
+}

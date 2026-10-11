@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getVisibleCars } from '../src';
+import { getSpectatorLanes, getVisibleCars } from '../src';
 
 const field = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `p${i + 1}` }));
 const ids = (list: { id: string }[]) => list.map((p) => p.id);
@@ -45,5 +45,38 @@ describe('getVisibleCars', () => {
 
   it('falls back to the leaders when I am not in the race', () => {
     expect(ids(getVisibleCars(field(10), 'spectator'))).toEqual(['p1', 'p2', 'p3', 'p4']);
+  });
+});
+
+describe('getSpectatorLanes', () => {
+  it('shows the top four with no featured racer', () => {
+    expect(ids(getSpectatorLanes(field(15), null))).toEqual(['p1', 'p2', 'p3', 'p4']);
+  });
+
+  it('keeps the top four when the featured racer is among them', () => {
+    expect(ids(getSpectatorLanes(field(15), 'p3'))).toEqual(['p1', 'p2', 'p3', 'p4']);
+  });
+
+  it('gives the last lane to a featured racer further back', () => {
+    expect(ids(getSpectatorLanes(field(15), 'p11'))).toEqual(['p1', 'p2', 'p3', 'p11']);
+  });
+
+  it('ignores an unknown featured id (e.g. a racer who left)', () => {
+    expect(ids(getSpectatorLanes(field(6), 'gone'))).toEqual(['p1', 'p2', 'p3', 'p4']);
+  });
+
+  it('handles empty and small fields', () => {
+    expect(getSpectatorLanes([], 'p1')).toEqual([]);
+    expect(ids(getSpectatorLanes(field(2), 'p2'))).toEqual(['p1', 'p2']);
+  });
+
+  it('never needs a local racer and always includes the featured car', () => {
+    for (let n = 1; n <= 15; n++) {
+      for (let f = 1; f <= n; f++) {
+        const lanes = ids(getSpectatorLanes(field(n), `p${f}`));
+        expect(lanes).toHaveLength(Math.min(n, 4));
+        expect(lanes).toContain(`p${f}`);
+      }
+    }
   });
 });

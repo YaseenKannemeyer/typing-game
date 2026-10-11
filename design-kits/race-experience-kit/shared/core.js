@@ -1,0 +1,14 @@
+(function(g){'use strict';const K=g.ExperienceKit={};
+K.escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+K.clamp=(v,min=0,max=1)=>Math.min(max,Math.max(min,Number(v)||0));
+K.fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
+K.car=(model='supercar',color='#b9f46a',number=7)=>VehicleKit.svg({model,primary:/^#[0-9a-f]{6}$/i.test(color)?color:'#b9f46a',accent:'#e5ecd9',number,animation:'idle',wheels:'sport',effect:'none'});
+K.icon=(name,size=22)=>{const paths={eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',chart:'<path d="M3 3v18h18M6 15l5-6 4 3 6-8"/>',keys:'<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 9h1m3 0h1m3 0h1m3 0h1M6 13h1m3 0h1m3 0h1M7 16h10"/>',ghost:'<path d="M5 21V9a7 7 0 0 1 14 0v12l-4-3-3 3-3-3-4 3Z"/><path d="M9 9v2m6-2v2"/>',flag:'<path d="M5 22V3m0 1c5-4 9 4 15 0v10c-6 4-10-4-15 0"/>',arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',check:'<path d="m4 12 5 5L20 6"/>',expand:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',pause:'<path d="M8 4v16M16 4v16"/>',play:'<path d="m7 4 13 8-13 8V4Z"/>',cup:'<path d="M7 3h10v7a5 5 0 0 1-10 0V3Zm0 2H3v4a4 4 0 0 0 4 4m10-8h4v4a4 4 0 0 1-4 4m-5 2v5m-4 1h8"/>'};return `<svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[name]||paths.flag}</svg>`};
+K.button=(label,action,style='primary',extra='')=>`<button class="x-btn ${style}" data-action="${action}" ${extra}>${label}</button>`;
+K.heading=(n,eyebrow,title,description)=>`<header class="page-heading"><div class="eyebrow">KIT ${n} / ${eyebrow}</div><h1>${title}</h1><p>${description}</p></header>`;
+K.stat=(label,value,detail='')=>`<div class="stat"><span>${label}</span><strong>${value}</strong>${detail?`<small>${detail}</small>`:''}</div>`;
+K.svg=(body,label,width=800,height=300)=>`<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${K.escape(label)}" viewBox="0 0 ${width} ${height}">${body}</svg>`;
+K.empty=(title,detail)=>`<div class="empty"><span>${K.icon('chart',32)}</span><h3>${K.escape(title)}</h3><p>${K.escape(detail)}</p></div>`;
+K.pill=(text,type='')=>`<span class="pill ${type}">${text}</span>`;
+K.samples={racers:Array.from({length:15},(_,i)=>({id:'p'+i,name:['Yaseen','Mika','Nadia','Alex','Kai','Leah','Robin','Sam','Aisha','Noah','Jules','Theo','Zoe','Ravi','Morgan'][i],model:['supercar','formula','hypercar','classic','drift','rally','muscle','cyber','police','taxi','vintage','kart','monster','pickup','rocket'][i],color:['#b9f46a','#9fcaff','#c6a3ff','#ffac7e'][i%4],progress:Math.max(0,.73-i*.029),wpm:112-i*3,rank:i+1,finished:false})),passage:'Find your rhythm. Keep your eyes on the road.'};
+})(globalThis);

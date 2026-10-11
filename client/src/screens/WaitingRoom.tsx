@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE, TROPHIES } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
 import { DestinationPicker } from '../components/lobby/Destinations';
-import { HowTo, InviteLink, RaceSettings, RoomCode, type RosterPlayer } from '../components/lobby/Lobby';
+import { HowTo, InviteLink, RaceSettings, RoomCode, WatchLink, type RosterPlayer } from '../components/lobby/Lobby';
 import { Paddock } from '../components/lobby/Paddock';
 import type { DestinationId } from '../art/worldArt';
 import { TrophyRoom } from '../components/trophies/TrophyRoom';
@@ -150,6 +150,8 @@ export function WaitingRoom({ state }: { state: LobbyState }) {
             <div className="g-divider" />
             <p className="g-muted mb-4">Better with your crew. Share your invitation and save them a spot.</p>
             <InviteLink code={lobby.code} />
+            <p className="g-small g-muted mt-4 mb-2">Showing it on a big screen? Spectators don't take a seat.</p>
+            <WatchLink code={lobby.code} />
           </Card>
           <Card className="room-rules">
             <h2 className="g-heading mb-4">Race settings</h2>

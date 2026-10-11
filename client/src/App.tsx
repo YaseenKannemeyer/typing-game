@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react';
 import { Loading, Page } from './components/ui';
 import { usePageMeta, type PageMeta } from './lib/meta';
-import { lobbyCodeFromPath, usePath } from './lib/router';
+import { lobbyCodeFromPath, usePath, watchCodeFromPath } from './lib/router';
 import { loadName } from './lib/storage';
 import { Home } from './screens/Home';
 import { NameGate } from './screens/NameGate';
@@ -11,6 +11,7 @@ import { NotFound } from './screens/NotFound';
 const AccountScreen = lazy(() => import('./screens/AccountScreen').then((m) => ({ default: m.AccountScreen })));
 const ProfileScreen = lazy(() => import('./screens/ProfileScreen').then((m) => ({ default: m.ProfileScreen })));
 const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })));
+const SpectatorScreen = lazy(() => import('./screens/SpectatorScreen').then((m) => ({ default: m.SpectatorScreen })));
 const LobbyScreen = lazy(() => import('./screens/LobbyScreen').then((m) => ({ default: m.LobbyScreen })));
 
 const HOME_META: PageMeta = {
@@ -28,9 +29,10 @@ const ROUTE_META: Record<string, PageMeta> = {
   },
 };
 
-function routeMeta(path: string, code: string | null): PageMeta {
+function routeMeta(path: string, code: string | null, watch: string | null): PageMeta {
   if (path === '/' || path === '') return HOME_META;
   if (ROUTE_META[path]) return ROUTE_META[path];
+  if (watch) return { title: `Watching room ${watch}`, description: 'Watch a live GRID type race: four lanes, full standings and the official winner.' };
   if (code) return { title: `Room ${code}`, description: 'You are invited to a GRID type race. Pick a name and join the starting grid.' };
   return { title: 'Page not found', description: 'This page does not exist.' };
 }
@@ -38,10 +40,11 @@ function routeMeta(path: string, code: string | null): PageMeta {
 export default function App() {
   const path = usePath();
   const code = lobbyCodeFromPath(path);
+  const watch = watchCodeFromPath(path);
   // null = use the saved name (Home may have just saved one); '' = ask again.
   const [name, setName] = useState<string | null>(null);
   const current = name ?? loadName();
-  usePageMeta(routeMeta(path, code));
+  usePageMeta(routeMeta(path, code, watch));
 
   return (
     <Suspense
@@ -60,6 +63,8 @@ export default function App() {
     if (path === '/account') return <AccountScreen />;
     if (path === '/profile') return <ProfileScreen />;
     if (path === '/leaderboard') return <LeaderboardScreen />;
+    // Spectators need no name: watching never joins the room.
+    if (watch) return <SpectatorScreen key={watch} code={watch} />;
     if (!code) return <NotFound />;
     if (!current) return <NameGate code={code} onName={setName} />;
     return <LobbyScreen key={`${code}:${current}`} code={code} name={current} onChangeName={() => setName('')} />;

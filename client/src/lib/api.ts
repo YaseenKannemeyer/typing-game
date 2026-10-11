@@ -1,6 +1,7 @@
 import { lineWords, lockedWords, typedWords, type TrophyId, type TypingState, type VoteMode } from '@race/shared';
 import type { VehicleBuild } from '../art/vehicleArt';
 import type { DestinationId } from '../art/worldArt';
+import type { WatchSnapshot } from '../game/useSpectator';
 import { requireSupabase } from './supabase';
 
 const MESSAGES: Record<string, string> = {
@@ -30,6 +31,7 @@ const MESSAGES: Record<string, string> = {
   invalid_avatar: 'Choose the car or initials avatar.',
   invalid_destination: 'Pick one of the six destinations.',
   invalid_duration: 'Pick a race length between 1 and 5 minutes.',
+  spectators_full: 'This room has too many spectators right now. Try again in a minute.',
   captcha_failed: "We couldn't confirm you're human. Refresh the page and try again.",
 };
 
@@ -116,6 +118,8 @@ export const api = {
     if (error) throw new ApiError(error.message);
   },
   serverNow: () => call<string>('server_now'),
+  /** Registers as a spectator (heartbeat) and returns the room's public snapshot. */
+  watchLobby: (code: string) => call<WatchSnapshot>('watch_lobby', { p_code: code }),
 
   // Phase 4: accounts and stats --------------------------------------------
   mySummary: (days = 0) => call<Summary>('my_summary', { p_days: days }),

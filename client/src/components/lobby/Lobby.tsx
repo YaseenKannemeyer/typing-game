@@ -1,6 +1,6 @@
 import { MAX_PLAYERS, RACE_DURATIONS } from '@race/shared';
 import type { VehicleProps } from '../../art/vehicleArt';
-import { lobbyLink } from '../../lib/router';
+import { lobbyLink, watchLink } from '../../lib/router';
 import { Car } from '../Car';
 import { CopyButton } from '../CopyButton';
 import { Icon } from '../ui';
@@ -94,6 +94,11 @@ export function RoomCode({ code }: { code: string }) {
 
 export function InviteLink({ code }: { code: string }) {
   return <CopyButton text={lobbyLink(code)} label="Copy invite link" icon="link" />;
+}
+
+/** Read-only broadcast link: watching never takes one of the 15 seats. */
+export function WatchLink({ code }: { code: string }) {
+  return <CopyButton text={watchLink(code)} label="Copy spectator link" icon="link" />;
 }
 
 const STEPS = [

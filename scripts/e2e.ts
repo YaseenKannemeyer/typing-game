@@ -7,7 +7,8 @@
  * Alice creates a lobby, Bob joins via the invite link, Bob customises his car,
  * Alice sets the race rules, both vote, then type line after line with real
  * key events (Enter locks each line) until the 1-minute timer ends, and both
- * reach the results.
+ * reach the results. Carol watches the whole race from the spectator link
+ * (/r/CODE/watch) without taking a seat.
  * Screenshots of every screen are written to outDir.
  */
 import { mkdirSync } from 'node:fs';
@@ -48,14 +49,16 @@ async function main() {
   const browser = await chromium.launch({ executablePath: CHROME, headless: true });
   const alice = await (await browser.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
   const bob = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
-  for (const [who, page] of [['alice', alice], ['bob', bob]] as const) {
+  // Projector-sized spectator.
+  const carol = await (await browser.newContext({ viewport: { width: 1280, height: 720 } })).newPage();
+  for (const [who, page] of [['alice', alice], ['bob', bob], ['carol', carol]] as const) {
     page.on('pageerror', (e) => console.error(`[${who}] page error:`, e.message));
     page.on('console', (m) => m.type() === 'error' && console.error(`[${who}] console:`, m.text()));
     page.on('response', async (r) => {
       if (r.status() >= 400) console.error(`[${who}] HTTP ${r.status()} ${r.url().split('?')[0]}`, (await r.text().catch(() => '')).slice(0, 200));
     });
   }
-  pages = { alice, bob };
+  pages = { alice, bob, carol };
 
   await alice.goto(base);
   await shot(alice, '01-home');
@@ -70,6 +73,13 @@ async function main() {
   await bob.getByPlaceholder('e.g. Speedy').fill('Bob');
   await bob.getByRole('button', { name: 'Join the grid' }).click();
   await alice.locator('.w-parking-bay', { hasText: 'Bob' }).waitFor();
+
+  // Spectator: no name gate, no seat taken.
+  await carol.goto(`${base}/r/${code}/watch`);
+  await carol.getByText('2 of 15 racers in the room.').waitFor({ timeout: 20_000 });
+  await alice.getByText('2 / 15 parked').waitFor();
+  await carol.locator('.sp-feed--live').waitFor({ timeout: 15_000 });
+  await shot(carol, '15-spectator-waiting');
 
   // Garage: Bob picks the rocket in neon and confirms.
   await bob.getByRole('button', { name: 'Open garage' }).click();
@@ -126,6 +136,24 @@ async function main() {
   const racing = Promise.all([typeUntilTimeUp(alice, 45), bobRace]);
   await alice.waitForTimeout(20_000);
   await shot(alice, '06b-race');
+  // Spectator during the race: lanes, live standings, keyboard featuring, presentation.
+  await carol.getByRole('heading', { name: 'Race on.' }).waitFor();
+  const standings = await carol.locator('.sp-standings li').count();
+  if (standings !== 2) throw new Error(`spectator should list 2 racers, saw ${standings}`);
+  await carol.locator('.sp-standings button', { hasText: 'Bob' }).focus();
+  await carol.keyboard.press('Enter');
+  await carol.locator('.sp-featured', { hasText: 'Bob' }).waitFor();
+  await shot(carol, '16-spectator-race');
+  await carol.getByRole('button', { name: 'Present', exact: true }).click();
+  await carol.locator('.is-presenting').waitFor();
+  if (await carol.locator('.app-topbar').isVisible()) throw new Error('presentation should hide the site header');
+  await shot(carol, '17-spectator-present-720');
+  await carol.setViewportSize({ width: 1920, height: 1080 });
+  await shot(carol, '17b-spectator-present-1080');
+  await carol.keyboard.press('Escape');
+  await carol.locator('.is-presenting').waitFor({ state: 'detached' });
+  await carol.setViewportSize({ width: 1280, height: 720 });
+  console.log('spectator race view ok');
   await shot(bob, '07-race-mobile');
   const [aliceLines, bobLines] = await racing;
   console.log(`lines locked: alice ${aliceLines}, bob ${bobLines}`);
@@ -144,6 +172,14 @@ async function main() {
   await bob.getByText('Every finish has a story.').waitFor({ timeout: 30_000 });
   await bob.locator('.g-award').first().waitFor({ timeout: 20_000 });
   await shot(bob, '09-results-mobile');
+
+  // Spectator results: the winner only appears from the official result.
+  await carol.getByText('OFFICIAL RESULT', { exact: true }).first().waitFor({ timeout: 30_000 });
+  const reveal = carol.locator('.sp-winner');
+  console.log('spectator result:', (await reveal.count()) ? `winner ${(await reveal.locator('h2').textContent())?.trim()}` : 'no official winner');
+  await shot(carol, '18-spectator-results');
+  await carol.setViewportSize({ width: 390, height: 844 });
+  await shot(carol, '18b-spectator-results-mobile');
 
   // First-time trophies raise a server-confirmed "unlocked" toast.
   await alice.locator('.a-achievement-toast').waitFor({ timeout: 15_000 });
