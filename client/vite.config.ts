@@ -87,10 +87,28 @@ function siteMeta(publicUrl: string | undefined): Plugin {
   };
 }
 
+/**
+ * Vercel preview builds (any branch but main) get a fixed "TEST" badge so they are never mistaken
+ * for production. They share the production Supabase project, so everything done there is real.
+ */
+function previewBadge(vercelEnv: string | undefined, branch = 'preview'): Plugin {
+  return {
+    name: 'preview-badge',
+    transformIndexHtml() {
+      if (vercelEnv !== 'preview') return [];
+      const style =
+        'position:fixed;left:8px;bottom:8px;z-index:2147483647;padding:2px 8px;border-radius:4px;' +
+        'background:#f59e0b;color:#111;font:600 11px/1.6 ui-monospace,monospace;pointer-events:none;';
+      return [{ tag: 'div', attrs: { style, 'aria-hidden': 'true' }, children: `TEST · ${branch}`, injectTo: 'body' }];
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', 'VITE_');
+  const vercel = loadEnv(mode, '.', 'VERCEL_');
   return {
-    plugins: [react(), tailwindcss(), siteMeta(env.VITE_PUBLIC_URL)],
+    plugins: [react(), tailwindcss(), siteMeta(env.VITE_PUBLIC_URL), previewBadge(vercel.VERCEL_ENV, vercel.VERCEL_GIT_COMMIT_REF)],
     build: {
       sourcemap: false,
       rolldownOptions: {
