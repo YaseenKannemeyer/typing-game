@@ -817,3 +817,42 @@ html {
   line-height: 1.15;
   margin: 14px 0;
 }
+
+/* Garage driver card: helmet and plate share the top row, text gets the full width below. */
+.w-driver-card {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas: 'helmet plate' 'text text';
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px 16px;
+}
+.w-driver-card .w-helmet {
+  grid-area: helmet;
+  width: 72px;
+}
+.w-driver-card .w-driver-number {
+  grid-area: plate;
+  width: 96px;
+}
+.w-driver-card > .min-w-0 {
+  grid-area: text;
+}
+.w-driver-card h2 {
+  font-size: 22px;
+}
+
+/* Race: cars move on a spring (Track.tsx), so drop the kit's stepped `left` transition. */
+.w-track-racer {
+  transition: none;
+}
+/* Desktop always shows four lanes; empty ones are plain road. */
+.w-lane--empty .w-lane-name strong {
+  color: var(--g-subtle);
+  font-weight: 500;
+}
+@media (max-width: 1023px) {
+  .w-lane--empty {
+    display: none;
+  }
+}

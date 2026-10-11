@@ -11,6 +11,8 @@ export const VEHICLE_MODELS = [
   'classic', 'formula', 'muscle', 'supercar', 'hypercar', 'drift', 'rally', 'monster',
   'pickup', 'kart', 'vintage', 'cyber', 'police', 'taxi', 'rocket',
 ] as const;
+/** Race numbers run 0–999 (server: private.normalize_vehicle). */
+export const MAX_RACE_NUMBER = 999;
 export type VehicleModel = (typeof VEHICLE_MODELS)[number];
 
 export const VEHICLE_STATES = [
@@ -91,7 +93,7 @@ export function normalizeVehicle(p: Partial<Record<keyof VehicleProps, unknown>>
     accent: color(p.accent, '#b9f46a'),
     wheels: oneOf(WHEEL_STYLES, p.wheels, 'sport'),
     stripes: !!p.stripes,
-    number: Math.max(0, Math.min(99, parseInt(String(p.number)) || 0)),
+    number: Math.max(0, Math.min(MAX_RACE_NUMBER, parseInt(String(p.number)) || 0)),
     effect: oneOf(VEHICLE_EFFECTS, p.effect, 'none'),
     playerName: String(p.playerName || 'Player').slice(0, 32),
     position: Math.max(1, Math.min(15, parseInt(String(p.position)) || 1)),
@@ -140,7 +142,7 @@ export function vehicleSvg(input: Partial<Record<keyof VehicleProps, unknown>> =
   const noLights = ['kart', 'formula', 'monster'].includes(m.id);
   const plateX = m.id === 'monster' ? 0 : m.id === 'kart' ? -2 : 0;
   const plateY = m.id === 'monster' ? -30 : m.id === 'kart' ? 7 : 0;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="${escape(p.playerName + ' — ' + m.name)}" class="vehicle" data-state="${p.animation}" data-effect="${p.effect}" style="--primary:${p.primary};--accent:${p.accent}"><title>${escape(m.name)}</title><g class="trails" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"><path d="M9 74 H33 M3 87 H25 M12 100 H32"/></g><g class="smoke" fill="#a0b0be" opacity=".5"><circle cx="22" cy="106" r="7"/><circle cx="12" cy="99" r="5"/></g><ellipse class="glow" cx="143" cy="126" rx="89" ry="4" fill="var(--accent)" opacity=".45"/><g class="chassis" stroke="#152536" stroke-width="2.5" stroke-linejoin="round">${path(m.body, 'var(--primary)')}${path(m.body, '#fff', 'opacity=".08" transform="translate(0 -1)" stroke="none"')}${path(m.glass, '#b6e5eb')}${!noGlassHighlight ? '<path d="M105 53 L118 53 M147 57 L154 61" stroke="#fff" opacity=".65"/>' : ''}${details(m.id)}${p.stripes ? '<path d="M96 79 L89 98 M106 79 L99 98" stroke="var(--accent)" stroke-width="6"/>' : ''}${!noLights ? '<path d="M181 99 H229" stroke="var(--accent)" stroke-width="4"/><path d="M220 82 H232" stroke="#fff4cb" stroke-width="5"/><path d="M42 83 H48" stroke="#ff617a" stroke-width="4"/>' : ''}<g transform="translate(${plateX} ${plateY})"><rect x="113" y="78" width="30" height="22" rx="7" fill="#f5f5e9" stroke="none"/><text x="128" y="94" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="900" fill="#152536" stroke="none">${p.number}</text></g></g>${wheel(m.rear, m.radius, p.wheels)}${wheel(m.front, m.radius, p.wheels)}<g class="celebrate" fill="var(--accent)"><path d="M86 20 L89 27 L97 28 L91 33 L92 41 L86 37 L79 41 L81 33 L75 28 L83 27Z"/><path d="M183 17 L187 25 L195 26 L189 32 L190 40 L183 36 L176 40 L177 32 L171 26 L179 25Z"/></g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="${escape(p.playerName + ' — ' + m.name)}" class="vehicle" data-state="${p.animation}" data-effect="${p.effect}" style="--primary:${p.primary};--accent:${p.accent}"><title>${escape(m.name)}</title><g class="trails" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"><path d="M9 74 H33 M3 87 H25 M12 100 H32"/></g><g class="smoke" fill="#a0b0be" opacity=".5"><circle cx="22" cy="106" r="7"/><circle cx="12" cy="99" r="5"/></g><ellipse class="glow" cx="143" cy="126" rx="89" ry="4" fill="var(--accent)" opacity=".45"/><g class="chassis" stroke="#152536" stroke-width="2.5" stroke-linejoin="round">${path(m.body, 'var(--primary)')}${path(m.body, '#fff', 'opacity=".08" transform="translate(0 -1)" stroke="none"')}${path(m.glass, '#b6e5eb')}${!noGlassHighlight ? '<path d="M105 53 L118 53 M147 57 L154 61" stroke="#fff" opacity=".65"/>' : ''}${details(m.id)}${p.stripes ? '<path d="M96 79 L89 98 M106 79 L99 98" stroke="var(--accent)" stroke-width="6"/>' : ''}${!noLights ? '<path d="M181 99 H229" stroke="var(--accent)" stroke-width="4"/><path d="M220 82 H232" stroke="#fff4cb" stroke-width="5"/><path d="M42 83 H48" stroke="#ff617a" stroke-width="4"/>' : ''}<g transform="translate(${plateX} ${plateY})">${String(p.number).length > 2 ? '<rect x="109" y="78" width="38" height="22" rx="7" fill="#f5f5e9" stroke="none"/>' : '<rect x="113" y="78" width="30" height="22" rx="7" fill="#f5f5e9" stroke="none"/>'}<text x="128" y="94" text-anchor="middle" font-family="Arial,sans-serif" font-size="${String(p.number).length > 2 ? 12.5 : 14}" font-weight="900" fill="#152536" stroke="none">${p.number}</text></g></g>${wheel(m.rear, m.radius, p.wheels)}${wheel(m.front, m.radius, p.wheels)}<g class="celebrate" fill="var(--accent)"><path d="M86 20 L89 27 L97 28 L91 33 L92 41 L86 37 L79 41 L81 33 L75 28 L83 27Z"/><path d="M183 17 L187 25 L195 26 L189 32 L190 40 L183 36 L176 40 L177 32 L171 26 L179 25Z"/></g></svg>`;
 }
 
 /** Transient states return to `driving` after this long (kit `play()` timings). */

@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState, type KeyboardEvent } from 'react';
 import { CAR_COLORS } from '@race/shared';
 import {
   MODEL_GEOMETRY,
+  MAX_RACE_NUMBER,
   VEHICLE_EFFECTS,
   VEHICLE_STATES,
   WHEEL_STYLES,
@@ -87,7 +88,7 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
   const taken = new Set(players.filter((p) => p.user_id !== me.user_id).map((p) => p.car_color));
   const model = MODEL_GEOMETRY.find((m) => m.id === build.model)!;
   const look = { ...build, primary, playerName: me.name };
-  const workshop = useMemo(() => decorative(workshopBackgroundSvg(station)).replace(/<\/svg>$/, SHADOW + '</svg>'), [station]);
+  const workshop = useMemo(() => decorative(workshopBackgroundSvg(station, build.number)).replace(/<\/svg>$/, SHADOW + '</svg>'), [station, build.number]);
   const markDirty = () => {
     setDirty(true);
     setStatus('Unsaved changes. Confirm your build when ready.');
@@ -270,7 +271,7 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
                   <div className="min-w-0">
                     <span className="g-eyebrow">{build.team ? TEAMS.find((t) => t.id === build.team)!.name.toUpperCase() : 'NO TEAM'}</span>
                     <h2 className="truncate">{build.driver || me.name}</h2>
-                    <p>Teams are just style: there is no team scoring.</p>
+                    <p>Team colours are just for show. Teams don't score points.</p>
                   </div>
                   <span className="w-driver-number">
                     <TrustedSvg markup={numberPlateSvg(build.number, build.team ?? 'apex')} />
@@ -311,8 +312,8 @@ export function Garage({ lobbyId, me, meIndex, players, locked }: Props) {
                   <label>
                     Race number
                     <input
-                      type="number" min={0} max={99} value={build.number} disabled={locked}
-                      onChange={(e) => edit({ number: Math.max(0, Math.min(99, parseInt(e.target.value) || 0)) })}
+                      type="number" min={0} max={MAX_RACE_NUMBER} inputMode="numeric" value={build.number} disabled={locked}
+                      onChange={(e) => edit({ number: Math.max(0, Math.min(MAX_RACE_NUMBER, parseInt(e.target.value) || 0)) })}
                       className={inputClass}
                     />
                   </label>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import { MOTION } from '../art/motion';
 import { laneLeft } from '../art/vehicleAnchors';
 import type { VehicleProps } from '../art/vehicleArt';
@@ -40,7 +40,12 @@ interface Props {
   destination: DestinationId;
   /** Five ruler labels, start to finish. */
   ruler?: readonly string[];
+  /** Lanes to draw on desktop; lanes without a racer stay as empty road (hidden on smaller screens). */
+  lanes?: number;
 }
+
+/** Cars glide to each new position instead of stepping (positions update a few times a second). */
+const CAR_SPRING = { stiffness: 42, damping: 16, mass: 1 };
 
 const RULER = ['START', '25%', '50%', '75%', 'FINISH'] as const;
 const BARRIER = ['GRID MOTOR CLUB', 'TYPE / RACE / REPEAT', 'PRECISION WINS'];
@@ -69,7 +74,7 @@ function laneRoad(wet: boolean) {
  * keyed lanes. Cars are placed by our front-bumper anchors (vehicleAnchors),
  * so at progress 1 every model's bumper meets the finish stripe.
  */
-export function Track({ cars, total, started, destination, ruler = RULER }: Props) {
+export function Track({ cars, total, started, destination, ruler = RULER, lanes = 0 }: Props) {
   const reducedMotion = useReducedMotion();
   const sky = useMemo(() => decorative(destinationSceneSvg(destination)), [destination]);
   return (
@@ -94,6 +99,25 @@ export function Track({ cars, total, started, destination, ruler = RULER }: Prop
           >
             <Lane car={car} started={started} wet={destination === 'rain'} />
           </motion.div>
+        ))}
+        {Array.from({ length: Math.max(0, lanes - cars.length) }, (_, i) => (
+          <div key={`empty-${i}`} className="w-lane w-lane--empty" aria-hidden="true">
+            <div className="w-lane-name">
+              <strong>Open lane</strong>
+            </div>
+            <div className={`w-road ${destination === 'rain' ? 'wet' : ''}`}>
+              <div className="w-road-surface">
+                <TrustedSvg markup={destination === 'rain' ? ART.roadWet : ART.road} />
+              </div>
+              <div className="w-grid-paint">
+                <TrustedSvg markup={ART.grid} />
+              </div>
+              <div className="w-distance-lines" />
+              <div className="w-finish-paint">
+                <TrustedSvg markup={ART.stripe} />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
       <div className="w-kerb">
@@ -121,6 +145,19 @@ function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boo
 
   const progress = Math.min(1, Math.max(0, car.progress));
   const pct = Math.round(car.percent ?? progress * 100);
+  const reducedMotion = useReducedMotion();
+  // Cars never roll backwards: a downward correction (e.g. after a rejoin) holds the car until it catches up.
+  const furthest = useRef(0);
+  if (!started) furthest.current = 0;
+  furthest.current = Math.max(furthest.current, progress);
+  const shown = furthest.current;
+  const at = useSpring(shown, CAR_SPRING);
+  useEffect(() => {
+    if (reducedMotion) at.jump(shown);
+    else at.set(shown);
+  }, [at, shown, reducedMotion]);
+  const model = car.vehicle.model;
+  const left = useTransform(at, (v) => laneLeft(model, v));
   return (
     <>
       <div className="w-lane-name">
@@ -136,9 +173,9 @@ function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boo
           <TrustedSvg markup={ART.grid} />
         </div>
         <div className="w-distance-lines" />
-        <div className="w-track-racer" style={{ left: laneLeft(car.vehicle.model, progress) }}>
+        <motion.div className="w-track-racer" style={{ left }}>
           <Car vehicle={car.vehicle} animation={animation} animationKey={animationKey} />
-        </div>
+        </motion.div>
         <div className="w-finish-paint">
           <TrustedSvg markup={ART.stripe} />
         </div>

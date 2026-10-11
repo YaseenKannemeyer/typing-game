@@ -32,7 +32,9 @@ describe('vehicle art port', () => {
     expect(normalizeVehicle({ progress: 9 }).progress).toBe(1);
     expect(normalizeVehicle({ progress: -2 }).progress).toBe(0);
     expect(normalizeVehicle({ primary: 'red;bad', model: 'invalid' })).toMatchObject({ primary: '#ff683b', model: 'classic' });
-    expect(normalizeVehicle({ number: 999 }).number).toBe(99);
+    // Race numbers go to 999 here (the kit capped at 99).
+    expect(normalizeVehicle({ number: 999 }).number).toBe(999);
+    expect(normalizeVehicle({ number: 1500 }).number).toBe(999);
     const markup = vehicleSvg({ playerName: '<script>alert(1)</script>' });
     expect(markup).not.toContain('<script>');
     expect(markup).toBe(kit.svg({ playerName: '<script>alert(1)</script>' }));

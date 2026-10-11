@@ -77,7 +77,10 @@ describe('racing-world ports match the kit byte-for-byte', () => {
     for (const t of [...TEAMS.map((t) => t.id), 'nope']) {
       expect(teamBadgeSvg(t)).toBe(kit.teamBadge(t));
       expect(helmetSvg(t)).toBe(kit.helmet(t));
-      for (const n of [0, 7, 99, 150, 'x']) expect(numberPlateSvg(n, t)).toBe(kit.numberPlate(n, t));
+      // Up to 99 the plate matches the kit; we allow 3-digit numbers (kit capped at 99).
+      for (const n of [0, 7, 99, 'x']) expect(numberPlateSvg(n, t)).toBe(kit.numberPlate(n, t));
+      expect(numberPlateSvg(150, t)).toContain('>150</text>');
+      expect(numberPlateSvg(1500, t)).toContain('>999</text>');
     }
     for (const v of sampleVehicles)
       for (const decal of DECAL_IDS) {

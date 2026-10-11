@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent }
 import {
   computeStats,
   getVisibleCars,
+  VISIBLE_CARS,
   lineWords,
   lockedWords,
   PROGRESS_SUBMIT_MS,
@@ -35,9 +36,12 @@ interface Props {
 /** Re-rank at most this often so lanes don't jitter on every keystroke. */
 const RANK_INTERVAL_MS = 250;
 const GO_BANNER_MS = 900;
-/** The leader's car sits just short of the flag; everyone else is placed relative to them. */
-const LEADER_POSITION = 0.94;
-const RULER = ['START', '25%', '50%', '75%', 'LEADER'] as const;
+/**
+ * The race is on a clock, so the track follows the clock: the leader drives from
+ * the start to TRACK_END as the time runs out (never reaching the flag), and
+ * everyone else sits at their share of the leader's characters.
+ */
+const TRACK_END = 0.9;
 
 export function Race({ state }: Props) {
   const { race, passage, racePlayers, players, live, userId, clockOffset, lobby } = state;
@@ -206,13 +210,14 @@ export function Race({ state }: Props) {
   const ranked = order.map((id) => byId.get(id)).filter((s) => s !== undefined);
   for (const s of standings) if (!order.includes(s.id)) ranked.push(s);
   const rankOf = (id: string) => ranked.findIndex((s) => s.id === id) + 1;
+  const leaderAt = started ? TRACK_END * Math.min(1, elapsed / durationMs) : 0;
   const cars: TrackCar[] = getVisibleCars(ranked, userId ?? '').map((s) => ({
     id: s.id,
     name: s.name,
     // Racers who left the lobby keep a neutral car.
     vehicle: vehicles.get(s.id) ?? vehicleFor({ name: s.name, car_color: '#748782', vehicle: {} }),
     rank: rankOf(s.id),
-    progress: s.progress * LEADER_POSITION,
+    progress: s.progress * leaderAt,
     percent: s.progress * 100, // of the leader's total
     wpm: s.netWpm,
     errors: s.id === userId ? ts.errors : (live[s.id]?.errors ?? 0),
@@ -297,7 +302,7 @@ export function Race({ state }: Props) {
       )}
 
       <div className="race-track relative">
-        <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} ruler={RULER} />
+        <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} lanes={VISIBLE_CARS} />
         {(!started || elapsed < GO_BANNER_MS) && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
             <CountdownFrame value={started ? 'GO!' : countdownValue} />
@@ -309,9 +314,8 @@ export function Race({ state }: Props) {
       {racePlayers.length > cars.length && (
         <div className="race-minimap">
           <Minimap
-            racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * LEADER_POSITION }))}
+            racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * leaderAt }))}
             localId={userId}
-            endLabel="LEADER"
           />
         </div>
       )}

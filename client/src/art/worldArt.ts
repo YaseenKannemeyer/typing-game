@@ -10,7 +10,7 @@
  * Kit 25 (championship) is not ported: it needs server support first.
  */
 import { escapeHtml as esc } from './gridArt';
-import { normalizeVehicle, vehicleSvg, type VehicleModel, type VehicleProps } from './vehicleArt';
+import { MAX_RACE_NUMBER, normalizeVehicle, vehicleSvg, type VehicleModel, type VehicleProps } from './vehicleArt';
 
 type VehicleInput = Partial<Record<keyof VehicleProps, unknown>>;
 
@@ -37,13 +37,15 @@ export const WORKSHOP_STATIONS = ['overview', 'paint', 'wheels', 'livery'] as co
 export type WorkshopStation = (typeof WORKSHOP_STATIONS)[number];
 
 /** Workshop bay without a car; the live <Car> is layered on top. */
-export function workshopBackgroundSvg(station: WorkshopStation = 'overview'): string {
+export function workshopBackgroundSvg(station: WorkshopStation = 'overview', number: unknown = 7): string {
+  // The bay is labelled with the car's race number.
+  const bay = String(Math.max(0, Math.min(MAX_RACE_NUMBER, parseInt(String(number)) || 0))).padStart(2, '0');
   const focus = ['paint', 'wheels', 'livery'].includes(station) ? station : 'overview';
   let s = rect(0, 0, 1100, 520, '#1b2724') + rect(0, 0, 1100, 25, '#111b17') + rect(0, 25, 1100, 310, '#25332e');
   s += '<path d="M0 115H1100M0 215H1100M160 25V335M940 25V335" stroke="#35423c" stroke-width="2"/>';
   s += rect(284, 59, 535, 273, '#18231f', 7, '#4b5e50');
   for (let i = 0; i < 11; i++) s += `<path d="M293 ${72 + i * 23}H810" stroke="#34453b" stroke-width="4"/>`;
-  s += rect(302, 49, 499, 24, '#51614b', 3) + text(489, 66, 'GRID / BAY 07', 12, '#dce4cf', 700);
+  s += rect(302, 49, 499, 24, '#51614b', 3) + text(489, 66, 'GRID / BAY ' + bay, 12, '#dce4cf', 700);
   s += '<path d="M245 335L80 520M450 335L405 520M655 335L715 520M860 335L1030 520" stroke="#4f5c4e" stroke-width="2"/>' + rect(0, 335, 1100, 185, '#39433b') + '<path d="M0 390H1100M0 465H1100M200 335L75 520M455 335L410 520M645 335L700 520M900 335L1040 520" stroke="#4b574b" stroke-width="2"/><path d="M318 380L269 451H824L779 380" fill="none" stroke="#abb37a" stroke-width="4"/>';
   s += rect(70, 49, 135, 111, '#17271e', 6, '#506b45');
   for (let y = 65; y < 145; y += 20) for (let x = 83; x < 190; x += 20) s += `<circle cx="${x}" cy="${y}" r="1.5" fill="#698160"/>`;
@@ -58,7 +60,7 @@ export function workshopBackgroundSvg(station: WorkshopStation = 'overview'): st
     s += `<circle cx="${x}" cy="${y}" r="${r}" fill="#111b1a" stroke="${focus === 'wheels' ? '#b9f46a' : '#627568'}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="15" fill="#46544f"/><path d="M${x - 12} ${y}H${x + 12}M${x} ${y - 12}V${y + 12}" stroke="#abbab0" stroke-width="4"/>`;
   s += rect(841, 48, 206, 40, focus === 'livery' ? '#405b2c' : '#2f4233', 4, '#74875c') + text(865, 74, 'LIVERY / LETTERING', 14, '#c9dfad', 700);
   s += '<path d="M355 27V46M718 27V46" stroke="#556b55" stroke-width="4"/>' + rect(310, 43, 130, 9, '#e2f2c8', 3) + rect(669, 43, 130, 9, '#e2f2c8', 3) + '<path d="M310 54L265 335H493L440 54M669 54L616 335H852L799 54" fill="#ecffd4" opacity=".035"/>';
-  s += text(55, 476, '07', 44, '#727e66', 700) + text(908, 478, 'SERVICE BAY', 13, '#a7b697', 700);
+  s += text(55, 476, bay, 44, '#727e66', 700) + text(908, 478, 'SERVICE BAY', 13, '#a7b697', 700);
   if (focus !== 'overview') s += text(460, 500, focus.toUpperCase() + ' STATION ACTIVE', 11, '#c9ef8b', 700);
   return worldSvg(s, 'Workshop service bay with tools, tyre racks and paint station');
 }
@@ -207,7 +209,7 @@ export const helmetSvg = (id: string = 'apex') => {
   return worldSvg(`<path d="M22 78Q15 20 71 17Q121 14 128 72L109 106H38Z" fill="${t.color}" stroke="#1b2b22" stroke-width="4"/><path d="M60 39H115L129 66L105 75H48Z" fill="#263b3c" stroke="#1b2b22" stroke-width="3"/><path d="M72 46H112L116 53H68Z" fill="#b5d5cf"/><path d="M26 79H106L99 100H40Z" fill="#324835"/><path d="M30 61L48 62M37 30L60 39M45 93H78" stroke="#f0f3d3" stroke-width="4"/>`, t.name + ' helmet avatar', '0 0 150 125');
 };
 export const numberPlateSvg = (number: unknown = 7, id: string = 'apex') => {
-  const n = Math.max(0, Math.min(99, parseInt(String(number)) || 0)), t = team(id);
+  const n = Math.max(0, Math.min(MAX_RACE_NUMBER, parseInt(String(number)) || 0)), t = team(id);
   return worldSvg(`<path d="M12 4H139L127 64H0Z" fill="${t.color}"/><path d="M18 10H130L121 58H9Z" fill="#1c3023"/>` + text(70, 45, String(n).padStart(2, '0'), 38, '#f0f4dd', 700).replace('<text ', '<text text-anchor="middle" '), 'Racing number ' + n, '0 0 140 68');
 };
 

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { CAR_COLORS, MAX_PLAYERS, normalizeName } from '@race/shared';
 import { MODEL_GEOMETRY } from '../art/vehicleArt';
-import { decorative, destinationSceneSvg } from '../art/worldArt';
+import { decorative, destinationSceneSvg, roadSurfaceSvg, type DestinationId } from '../art/worldArt';
 import { Car } from '../components/Car';
 import { TrustedSvg } from '../components/TrustedSvg';
 import { RejoinRace } from '../components/RejoinRace';
@@ -13,20 +14,100 @@ import { ensureSession, supabase } from '../lib/supabase';
 import { SoundToggle } from '../game/sound';
 import { Practice } from './Practice';
 
-const SCENERY = decorative(destinationSceneSvg('country'));
+/** Showroom scenery: one layer per destination; the road follows the weather. */
+const SCENE_ORDER: DestinationId[] = ['country', 'coast', 'city', 'desert', 'neon', 'rain'];
+const SCENES = SCENE_ORDER.map((id) => ({
+  id,
+  sky: decorative(destinationSceneSvg(id)),
+  road: decorative(roadSurfaceSvg({ wet: id === 'rain' })).replace('<svg ', '<svg preserveAspectRatio="none" '),
+}));
+/** Each car holds the stage for 5–8 s, then drives off for the next one. */
+const nextDriveMs = () => 5000 + Math.random() * 3000;
+
+const showroomCar = (index: number) => ({
+  model: MODEL_GEOMETRY[index]!.id,
+  primary: CAR_COLORS[index % CAR_COLORS.length],
+  number: index + 1,
+  stripes: true,
+  accent: '#edf4df',
+  effect: 'smoke' as const,
+});
+
+/** Exhaust puffs behind the rear bumper; denser while accelerating away. */
+function Exhaust() {
+  return (
+    <span className="home-exhaust" aria-hidden="true">
+      <i /><i /><i /><i />
+    </span>
+  );
+}
 
 function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: number) => void }) {
+  const reducedMotion = useReducedMotion();
+  const count = MODEL_GEOMETRY.length;
   const model = MODEL_GEOMETRY[selected]!;
-  const select = (direction: number) => onSelect((selected + direction + MODEL_GEOMETRY.length) % MODEL_GEOMETRY.length);
+  const [paused, setPaused] = useState(false);
+  const [leaving, setLeaving] = useState<{ index: number; key: number } | null>(null);
+  const [scene, setScene] = useState(0);
+  const [announce, setAnnounce] = useState(false);
+  const swaps = useRef(0);
+  const previous = useRef(selected);
+
+  // Whatever changes the car (timer, arrows, line-up), the old one drives off.
+  useEffect(() => {
+    if (previous.current === selected) return;
+    if (!reducedMotion) setLeaving({ index: previous.current, key: Date.now() });
+    previous.current = selected;
+    // A new backdrop after every full line-up, cross-faded while the cars swap.
+    swaps.current += 1;
+    if (swaps.current % count === 0) setScene((s) => (s + 1) % SCENES.length);
+  }, [selected, reducedMotion, count]);
+
+  useEffect(() => {
+    if (reducedMotion || paused) return;
+    const t = setTimeout(() => {
+      setAnnounce(false);
+      onSelect((selected + 1) % count);
+    }, nextDriveMs());
+    return () => clearTimeout(t);
+  }, [selected, paused, reducedMotion, onSelect, count]);
+
+  const select = (direction: number) => {
+    setAnnounce(true);
+    onSelect((selected + direction + count) % count);
+  };
+  const driving = reducedMotion ? 'idle' : 'driving';
+
   return (
-    <section className="home-showcase" aria-label="Explore the car collection">
-      <div className="home-showcase-scene" aria-hidden="true"><TrustedSvg markup={SCENERY} /></div>
-      <div className="home-showcase-road" aria-hidden="true" />
-      <div className="home-showcase-car" aria-hidden="true">
-        <Car vehicle={{ model: model.id, primary: CAR_COLORS[selected % CAR_COLORS.length], number: selected + 1, stripes: true, accent: '#edf4df' }} />
+    <section
+      className={`home-showcase ${paused ? 'is-paused' : ''}`}
+      aria-label="Explore the car collection"
+      onPointerEnter={() => setPaused(true)}
+      onPointerLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false); }}
+    >
+      <div className="home-showcase-world" aria-hidden="true">
+        {SCENES.map((sc, i) => (
+          <div key={sc.id} className={`home-scene ${i === scene ? 'is-active' : ''}`}>
+            <div className="home-scene-sky"><TrustedSvg markup={sc.sky} /></div>
+            <div className="home-scene-road"><TrustedSvg markup={sc.road} /></div>
+          </div>
+        ))}
+        <div className="home-road-dashes" />
+      </div>
+      {leaving && (
+        <div key={`leave-${leaving.key}`} className="home-showcase-car is-leaving" aria-hidden="true" onAnimationEnd={() => setLeaving(null)}>
+          <div className="home-car-body"><Car vehicle={showroomCar(leaving.index)} animation={reducedMotion ? 'idle' : 'acceleration'} /></div>
+          <Exhaust />
+        </div>
+      )}
+      <div key={`car-${selected}`} className={`home-showcase-car ${leaving ? 'is-arriving' : ''}`} aria-hidden="true">
+        <div className="home-car-body"><Car vehicle={showroomCar(selected)} animation={driving} /></div>
+        <Exhaust />
       </div>
       <div className="home-showcase-controls">
-        <div aria-live="polite" aria-atomic="true"><strong>{model.name}</strong><span>{model.tag} · {selected + 1} of {MODEL_GEOMETRY.length}</span></div>
+        <div aria-live={announce ? 'polite' : 'off'} aria-atomic="true"><strong>{model.name}</strong><span>{model.tag} · {selected + 1} of {count}</span></div>
         <div className="home-car-buttons">
           <button type="button" onClick={() => select(-1)} aria-label="Previous car"><span className="home-arrow-back"><Icon name="arrow" /></span></button>
           <button type="button" onClick={() => select(1)} aria-label="Next car"><Icon name="arrow" /></button>
