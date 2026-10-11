@@ -71,7 +71,6 @@
 @keyframes home-car-out { to { transform: translateX(190%); } }
 /* While on stage the car cruises: a gentle surge and settle, scenery drifting past. */
 .home-car-body { animation: home-cruise 3.4s ease-in-out infinite; }
-.home-showcase-car.is-leaving .home-car-body { animation: none; }
 @keyframes home-cruise { 0%, 100% { transform: translateX(0); } 35% { transform: translateX(16px); } 70% { transform: translateX(-6px); } }
 .home-scene-sky svg { animation: home-sky-drift 26s ease-in-out infinite alternate; transform-origin: 50% 100%; }
 @keyframes home-sky-drift { from { transform: scale(1.08) translateX(2.5%); } to { transform: scale(1.08) translateX(-2.5%); } }

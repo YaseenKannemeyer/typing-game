@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, type AnimationEvent } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { CAR_COLORS, MAX_PLAYERS, normalizeName } from '@race/shared';
 import { MODEL_GEOMETRY } from '../art/vehicleArt';
@@ -21,6 +21,12 @@ const SCENES = SCENE_ORDER.map((id) => ({
   sky: decorative(destinationSceneSvg(id)),
   road: decorative(roadSurfaceSvg({ wet: id === 'rain' })).replace('<svg ', '<svg preserveAspectRatio="none" '),
 }));
+interface StageCar {
+  id: number;
+  index: number;
+  phase: 'stage' | 'arriving' | 'leaving';
+}
+
 /** Each car holds the stage for 5–8 s, then drives off for the next one. */
 const nextDriveMs = () => 5000 + Math.random() * 3000;
 
@@ -47,21 +53,30 @@ function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: 
   const count = MODEL_GEOMETRY.length;
   const model = MODEL_GEOMETRY[selected]!;
   const [paused, setPaused] = useState(false);
-  const [leaving, setLeaving] = useState<{ index: number; key: number } | null>(null);
-  const [scene, setScene] = useState(0);
   const [announce, setAnnounce] = useState(false);
-  const swaps = useRef(0);
-  const previous = useRef(selected);
+  // Cars on stage. Each keeps its element from arrival to drive-off, so nothing remounts or flashes.
+  const [cars, setCars] = useState<StageCar[]>(() => [{ id: 0, index: selected, phase: 'stage' }]);
+  const [shown, setShown] = useState(selected);
+  const [swaps, setSwaps] = useState(0);
+  // A new backdrop after every full line-up, cross-faded while the cars swap.
+  const scene = Math.floor(swaps / count) % SCENES.length;
 
-  // Whatever changes the car (timer, arrows, line-up), the old one drives off.
-  useEffect(() => {
-    if (previous.current === selected) return;
-    if (!reducedMotion) setLeaving({ index: previous.current, key: Date.now() });
-    previous.current = selected;
-    // A new backdrop after every full line-up, cross-faded while the cars swap.
-    swaps.current += 1;
-    if (swaps.current % count === 0) setScene((s) => (s + 1) % SCENES.length);
-  }, [selected, reducedMotion, count]);
+  // Whatever changes the car (timer, arrows, line-up), the old one drives off in the same frame
+  // the new one starts driving in (derived during render, not in an effect, to avoid a flash).
+  if (shown !== selected) {
+    const id = Math.max(...cars.map((c) => c.id)) + 1;
+    setShown(selected);
+    setSwaps((n) => n + 1);
+    setCars(
+      reducedMotion
+        ? [{ id, index: selected, phase: 'stage' }]
+        : [...cars.map((c) => ({ ...c, phase: 'leaving' as const })).slice(-2), { id, index: selected, phase: 'arriving' }],
+    );
+  }
+  const finished = (id: number) => (e: AnimationEvent<HTMLDivElement>) => {
+    // Only the car's own drive-off ends it; inner animations (wheels, exhaust, chassis) bubble too.
+    if (e.target === e.currentTarget && e.animationName === 'home-car-out') setCars((cs) => cs.filter((c) => c.id !== id));
+  };
 
   useEffect(() => {
     if (reducedMotion || paused) return;
@@ -96,16 +111,14 @@ function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: 
         ))}
         <div className="home-road-dashes" />
       </div>
-      {leaving && (
-        <div key={`leave-${leaving.key}`} className="home-showcase-car is-leaving" aria-hidden="true" onAnimationEnd={() => setLeaving(null)}>
-          <div className="home-car-body"><Car vehicle={showroomCar(leaving.index)} animation={reducedMotion ? 'idle' : 'acceleration'} /></div>
+      {cars.map((c) => (
+        <div key={c.id} className={`home-showcase-car is-${c.phase}`} aria-hidden="true" onAnimationEnd={finished(c.id)}>
+          <div className="home-car-body">
+            <Car vehicle={showroomCar(c.index)} animation={c.phase === 'leaving' && !reducedMotion ? 'acceleration' : driving} />
+          </div>
           <Exhaust />
         </div>
-      )}
-      <div key={`car-${selected}`} className={`home-showcase-car ${leaving ? 'is-arriving' : ''}`} aria-hidden="true">
-        <div className="home-car-body"><Car vehicle={showroomCar(selected)} animation={driving} /></div>
-        <Exhaust />
-      </div>
+      ))}
       <div className="home-showcase-controls">
         <div aria-live={announce ? 'polite' : 'off'} aria-atomic="true"><strong>{model.name}</strong><span>{model.tag} · {selected + 1} of {count}</span></div>
         <div className="home-car-buttons">
