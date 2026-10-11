@@ -159,7 +159,7 @@ async function main() {
   // Realtime: host listens for server-sent events.
   const events: string[] = [];
   await host.sb.realtime.setAuth();
-  const channel = host.sb.channel(`lobby:${code}`, { config: { private: true } });
+  const channel = host.sb.channel(`lobby:${code}:server`, { config: { private: true } });
   for (const ev of ['vote:result', 'race:start', 'race:end', 'race:awards']) {
     channel.on('broadcast', { event: ev }, () => events.push(ev));
   }
@@ -169,7 +169,21 @@ async function main() {
       else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(err ?? new Error(status));
     });
   });
-  check(true, 'host subscribed to private lobby channel');
+  check(true, 'host subscribed to the receive-only server channel');
+
+  // A member can join the server channel but must not be able to forge events on it.
+  await second.sb.realtime.setAuth();
+  const forger = second.sb.channel(`lobby:${code}:server`, { config: { private: true } });
+  await new Promise<void>((resolve, reject) => {
+    forger.subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') resolve();
+      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') reject(err ?? new Error(status));
+    });
+  });
+  await forger.send({ type: 'broadcast', event: 'vote:result', payload: { mode: 'coding' } });
+  await new Promise((r) => setTimeout(r, 2000));
+  check(!events.includes('vote:result'), 'member cannot forge server events');
+  await second.sb.removeChannel(forger);
 
   // Colours ----------------------------------------------------------------
   const { data: colorRows } = await second.sb.from('lobby_players').select('user_id, car_color');

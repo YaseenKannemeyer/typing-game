@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
-import { HEARTBEAT_MS, type VoteMode } from '@race/shared';
+import { HEARTBEAT_MS, VOTE_MODES, type VoteMode } from '@race/shared';
 import { api, errorCode, errorMessage } from '../lib/api';
 import { measureClockOffset } from '../lib/clock';
 import { loadBuild } from '../lib/storage';
@@ -52,15 +52,27 @@ const initial: LobbyState = {
 const RACE_PLAYER_COLUMNS =
   'user_id, name, words_done, locked_chars, correct_chars, keystrokes, errors, deletions, section_keystrokes, section_errors, finished_at, rank, net_wpm, gross_wpm, accuracy, flagged, samples, awards';
 
+/** Live progress from another player's broadcast, or null if it is malformed. */
+function parseProgress(payload: unknown): ({ id: string } & LiveProgress) | null {
+  const p = payload as Record<string, unknown> | null;
+  const num = (v: unknown, max: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, 0), max) : null);
+  const chars = num(p?.chars, 100_000);
+  const wpm = num(p?.wpm, 1_000);
+  if (typeof p?.id !== 'string' || chars === null || wpm === null) return null;
+  return { id: p.id, chars, wpm, errors: num(p.errors, 100_000) ?? 0 };
+}
+
 /**
  * Joins a lobby and keeps its state in sync. The database is the source of
- * truth: server events on the private channel trigger a re-fetch, while
- * `progress` broadcasts from other players only animate cars.
+ * truth: server events arrive on `lobby:<CODE>:server`, a topic members can
+ * read but not write, and trigger a re-fetch. `lobby:<CODE>` carries presence
+ * and player `progress` broadcasts, which only animate cars.
  */
 export function useLobby(code: string, name: string) {
   const [state, setState] = useState<LobbyState>(initial);
   const lobbyId = useRef<string | null>(null);
   const channel = useRef<RealtimeChannel | null>(null);
+  const serverChannel = useRef<RealtimeChannel | null>(null);
   /** Race text by race id (fetched once per race; it can be several KB). */
   const textCache = useRef(new Map<string, string>());
   const refreshing = useRef<Promise<void> | null>(null);
@@ -161,31 +173,48 @@ export function useLobby(code: string, name: string) {
 
         const sb = requireSupabase();
         await sb.realtime.setAuth();
+        // Both channels must be up before we claim to be connected.
+        const up = { player: false, server: false };
+        const onStatus = (which: keyof typeof up, onUp?: () => void) => (status: string) => {
+          if (status === 'SUBSCRIBED') {
+            up[which] = true;
+            onUp?.();
+            if (up.player && up.server) setState((s) => ({ ...s, connected: true }));
+            void refresh(); // catch anything missed while (re)connecting
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            up[which] = false;
+            if (!cancelled) setState((s) => ({ ...s, connected: false }));
+          }
+        };
+
+        const server = sb.channel(`lobby:${code}:server`, { config: { private: true } });
+        for (const event of ['lobby:update', 'vote:start', 'vote:update', 'race:start', 'player:finished', 'race:end', 'race:awards']) {
+          server.on('broadcast', { event }, () => void refresh());
+        }
+        server.on('broadcast', { event: 'vote:result' }, ({ payload }) => {
+          const mode = (payload as { mode?: unknown } | null)?.mode;
+          if (VOTE_MODES.includes(mode as VoteMode)) setState((s) => ({ ...s, voteResult: mode as VoteMode }));
+        });
+        server.subscribe(onStatus('server'));
+        serverChannel.current = server;
+
         const ch = sb.channel(`lobby:${code}`, {
           config: { private: true, presence: { key: userId } },
         });
-        for (const event of ['lobby:update', 'vote:start', 'vote:update', 'race:start', 'player:finished', 'race:end', 'race:awards']) {
-          ch.on('broadcast', { event }, () => void refresh());
-        }
-        ch.on('broadcast', { event: 'vote:result' }, ({ payload }) =>
-          setState((s) => ({ ...s, voteResult: (payload as { mode: VoteMode }).mode })),
-        );
         ch.on('broadcast', { event: 'progress' }, ({ payload }) => {
-          const p = payload as { id: string } & LiveProgress;
-          setState((s) => ({ ...s, live: { ...s.live, [p.id]: { chars: p.chars, wpm: p.wpm, errors: p.errors } } }));
+          const p = parseProgress(payload);
+          // Players can't be impersonated on their own screen; strangers are ignored.
+          if (!p || p.id === userId) return;
+          setState((s) =>
+            s.racePlayers.some((r) => r.user_id === p.id)
+              ? { ...s, live: { ...s.live, [p.id]: { chars: p.chars, wpm: p.wpm, errors: p.errors } } }
+              : s,
+          );
         });
         ch.on('presence', { event: 'sync' }, () =>
           setState((s) => ({ ...s, online: new Set(Object.keys(ch.presenceState())) })),
         );
-        ch.subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            setState((s) => ({ ...s, connected: true }));
-            void ch.track({ name });
-            void refresh(); // catch anything missed while (re)connecting
-          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
-            if (!cancelled) setState((s) => ({ ...s, connected: false }));
-          }
-        });
+        ch.subscribe(onStatus('player', () => void ch.track({ name })));
         channel.current = ch;
 
         heartbeat = setInterval(() => {
@@ -204,8 +233,10 @@ export function useLobby(code: string, name: string) {
     return () => {
       cancelled = true;
       clearInterval(heartbeat);
-      if (channel.current) void requireSupabase().removeChannel(channel.current);
-      channel.current = null;
+      for (const c of [channel, serverChannel]) {
+        if (c.current) void requireSupabase().removeChannel(c.current);
+        c.current = null;
+      }
     };
   }, [code, name, refresh, fail]);
 
@@ -217,6 +248,7 @@ export function useLobby(code: string, name: string) {
   const retry = useCallback(() => {
     void refresh();
     channel.current?.subscribe();
+    serverChannel.current?.subscribe();
   }, [refresh]);
 
   return { state, refresh, sendProgress, retry };
