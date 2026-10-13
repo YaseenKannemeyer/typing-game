@@ -42,6 +42,8 @@ interface Props {
   ruler?: readonly string[];
   /** Lanes to draw on desktop; lanes without a racer stay as empty road (hidden on smaller screens). */
   lanes?: number;
+  /** Quiet asphalt-only presentation for the typing workspace. */
+  compact?: boolean;
 }
 
 /** Cars glide to each new position instead of stepping (positions update a few times a second). */
@@ -74,20 +76,20 @@ function laneRoad(wet: boolean) {
  * keyed lanes. Cars are placed by our front-bumper anchors (vehicleAnchors),
  * so at progress 1 every model's bumper meets the finish stripe.
  */
-export function Track({ cars, total, started, destination, ruler = RULER, lanes = 0 }: Props) {
+export function Track({ cars, total, started, destination, ruler = RULER, lanes = 0, compact = false }: Props) {
   const reducedMotion = useReducedMotionConfig();
-  const sky = useMemo(() => decorative(destinationSceneSvg(destination)), [destination]);
+  const sky = useMemo(() => compact ? '' : decorative(destinationSceneSvg(destination)), [destination, compact]);
   return (
     <section className="w-circuit" aria-label={`Race track, ${total} racers`}>
-      <div className="w-circuit-sky">
+      {!compact && <div className="w-circuit-sky">
         <TrustedSvg markup={sky} />
-      </div>
-      <div className="w-track-barrier" aria-hidden="true">
+      </div>}
+      {!compact && <div className="w-track-barrier" aria-hidden="true">
         {BARRIER.map((t) => <span key={t}>{t}</span>)}
-      </div>
-      <div className="w-distance" aria-hidden="true">
+      </div>}
+      {!compact && <div className="w-distance" aria-hidden="true">
         {ruler.map((label, i) => <span key={i}>{label}</span>)}
-      </div>
+      </div>}
       <div className="w-lane-list">
         {cars.map((car) => (
           // Keyed by player id: lanes swap with a FLIP layout animation, cars never remount.
@@ -97,7 +99,7 @@ export function Track({ cars, total, started, destination, ruler = RULER, lanes 
             transition={{ layout: { duration: MOTION.ms.laneSwap / 1000, ease: MOTION.easing.standard } }}
             className={`w-lane ${car.isMe ? 'is-you' : ''}`}
           >
-            <Lane car={car} started={started} wet={destination === 'rain'} />
+            <Lane car={car} started={started} wet={destination === 'rain'} compact={compact} />
           </motion.div>
         ))}
         {Array.from({ length: Math.max(0, lanes - cars.length) }, (_, i) => (
@@ -120,18 +122,19 @@ export function Track({ cars, total, started, destination, ruler = RULER, lanes 
           </div>
         ))}
       </div>
-      <div className="w-kerb">
+      {!compact && <div className="w-kerb">
         <TrustedSvg markup={ART.kerb} />
-      </div>
-      <div className="w-finish-flag">
+      </div>}
+      {!compact && <div className="w-finish-flag">
         <TrustedSvg markup={ART.flag} />
-      </div>
+      </div>}
     </section>
   );
 }
 
-function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boolean }) {
-  const base = car.finished ? (car.rank === 1 ? 'winner' : 'finish') : started ? 'driving' : 'idle';
+function Lane({ car, started, wet, compact }: { car: TrackCar; started: boolean; wet: boolean; compact: boolean }) {
+  // A stopped race is still provisional here; only the results/spectator view may celebrate.
+  const base = car.finished ? (compact ? 'idle' : car.rank === 1 ? 'winner' : 'finish') : started ? 'driving' : 'idle';
   const { animation, animationKey, play } = useVehicleAnimation(base);
   const prev = useRef({ errors: car.errors, rank: car.rank, started });
 
@@ -165,7 +168,7 @@ function Lane({ car, started, wet }: { car: TrackCar; started: boolean; wet: boo
         <span>P{car.rank}{car.isMe ? ' · YOU' : ''}</span>
         <small>{Math.round(car.wpm)} WPM</small>
       </div>
-      <div className={`w-road ${wet ? 'wet' : ''}`} aria-label={`${car.name}, position ${car.rank}, ${pct} percent`}>
+      <div className={`w-road ${wet ? 'wet' : ''}`} aria-label={compact ? `${car.name}, position ${car.rank}, ${Math.round(car.wpm)} WPM` : `${car.name}, position ${car.rank}, ${pct} percent`}>
         <div className="w-road-surface">
           <TrustedSvg markup={wet ? ART.roadWet : ART.road} />
         </div>

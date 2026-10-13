@@ -1,0 +1,1870 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`app-owned vehicle artwork > classic has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Classic Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Classic Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M13 94 H36 M19 101 H33 M15 108 H35"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="31" cy="108" r="4"/>
+<circle cx="23" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139.5" cy="126" rx="87.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M31 92 L34 79 L82 75 L104 60 H147 L176 76 L230 82 L246 94 V111 H229 Q227 90 211 90 Q193 90 192 111 H85 Q84 90 68 90 Q49 90 48 111 H31Z" fill="var(--primary)" />
+<path d="M86 100 H193 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M94 75 L109 64 H125 V75Z M132 64 H144 L165 76 H132Z" fill="#202a35" />
+<path d="M94 75 L109 64 H125 V75Z M132 64 H144 L165 76 H132Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 78 H193" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M31 79 V73 H77 V77 H39 V81Z" fill="#171b21" />
+<path d="M87 108 H186 V113 H87Z" fill="#171b21" />
+<path d="M98 73 L121 65 M137 65 L158 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M92 80 V105 M173 81 V105" fill="none" stroke="#141619" stroke-width="0.7"/>
+<path d="M235 97 H243 M234 101 H243" fill="none" stroke="#9da6b1" stroke-width="1.5"/>
+<path d="M190 83 H203 M190 85 H202" fill="none" stroke="#171b21" stroke-width="1"/>
+<path d="M61 98 H226 V101 H61Z" fill="var(--accent)" stroke="none"/>
+<path d="M237 91 H243" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M34 85 H38" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(68 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Classic Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Classic Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M13 94 H36 M19 101 H33 M15 108 H35"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="31" cy="108" r="4"/>
+<circle cx="23" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139.5" cy="126" rx="87.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M31 92 L34 79 L82 75 L104 60 H147 L176 76 L230 82 L246 94 V111 H229 Q227 90 211 90 Q193 90 192 111 H85 Q84 90 68 90 Q49 90 48 111 H31Z" fill="#ffd336" />
+<path d="M86 100 H193 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M94 75 L109 64 H125 V75Z M132 64 H144 L165 76 H132Z" fill="#202a35" />
+<path d="M94 75 L109 64 H125 V75Z M132 64 H144 L165 76 H132Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 78 H193" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M31 79 V73 H77 V77 H39 V81Z" fill="#171b21" />
+<path d="M87 108 H186 V113 H87Z" fill="#171b21" />
+<path d="M98 73 L121 65 M137 65 L158 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M92 80 V105 M173 81 V105" fill="none" stroke="#141619" stroke-width="0.7"/>
+<path d="M235 97 H243 M234 101 H243" fill="none" stroke="#9da6b1" stroke-width="1.5"/>
+<path d="M190 83 H203 M190 85 H202" fill="none" stroke="#171b21" stroke-width="1"/>
+<path d="M61 98 H226 V101 H61Z" fill="#e86b46" stroke="none"/>
+<path d="M237 91 H243" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M34 85 H38" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(68 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(164 85) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="109" y="80" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > cyber has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Cyberpunk Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Cyberpunk Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139" cy="126" rx="89" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M30 101 L49 81 H98 L121 57 H158 L183 81 L232 91 L244 106 V112 H231 Q229 92 212 92 Q195 92 194 112 H85 Q83 92 66 92 Q49 92 48 112 H30Z" fill="var(--primary)" />
+<path d="M84 100 H194 V111 H84Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M110 78 L126 61 H154 L172 79Z" fill="#202a35" />
+<path d="M110 78 L126 61 H154 L172 79Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M84 81 H194" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M87 108 H193 V113 H87Z" fill="#171b21" />
+<path d="M44 88 H98 L109 91 H228" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+<path d="M111 77 L129 63 H151" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H227 V101 H59Z" fill="var(--accent)" stroke="none"/>
+<path d="M233 105 H240" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M33 102 H37" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="134" y="107" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(212 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Cyberpunk Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Cyberpunk Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139" cy="126" rx="89" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M30 101 L49 81 H98 L121 57 H158 L183 81 L232 91 L244 106 V112 H231 Q229 92 212 92 Q195 92 194 112 H85 Q83 92 66 92 Q49 92 48 112 H30Z" fill="#ffd336" />
+<path d="M84 100 H194 V111 H84Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M110 78 L126 61 H154 L172 79Z" fill="#202a35" />
+<path d="M110 78 L126 61 H154 L172 79Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M84 81 H194" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M87 108 H193 V113 H87Z" fill="#171b21" />
+<path d="M44 88 H98 L109 91 H228" fill="none" stroke="#e86b46" stroke-width="1.6"/>
+<path d="M111 77 L129 63 H151" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H227 V101 H59Z" fill="#e86b46" stroke="none"/>
+<path d="M233 105 H240" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M33 102 H37" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="134" y="107" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(212 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(165 88) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="113" y="83" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > drift has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Drift Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Drift Car</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="89.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 96 L39 77 H83 L103 57 H151 L178 78 L228 85 L241 100 V111 H230 Q228 89 211 89 Q193 89 191 111 H85 Q84 89 66 89 Q48 89 47 111 H34Z" fill="var(--primary)" />
+<path d="M85 100 H192 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M94 76 L109 61 H128 V76Z M135 61 H148 L166 77 H135Z" fill="#202a35" />
+<path d="M94 76 L109 61 H128 V76Z M135 61 H148 L166 77 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 79 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M29 72 H83 V76 H39 V84 H34 V76 H29Z" fill="#171b21" />
+<path d="M87 109 H188 V114 H87Z" fill="var(--accent)" />
+<path d="M170 87 H188 L178 104 H169Z" fill="#171b21" />
+<path d="M98 74 L122 63 M138 63 L163 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H226 V101 H59Z" fill="var(--accent)" stroke="none"/>
+<path d="M230 99 H237" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 88 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Drift Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Drift Car</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="89.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 96 L39 77 H83 L103 57 H151 L178 78 L228 85 L241 100 V111 H230 Q228 89 211 89 Q193 89 191 111 H85 Q84 89 66 89 Q48 89 47 111 H34Z" fill="#ffd336" />
+<path d="M85 100 H192 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M94 76 L109 61 H128 V76Z M135 61 H148 L166 77 H135Z" fill="#202a35" />
+<path d="M94 76 L109 61 H128 V76Z M135 61 H148 L166 77 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 79 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M29 72 H83 V76 H39 V84 H34 V76 H29Z" fill="#171b21" />
+<path d="M87 109 H188 V114 H87Z" fill="#e86b46" />
+<path d="M170 87 H188 L178 104 H169Z" fill="#171b21" />
+<path d="M98 74 L122 63 M138 63 L163 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H226 V101 H59Z" fill="#e86b46" stroke="none"/>
+<path d="M230 99 H237" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 88 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(163 86) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="108" y="81" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > formula has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Formula Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Formula Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M6 94 H29 M12 101 H26 M8 108 H28"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="24" cy="108" r="4"/>
+<circle cx="16" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="92.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M35 100 L84 95 L102 76 H127 L143 87 L191 92 L228 99 L251 107 V113 H33Z" fill="var(--primary)" />
+<path d="M87 100 H188 V111 H87Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M106 77 L112 65 H126 L134 80 H108Z" fill="#202a35" />
+<path d="M106 77 L112 65 H126 L134 80 H108Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M87 84 H188" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M30 71 H72 V77 H43 V96 H36 V77 H30Z" fill="#171b21" />
+<path d="M217 109 H251 V115 H217Z" fill="#171b21" />
+<path d="M87 92 H104 V111 H84Z" fill="var(--accent)" />
+<path d="M105 76 L109 59 H130 L138 81" fill="none" stroke="#aab3be" stroke-width="2"/>
+<path d="M155 92 H188 L176 108 H155Z" fill="#171b21" />
+<path d="M58 98 H225 V101 H58Z" fill="var(--accent)" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="145" y="109" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(65 104)">
+<circle r="20" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="18" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="12.8" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(210 104)">
+<circle r="20" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="18" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="12.8" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Formula Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Formula Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M6 94 H29 M12 101 H26 M8 108 H28"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="24" cy="108" r="4"/>
+<circle cx="16" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="92.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M35 100 L84 95 L102 76 H127 L143 87 L191 92 L228 99 L251 107 V113 H33Z" fill="#ffd336" />
+<path d="M87 100 H188 V111 H87Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M106 77 L112 65 H126 L134 80 H108Z" fill="#202a35" />
+<path d="M106 77 L112 65 H126 L134 80 H108Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M87 84 H188" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M30 71 H72 V77 H43 V96 H36 V77 H30Z" fill="#171b21" />
+<path d="M217 109 H251 V115 H217Z" fill="#171b21" />
+<path d="M87 92 H104 V111 H84Z" fill="#e86b46" />
+<path d="M105 76 L109 59 H130 L138 81" fill="none" stroke="#aab3be" stroke-width="2"/>
+<path d="M155 92 H188 L176 108 H155Z" fill="#171b21" />
+<path d="M58 98 H225 V101 H58Z" fill="#e86b46" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="145" y="109" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(65 104)">
+<circle r="20" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="18" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="12.8" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(210 104)">
+<circle r="20" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="18" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="12.8" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -11.6 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(177 95) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="128" y="86" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > hypercar has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Hypercar" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Hypercar</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="140" cy="126" rx="91" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M32 103 L47 85 H93 L115 62 H149 L181 85 L229 92 L248 105 V112 H232 Q230 92 215 92 Q198 92 195 112 H84 Q82 92 65 92 Q48 92 47 112 H32Z" fill="var(--primary)" />
+<path d="M83 100 H197 V111 H83Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M104 82 L120 66 H146 L168 83Z" fill="#202a35" />
+<path d="M104 82 L120 66 H146 L168 83Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M83 84 H197" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M32 83 V74 H86 V79 H41 V87Z" fill="#171b21" />
+<path d="M158 91 L189 86 L176 108 H154Z" fill="#171b21" />
+<path d="M86 111 H194 V115 H86Z" fill="#171b21" />
+<path d="M113 80 L125 68 H143" fill="none" stroke="#88929f" stroke-width="0.8"/>
+<path d="M58 98 H230 V101 H58Z" fill="var(--accent)" stroke="none"/>
+<path d="M237 108 H244" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M34 106 H38" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="126" y="108" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(65 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(215 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Hypercar" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Hypercar</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="140" cy="126" rx="91" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M32 103 L47 85 H93 L115 62 H149 L181 85 L229 92 L248 105 V112 H232 Q230 92 215 92 Q198 92 195 112 H84 Q82 92 65 92 Q48 92 47 112 H32Z" fill="#ffd336" />
+<path d="M83 100 H197 V111 H83Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M104 82 L120 66 H146 L168 83Z" fill="#202a35" />
+<path d="M104 82 L120 66 H146 L168 83Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M83 84 H197" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M32 83 V74 H86 V79 H41 V87Z" fill="#171b21" />
+<path d="M158 91 L189 86 L176 108 H154Z" fill="#171b21" />
+<path d="M86 111 H194 V115 H86Z" fill="#171b21" />
+<path d="M113 80 L125 68 H143" fill="none" stroke="#88929f" stroke-width="0.8"/>
+<path d="M58 98 H230 V101 H58Z" fill="#e86b46" stroke="none"/>
+<path d="M237 108 H244" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M34 106 H38" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="126" y="108" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(65 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(215 108)">
+<circle r="16" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="14" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.24" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.28 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(156 91) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="105" y="86" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > kart has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Go-Kart" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Go-Kart</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M36 94 H59 M42 101 H56 M38 108 H58"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="54" cy="108" r="4"/>
+<circle cx="46" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="136.5" cy="126" rx="61.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M68 105 L91 98 H146 L159 91 H178 L195 103 H211 V113 H68Z" fill="var(--primary)" />
+<path d="M103 103 H170 V111 H103Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M103 92 H170" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M107 98 V84 H118 L136 94 H154 V109 H107Z" fill="var(--primary)" />
+<circle cx="125" cy="74" r="8" fill="#cad0d8"/>
+<path d="M126 72 H133 V76 H126Z" fill="#202732"/>
+<path d="M145 94 L155 79 M148 79 L161 82" fill="none" stroke="#aeb6c0" stroke-width="1.5"/>
+<path d="M199 101 H211 V109 H199Z" fill="var(--accent)" />
+<path d="M81 98 H200 V101 H81Z" fill="var(--accent)" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="136" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(88 111)">
+<circle r="13" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="11" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="8.32" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(185 111)">
+<circle r="13" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="11" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="8.32" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Go-Kart" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Go-Kart</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M36 94 H59 M42 101 H56 M38 108 H58"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="54" cy="108" r="4"/>
+<circle cx="46" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="136.5" cy="126" rx="61.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M68 105 L91 98 H146 L159 91 H178 L195 103 H211 V113 H68Z" fill="#ffd336" />
+<path d="M103 103 H170 V111 H103Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M103 92 H170" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M107 98 V84 H118 L136 94 H154 V109 H107Z" fill="#ffd336" />
+<circle cx="125" cy="74" r="8" fill="#cad0d8"/>
+<path d="M126 72 H133 V76 H126Z" fill="#202732"/>
+<path d="M145 94 L155 79 M148 79 L161 82" fill="none" stroke="#aeb6c0" stroke-width="1.5"/>
+<path d="M199 101 H211 V109 H199Z" fill="#e86b46" />
+<path d="M81 98 H200 V101 H81Z" fill="#e86b46" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="136" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(88 111)">
+<circle r="13" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="11" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="8.32" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(185 111)">
+<circle r="13" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="11" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="8.32" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -7.54 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(160 98) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="113" y="94" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > monster has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Monster Truck" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Monster Truck</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M1 72 H24 M7 79 H21 M3 86 H23"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="19" cy="86" r="4"/>
+<circle cx="11" cy="83" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="100.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M39 71 L43 51 H97 L109 31 H152 L176 53 H224 V79 H39Z" fill="var(--primary)" />
+<path d="M97 72 H178 V78 H97Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M110 36 H129 V51 H102Z M136 36 H149 L165 52 H136Z" fill="#202a35" />
+<path d="M110 36 H129 V51 H102Z M136 36 H149 L165 52 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M97 52 H178" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M66 81 L205 101 M207 81 L70 101 M99 78 V99 M179 79 V99" fill="none" stroke="#7d8795" stroke-width="3"/>
+<path d="M39 76 H227 V83 H39Z" fill="#171b21" />
+<path d="M45 59 H94 M180 59 H216" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<path d="M59 76 H224 V79 H59Z" fill="var(--accent)" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="131" y="76" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 95)">
+<circle r="29" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="27" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="18.56" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(209 95)">
+<circle r="29" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="27" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="18.56" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Monster Truck" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Monster Truck</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M1 72 H24 M7 79 H21 M3 86 H23"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="19" cy="86" r="4"/>
+<circle cx="11" cy="83" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="100.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M39 71 L43 51 H97 L109 31 H152 L176 53 H224 V79 H39Z" fill="#ffd336" />
+<path d="M97 72 H178 V78 H97Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M110 36 H129 V51 H102Z M136 36 H149 L165 52 H136Z" fill="#202a35" />
+<path d="M110 36 H129 V51 H102Z M136 36 H149 L165 52 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M97 52 H178" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M66 81 L205 101 M207 81 L70 101 M99 78 V99 M179 79 V99" fill="none" stroke="#7d8795" stroke-width="3"/>
+<path d="M39 76 H227 V83 H39Z" fill="#171b21" />
+<path d="M45 59 H94 M180 59 H216" fill="none" stroke="#e86b46" stroke-width="2"/>
+<path d="M59 76 H224 V79 H59Z" fill="#e86b46" stroke="none"/>
+<g transform="translate(0 0)">
+<text x="131" y="76" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 95)">
+<circle r="29" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="27" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="18.56" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(209 95)">
+<circle r="29" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="27" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="18.56" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -16.82 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(163 57) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="112" y="54" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > muscle has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Muscle Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Muscle Car</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139" cy="126" rx="89" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 93 L38 77 H87 L104 56 H149 L176 76 L232 81 L245 95 V111 H230 Q228 88 211 88 Q192 88 191 111 H86 Q85 88 67 88 Q48 88 47 111 H34Z" fill="var(--primary)" />
+<path d="M86 100 H192 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M96 75 L110 60 H128 V75Z M135 60 H146 L165 75 H135Z" fill="#202a35" />
+<path d="M96 75 L110 60 H128 V75Z M135 60 H146 L165 75 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 79 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M179 79 L185 70 H207 L213 81Z" fill="#171b21" />
+<path d="M189 74 H204 M189 77 H206" fill="none" stroke="#88929f" stroke-width="1"/>
+<path d="M86 109 H188 V113 H86Z" fill="#171b21" />
+<path d="M99 74 L122 62 M138 62 L162 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H226 V101 H60Z" fill="var(--accent)" stroke="none"/>
+<path d="M233 90 H240" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M39 83 H43" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Muscle Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Muscle Car</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139" cy="126" rx="89" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 93 L38 77 H87 L104 56 H149 L176 76 L232 81 L245 95 V111 H230 Q228 88 211 88 Q192 88 191 111 H86 Q85 88 67 88 Q48 88 47 111 H34Z" fill="#ffd336" />
+<path d="M86 100 H192 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M96 75 L110 60 H128 V75Z M135 60 H146 L165 75 H135Z" fill="#202a35" />
+<path d="M96 75 L110 60 H128 V75Z M135 60 H146 L165 75 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 79 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M179 79 L185 70 H207 L213 81Z" fill="#171b21" />
+<path d="M189 74 H204 M189 77 H206" fill="none" stroke="#88929f" stroke-width="1"/>
+<path d="M86 109 H188 V113 H86Z" fill="#171b21" />
+<path d="M99 74 L122 62 M138 62 L162 74" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H226 V101 H60Z" fill="#e86b46" stroke="none"/>
+<path d="M233 90 H240" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M39 83 H43" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(164 86) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="108" y="81" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > pickup has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Pickup Truck" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Pickup Truck</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="88.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 91 V73 H103 V51 H152 L178 76 L224 83 L237 97 V111 H228 Q226 88 210 88 Q192 88 190 111 H87 Q85 88 67 88 Q49 88 47 111 H34Z" fill="var(--primary)" />
+<path d="M86 100 H191 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M112 56 H128 V74 H112Z M136 56 H149 L167 75 H136Z" fill="#202a35" />
+<path d="M112 56 H128 V74 H112Z M136 56 H149 L167 75 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 79 H191" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M35 72 H100 V77 H35Z" fill="#171b21" />
+<path d="M101 76 V108 M174 80 V106" fill="none" stroke="#141619" stroke-width="0.8"/>
+<path d="M88 110 H189 V114 H88Z" fill="#171b21" />
+<path d="M137 60 L161 73" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H225 V101 H60Z" fill="var(--accent)" stroke="none"/>
+<path d="M226 98 H233" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M37 86 H41" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="133" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(210 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Pickup Truck" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Pickup Truck</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="88.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 91 V73 H103 V51 H152 L178 76 L224 83 L237 97 V111 H228 Q226 88 210 88 Q192 88 190 111 H87 Q85 88 67 88 Q49 88 47 111 H34Z" fill="#ffd336" />
+<path d="M86 100 H191 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M112 56 H128 V74 H112Z M136 56 H149 L167 75 H136Z" fill="#202a35" />
+<path d="M112 56 H128 V74 H112Z M136 56 H149 L167 75 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 79 H191" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M35 72 H100 V77 H35Z" fill="#171b21" />
+<path d="M101 76 V108 M174 80 V106" fill="none" stroke="#141619" stroke-width="0.8"/>
+<path d="M88 110 H189 V114 H88Z" fill="#171b21" />
+<path d="M137 60 L161 73" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H225 V101 H60Z" fill="#e86b46" stroke="none"/>
+<path d="M226 98 H233" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M37 86 H41" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="133" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(210 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(166 86) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="113" y="81" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > police has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Police Interceptor" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Police Interceptor</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="89.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 96 L40 80 H86 L104 55 H151 L180 78 L228 85 L240 99 V111 H230 Q228 89 211 89 Q193 89 191 111 H86 Q84 89 66 89 Q48 89 47 111 H34Z" fill="var(--primary)" />
+<path d="M85 100 H192 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M98 76 L110 60 H129 V77Z M136 60 H148 L168 78 H136Z" fill="#202a35" />
+<path d="M98 76 L110 60 H129 V77Z M136 60 H148 L168 78 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 80 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<rect x="109" y="47" width="40" height="5" fill="#8993a0"/>
+<path d="M110 48 H124 V51 H110Z" fill="#ef6464"/>
+<path d="M135 48 H148 V51 H135Z" fill="#87b5ec"/>
+<path d="M88 86 H186" fill="none" stroke="#e7e8e6" stroke-width="3"/>
+<path d="M87 109 H189 V113 H87Z" fill="#171b21" />
+<path d="M101 75 L124 62 M139 62 L165 75" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H226 V101 H59Z" fill="var(--accent)" stroke="none"/>
+<path d="M230 98 H237" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 90 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Police Interceptor" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Police Interceptor</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="138.5" cy="126" rx="89.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M34 96 L40 80 H86 L104 55 H151 L180 78 L228 85 L240 99 V111 H230 Q228 89 211 89 Q193 89 191 111 H86 Q84 89 66 89 Q48 89 47 111 H34Z" fill="#ffd336" />
+<path d="M85 100 H192 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M98 76 L110 60 H129 V77Z M136 60 H148 L168 78 H136Z" fill="#202a35" />
+<path d="M98 76 L110 60 H129 V77Z M136 60 H148 L168 78 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 80 H192" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<rect x="109" y="47" width="40" height="5" fill="#8993a0"/>
+<path d="M110 48 H124 V51 H110Z" fill="#ef6464"/>
+<path d="M135 48 H148 V51 H135Z" fill="#87b5ec"/>
+<path d="M88 86 H186" fill="none" stroke="#e7e8e6" stroke-width="3"/>
+<path d="M87 109 H189 V113 H87Z" fill="#171b21" />
+<path d="M101 75 L124 62 M139 62 L165 75" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M59 98 H226 V101 H59Z" fill="#e86b46" stroke="none"/>
+<path d="M230 98 H237" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 90 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="132" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(211 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(165 87) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="110" y="82" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > rally has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Rally Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Rally Car</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="134.5" cy="126" rx="84.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M38 90 L43 63 L69 51 H143 L170 76 L220 82 L232 98 V108 H220 Q219 85 201 85 Q182 85 181 108 H89 Q88 85 68 85 Q48 85 47 108 H38Z" fill="var(--primary)" />
+<path d="M88 100 H181 V111 H88Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M51 73 L72 55 H105 V75Z M113 55 H140 L159 75 H113Z" fill="#202a35" />
+<path d="M51 73 L72 55 H105 V75Z M113 55 H140 L159 75 H113Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M88 77 H181" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M46 108 H55 V114 H44Z M214 106 H226 V115 H216Z" fill="#171b21" />
+<path d="M80 50 H122 V46 H88Z" fill="#171b21" />
+<path d="M58 71 L96 58 M117 58 L152 72" fill="none" stroke="#7e8997" stroke-width="0.9"/>
+<rect x="215" y="84" width="12" height="4" fill="#e8e7dc"/>
+<path d="M223 91 V102" stroke="#a6aeb8" stroke-width="3"/>
+<path d="M61 98 H216 V101 H61Z" fill="var(--accent)" stroke="none"/>
+<path d="M222 97 H228" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M40 89 H44" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="103" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(68 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(201 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Rally Car" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Rally Car</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="134.5" cy="126" rx="84.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M38 90 L43 63 L69 51 H143 L170 76 L220 82 L232 98 V108 H220 Q219 85 201 85 Q182 85 181 108 H89 Q88 85 68 85 Q48 85 47 108 H38Z" fill="#ffd336" />
+<path d="M88 100 H181 V111 H88Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M51 73 L72 55 H105 V75Z M113 55 H140 L159 75 H113Z" fill="#202a35" />
+<path d="M51 73 L72 55 H105 V75Z M113 55 H140 L159 75 H113Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M88 77 H181" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M46 108 H55 V114 H44Z M214 106 H226 V115 H216Z" fill="#171b21" />
+<path d="M80 50 H122 V46 H88Z" fill="#171b21" />
+<path d="M58 71 L96 58 M117 58 L152 72" fill="none" stroke="#7e8997" stroke-width="0.9"/>
+<rect x="215" y="84" width="12" height="4" fill="#e8e7dc"/>
+<path d="M223 91 V102" stroke="#a6aeb8" stroke-width="3"/>
+<path d="M61 98 H216 V101 H61Z" fill="#e86b46" stroke="none"/>
+<path d="M222 97 H228" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M40 89 H44" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="103" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(68 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(201 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(161 84) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="106" y="79" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > rocket has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Rocket Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Rocket Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M28 94 H51 M34 101 H48 M30 108 H50"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="46" cy="108" r="4"/>
+<circle cx="38" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="144.5" cy="126" rx="77.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M42 95 L52 82 L76 76 L111 59 H180 L207 70 L249 90 L225 109 H45Z" fill="var(--primary)" />
+<path d="M99 100 H190 V109 H99Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M115 75 L127 63 H177 L193 76Z" fill="#202a35" />
+<path d="M115 75 L127 63 H177 L193 76Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M99 77 H190" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M57 81 L69 49 H88 L105 77Z" fill="var(--accent)" />
+<path d="M42 88 H57 V106 H42Z" fill="#171b21" />
+<path d="M168 85 H207 L189 102 H166Z" fill="#171b21" />
+<path d="M120 73 L134 65 H174" fill="none" stroke="#8d98a6" stroke-width="0.8"/>
+<path d="M75 98 H222 V101 H75Z" fill="var(--accent)" stroke="none"/>
+<path d="M229 88 H236" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M46 96 H50" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="133" y="103" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(82 109)">
+<circle r="15" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="13" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="9.6" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(207 109)">
+<circle r="15" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="13" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="9.6" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Rocket Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Rocket Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M28 94 H51 M34 101 H48 M30 108 H50"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="46" cy="108" r="4"/>
+<circle cx="38" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="144.5" cy="126" rx="77.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M42 95 L52 82 L76 76 L111 59 H180 L207 70 L249 90 L225 109 H45Z" fill="#ffd336" />
+<path d="M99 100 H190 V109 H99Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M115 75 L127 63 H177 L193 76Z" fill="#202a35" />
+<path d="M115 75 L127 63 H177 L193 76Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M99 77 H190" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M57 81 L69 49 H88 L105 77Z" fill="#e86b46" />
+<path d="M42 88 H57 V106 H42Z" fill="#171b21" />
+<path d="M168 85 H207 L189 102 H166Z" fill="#171b21" />
+<path d="M120 73 L134 65 H174" fill="none" stroke="#8d98a6" stroke-width="0.8"/>
+<path d="M75 98 H222 V101 H75Z" fill="#e86b46" stroke="none"/>
+<path d="M229 88 H236" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M46 96 H50" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="133" y="103" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(82 109)">
+<circle r="15" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="13" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="9.6" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(207 109)">
+<circle r="15" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="13" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="9.6" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -8.7 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(165 83) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="111" y="79" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > supercar has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Supercar" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Supercar</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139.5" cy="126" rx="89.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M33 100 L47 84 L91 79 L114 64 Q130 59 150 66 L181 83 L226 91 L241 103 V112 H230 Q229 89 212 89 Q193 89 192 112 H87 Q85 89 67 89 Q48 89 47 112 H34Z" fill="var(--primary)" />
+<path d="M86 100 H193 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M102 79 L120 67 Q132 63 146 70 L167 81Z" fill="#202a35" />
+<path d="M102 79 L120 67 Q132 63 146 70 L167 81Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 84 H193" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M156 88 L185 85 L176 107 H155Z" fill="#171b21" />
+<path d="M89 110 H190 V114 H89Z" fill="#171b21" />
+<path d="M112 78 L123 69 L144 72" fill="none" stroke="#88929f" stroke-width="0.8"/>
+<path d="M60 98 H227 V101 H60Z" fill="var(--accent)" stroke="none"/>
+<path d="M229 100 H236" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 101 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="108" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(212 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Supercar" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Supercar</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M11 94 H34 M17 101 H31 M13 108 H33"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="29" cy="108" r="4"/>
+<circle cx="21" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="139.5" cy="126" rx="89.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M33 100 L47 84 L91 79 L114 64 Q130 59 150 66 L181 83 L226 91 L241 103 V112 H230 Q229 89 212 89 Q193 89 192 112 H87 Q85 89 67 89 Q48 89 47 112 H34Z" fill="#ffd336" />
+<path d="M86 100 H193 V111 H86Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M102 79 L120 67 Q132 63 146 70 L167 81Z" fill="#202a35" />
+<path d="M102 79 L120 67 Q132 63 146 70 L167 81Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M86 84 H193" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M156 88 L185 85 L176 107 H155Z" fill="#171b21" />
+<path d="M89 110 H190 V114 H89Z" fill="#171b21" />
+<path d="M112 78 L123 69 L144 72" fill="none" stroke="#88929f" stroke-width="0.8"/>
+<path d="M60 98 H227 V101 H60Z" fill="#e86b46" stroke="none"/>
+<path d="M229 100 H236" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M38 101 H42" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="108" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(212 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(159 90) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="107" y="86" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > taxi has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Taxi Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Taxi Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="88.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M35 96 L43 78 H84 L104 54 H151 L178 77 L227 85 L238 99 V111 H228 Q226 89 209 89 Q191 89 189 111 H85 Q83 89 66 89 Q48 89 47 111 H35Z" fill="var(--primary)" />
+<path d="M85 100 H190 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M95 75 L110 59 H128 V76Z M135 59 H148 L167 77 H135Z" fill="#202a35" />
+<path d="M95 75 L110 59 H128 V76Z M135 59 H148 L167 77 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 79 H190" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<rect x="112" y="45" width="30" height="7" fill="#e5d477"/>
+<text x="127" y="51" text-anchor="middle" font-size="5.5" fill="#141619" stroke="none" font-weight="900">TAXI</text>
+<path d="M88 84 H184" fill="none" stroke="#171b21" stroke-width="3"/>
+<path d="M88 84 H184" fill="none" stroke="#e7e8e6" stroke-width="3" stroke-dasharray="4 4"/>
+<path d="M86 109 H187 V113 H86Z" fill="#171b21" />
+<path d="M59 98 H224 V101 H59Z" fill="var(--accent)" stroke="none"/>
+<path d="M228 98 H235" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M40 86 H44" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="131" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(209 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Taxi Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Taxi Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="88.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M35 96 L43 78 H84 L104 54 H151 L178 77 L227 85 L238 99 V111 H228 Q226 89 209 89 Q191 89 189 111 H85 Q83 89 66 89 Q48 89 47 111 H35Z" fill="#ffd336" />
+<path d="M85 100 H190 V111 H85Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M95 75 L110 59 H128 V76Z M135 59 H148 L167 77 H135Z" fill="#202a35" />
+<path d="M95 75 L110 59 H128 V76Z M135 59 H148 L167 77 H135Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M85 79 H190" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<rect x="112" y="45" width="30" height="7" fill="#e5d477"/>
+<text x="127" y="51" text-anchor="middle" font-size="5.5" fill="#141619" stroke="none" font-weight="900">TAXI</text>
+<path d="M88 84 H184" fill="none" stroke="#171b21" stroke-width="3"/>
+<path d="M88 84 H184" fill="none" stroke="#e7e8e6" stroke-width="3" stroke-dasharray="4 4"/>
+<path d="M86 109 H187 V113 H86Z" fill="#171b21" />
+<path d="M59 98 H224 V101 H59Z" fill="#e86b46" stroke="none"/>
+<path d="M228 98 H235" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M40 86 H44" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="131" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(66 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(209 107)">
+<circle r="17" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="15" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="10.88" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -9.86 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(163 86) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="108" y="81" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;
+
+exports[`app-owned vehicle artwork > vintage has a reviewed base and livery SVG snapshot 1`] = `
+{
+  "base": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Vintage Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Vintage Racer</title>
+<g class="trails" stroke="var(--accent)" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="88.5" ry="3" fill="var(--accent)" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M38 98 Q42 79 84 77 L105 53 Q126 44 147 57 L169 79 Q216 77 232 97 L237 112 H228 Q226 86 208 86 Q188 86 188 112 H88 Q86 86 67 86 Q47 86 47 112 H38Z" fill="var(--primary)" />
+<path d="M87 100 H188 V111 H87Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M96 76 L111 56 Q119 52 128 55 V77Z M136 57 L144 60 L157 78 H136Z" fill="#202a35" />
+<path d="M96 76 L111 56 Q119 52 128 55 V77Z M136 57 L144 60 L157 78 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M87 80 H188" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M41 100 H46 M226 100 H234" fill="none" stroke="#b5bdc7" stroke-width="2"/>
+<path d="M89 83 H180" fill="none" stroke="#b5bdc7" stroke-width="1"/>
+<path d="M94 109 H183 V113 H94Z" fill="#171b21" />
+<path d="M101 74 L118 56 M139 61 L152 75" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H223 V101 H60Z" fill="var(--accent)" stroke="none"/>
+<path d="M226 103 H233" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M39 97 H43" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="107" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(208 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="var(--accent)">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+</svg>",
+  "livery": "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 140" role="img" aria-label="Yaseen — Vintage Racer" class="vehicle" data-state="idle" data-effect="none" style="--primary:#ffd336;--accent:#e86b46">
+<title>Vintage Racer</title>
+<g class="trails" stroke="#e86b46" stroke-width="1.5">
+<path d="M10 94 H33 M16 101 H30 M12 108 H32"/>
+</g>
+<g class="smoke" fill="#9ba4b0" opacity=".4">
+<circle cx="28" cy="108" r="4"/>
+<circle cx="20" cy="105" r="3"/>
+</g>
+<ellipse class="glow" cx="137.5" cy="126" rx="88.5" ry="3" fill="#e86b46" opacity=".4"/>
+<g class="chassis" stroke="#13171d" stroke-width="1.1" stroke-linejoin="round">
+<path d="M38 98 Q42 79 84 77 L105 53 Q126 44 147 57 L169 79 Q216 77 232 97 L237 112 H228 Q226 86 208 86 Q188 86 188 112 H88 Q86 86 67 86 Q47 86 47 112 H38Z" fill="#ffd336" />
+<path d="M87 100 H188 V111 H87Z" fill="#11151b" opacity=".13" stroke="none"/>
+<path d="M96 76 L111 56 Q119 52 128 55 V77Z M136 57 L144 60 L157 78 H136Z" fill="#202a35" />
+<path d="M96 76 L111 56 Q119 52 128 55 V77Z M136 57 L144 60 L157 78 H136Z" fill="#b6c7d5" opacity=".12" stroke="none"/>
+<path d="M87 80 H188" fill="none" stroke="#f4f2eb" stroke-width=".6" opacity=".4"/>
+<path d="M41 100 H46 M226 100 H234" fill="none" stroke="#b5bdc7" stroke-width="2"/>
+<path d="M89 83 H180" fill="none" stroke="#b5bdc7" stroke-width="1"/>
+<path d="M94 109 H183 V113 H94Z" fill="#171b21" />
+<path d="M101 74 L118 56 M139 61 L152 75" fill="none" stroke="#7e8997" stroke-width="0.8"/>
+<path d="M60 98 H223 V101 H60Z" fill="#e86b46" stroke="none"/>
+<path d="M226 103 H233" stroke="#e8e7dc" stroke-width="2"/>
+<path d="M39 97 H43" stroke="#b64f50" stroke-width="2"/>
+<g transform="translate(0 0)">
+<text x="128" y="107" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-style="italic" font-weight="900" fill="#171b21" stroke="#f4f2eb" stroke-width="1.2" paint-order="stroke">999</text>
+</g>
+</g>
+<g transform="translate(67 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g transform="translate(208 106)">
+<circle r="18" fill="#0e1115" stroke="#707b89" stroke-width=".7"/>
+<circle r="16" fill="none" stroke="#252b34" stroke-width="1"/>
+<g class="rim">
+<circle r="11.52" fill="#333c48" stroke="#a7b1be" stroke-width=".7"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(0)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(72)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(144)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(216)"/>
+<path d="M-1 -3 L-2 -10.44 H2 L1 -3Z" fill="#bdc5ce" transform="rotate(288)"/>
+<circle r="2.6" fill="#d3d8de" stroke="#202630" stroke-width=".8"/>
+</g>
+</g>
+<g class="celebrate" fill="#e86b46">
+<path d="M80 18 H86 L76 37 H70Z M91 18 H97 L87 37 H81Z M183 18 H189 L179 37 H173Z M194 18 H200 L190 37 H184Z"/>
+</g>
+<g class="livery">
+<g color="#c6a3ff" transform="translate(162 87) scale(.55)">
+<path d="M1 2L10 9L1 16M11 2L20 9L11 16" fill="none" stroke="currentColor" stroke-width="4"/>
+</g>
+<text x="106" y="82" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">BOB3</text>
+</g>
+</svg>",
+}
+`;

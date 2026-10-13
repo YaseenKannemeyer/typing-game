@@ -54,8 +54,9 @@ export function errorCode(e: unknown): string | null {
   return e instanceof ApiError ? e.message : null;
 }
 
-async function call<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
-  const { data, error } = await requireSupabase().rpc(fn, args);
+async function call<T>(fn: string, args: Record<string, unknown> = {}, signal?: AbortSignal): Promise<T> {
+  const request = requireSupabase().rpc(fn, args);
+  const { data, error } = await (signal ? request.abortSignal(signal) : request);
   if (error) throw new ApiError(error.message);
   return data as T;
 }
@@ -107,8 +108,8 @@ export const api = {
     call<void>('set_race_settings', { p_lobby_id: lobbyId, p_seconds: seconds, p_zero_mistakes: zeroMistakes, p_destination: destination }),
   /** Earned trophy types with the latest verified statistic (accounts and guests). */
   myTrophies: () => call<TrophyRecord[]>('my_trophies'),
-  /** Sends the words typed from `fromWord`; `lock` locks them in (Enter). */
-  submitTyping: (raceId: string, fromWord: number, words: string[], lock: boolean, s: TypingState) =>
+  /** Sends the words typed from `fromWord`; `lock` locks them in (Enter). `signal` cancels the request. */
+  submitTyping: (raceId: string, fromWord: number, words: string[], lock: boolean, s: TypingState, signal?: AbortSignal) =>
     call<SubmitResult>('submit_typing', {
       p_race_id: raceId,
       p_from_word: fromWord,
@@ -119,7 +120,7 @@ export const api = {
       p_deletions: s.deletions,
       p_section_keystrokes: s.sectionKeystrokes,
       p_section_errors: s.sectionErrors,
-    }),
+    }, signal),
   /** Asks the server to compute and store this race's trophies (idempotent). */
   awardTrophies: async (raceId: string) => {
     const { error } = await requireSupabase().functions.invoke('award-trophies', { body: { race_id: raceId } });

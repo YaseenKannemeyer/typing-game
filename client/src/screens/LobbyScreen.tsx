@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ConnectionBanner } from '../components/ConnectionBanner';
 import { SystemState } from '../components/SystemState';
 import { useToast } from '../components/Toasts';
 import { Banner, Button, Card, Loading, Page } from '../components/ui';
@@ -84,14 +85,7 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
         </>
       }
     >
-      {phase === 'ready' && !connected && (
-        <div className="g-stack">
-          <Banner tone="warning">Connection lost. Finding your way back… Your last confirmed progress is shown until the server responds.</Banner>
-          <div>
-            <Button variant="secondary" icon="refresh" onClick={retry}>Retry connection</Button>
-          </div>
-        </div>
-      )}
+      {phase === 'ready' && !connected && <ConnectionBanner onRetry={retry} />}
       {body}
     </Page>
   );

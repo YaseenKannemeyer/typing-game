@@ -5,7 +5,10 @@
  * the visitor to interact ("interaction-only").
  */
 
-const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+import { fixtureBackend } from './fixtureMode';
+
+// Never in the dev fixture gallery: it would load Cloudflare's script.
+const SITE_KEY = fixtureBackend ? undefined : (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined);
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
 interface Turnstile {

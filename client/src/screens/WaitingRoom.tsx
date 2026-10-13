@@ -1,20 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE, TROPHIES } from '@race/shared';
+import { MAX_PLAYERS, MIN_PLAYERS_FOR_RACE } from '@race/shared';
 import { Garage } from '../components/garage/Garage';
-import { DestinationPicker } from '../components/lobby/Destinations';
-import { HowTo, InviteLink, RaceSettings, RoomCode, WatchLink, type RosterPlayer } from '../components/lobby/Lobby';
-import { Paddock } from '../components/lobby/Paddock';
+import type { RosterPlayer } from '../components/lobby/Lobby';
+import { WaitingRoomView } from '../components/lobby/WaitingRoomView';
+import type { RoomTab, WaitingRoomViewModel } from '../components/lobby/waitingRoomViewModel';
 import { ChampionshipHostPanel } from '../components/experience/Championship';
 import type { DestinationId } from '../art/worldArt';
-import { TrophyRoom } from '../components/trophies/TrophyRoom';
-import { Button, Card, ErrorText, PageTitle, Pill, SectionTabs, type SectionTab } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
 import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
 import { prefersReducedMotion } from '../art/motion';
-
-type RoomTab = 'destination' | 'garage' | 'how' | 'trophies';
-const TROPHY_COUNT = Object.keys(TROPHIES).length;
 
 export function rosterFrom(state: LobbyState): RosterPlayer[] {
   const { players, lobby, userId, online } = state;
@@ -89,88 +84,27 @@ export function WaitingRoom({ state, refresh }: { state: LobbyState; refresh: ()
     });
   };
 
-  // Everything below the paddock lives in one tab set, so the room stays short on phones.
-  const tabs: SectionTab<RoomTab>[] = [
-    {
-      key: 'destination',
-      label: 'Destination',
-      panel: (
-        <DestinationPicker
-          value={rules.destination}
-          editable={isHost}
-          busy={saving}
-          onChange={(d) => void changeSettings(rules.seconds, rules.zero, d)}
-        />
-      ),
-    },
-    ...(me
-      ? [
-          {
-            key: 'garage' as const,
-            label: 'Garage',
-            panel: (
-              <div className="space-y-4">
-                <p className="g-muted">Pick a silhouette and make it yours. It's 100% cosmetic: every car has the same speed.</p>
-                <Garage lobbyId={lobby.id} me={me} meIndex={meIndex} players={players} locked={lobby.status !== 'waiting'} />
-              </div>
-            ),
-          },
-        ]
-      : []),
-    { key: 'how', label: 'How it works', panel: <section className="g-panel"><HowTo /></section> },
-    { key: 'trophies', label: 'Trophies', badge: TROPHY_COUNT, panel: <TrophyRoom /> },
-  ];
+  const model: WaitingRoomViewModel = {
+    room: { code: lobby.code, racerCount: players.length, maxRacers: MAX_PLAYERS },
+    isHost,
+    canStart,
+    starting: busy,
+    roster,
+    settings: { seconds: rules.seconds, zeroMistakes: rules.zero, destination: rules.destination, editable: isHost, saving },
+    error,
+    tab,
+    connection: state.connected ? 'live' : 'reconnecting',
+  };
 
   return (
-    <div className="waiting-screen">
-      <PageTitle
-        title="The crew is coming together."
-        lead="Choose your ride. Share the code. We'll meet you on the starting line."
-      />
-
-      <div className="room-command">
-        <div><span className="room-command-label">Private room</span><strong>{lobby.code}</strong><span>{players.length} of {MAX_PLAYERS} racers</span></div>
-        <div className="room-command-actions"><Button variant="secondary" icon="gear" onClick={openGarage}>Open garage</Button><Button icon="arrow" disabled={!isHost || !canStart || saving} loading={busy} onClick={startVote}>{isHost ? 'Start mode vote' : 'Waiting for the host'}</Button></div>
-        <p>{!isHost ? 'The host will start the vote. Make yourself at home.' : canStart ? 'Your crew is here. Start a vote when everyone is ready.' : 'Invite at least one more racer to get started.'}</p>
-        <ErrorText>{error}</ErrorText>
-      </div>
-      <div className="g-lobby-grid room-grid">
-        <section className="room-roster">
-          <div className="g-between">
-            <h2 className="g-heading">
-              The paddock <span className="g-muted g-small">{players.length} / {MAX_PLAYERS} parked</span>
-            </h2>
-            <Pill lime>{players.length < MAX_PLAYERS ? `${MAX_PLAYERS - players.length} OPEN SEATS` : 'FULL GRID'}</Pill>
-          </div>
-          <Paddock players={roster} />
-        </section>
-
-        <aside className="g-stack">
-          <Card className="room-invite">
-            <RoomCode code={lobby.code} />
-            <div className="g-divider" />
-            <p className="g-muted mb-4">Better with your crew. Share your invitation and save them a spot.</p>
-            <InviteLink code={lobby.code} />
-            <p className="g-small g-muted mt-4 mb-2">Showing it on a big screen? Spectators don't take a seat.</p>
-            <WatchLink code={lobby.code} />
-          </Card>
-          <Card className="room-rules">
-            <h2 className="g-heading mb-4">Race settings</h2>
-            <RaceSettings
-              seconds={rules.seconds}
-              zeroMistakes={rules.zero}
-              editable={isHost}
-              busy={saving}
-              onChange={changeSettings}
-            />
-          </Card>
-          <ChampionshipHostPanel lobbyId={lobby.id} championship={state.championship} isHost={isHost} myId={userId} refresh={refresh} />
-        </aside>
-      </div>
-
-      <section ref={tabsRef} className="scroll-mt-4" aria-label="Room details">
-        <SectionTabs label="Room details" tabs={tabs} value={tab} onChange={setTab} />
-      </section>
-    </div>
+    <WaitingRoomView
+      model={model}
+      actions={{ startVote: () => void startVote(), changeSettings: (...args) => void changeSettings(...args), openGarage, selectTab: setTab }}
+      slots={{
+        garage: me ? <Garage lobbyId={lobby.id} me={me} meIndex={meIndex} players={players} locked={lobby.status !== 'waiting'} /> : null,
+        championship: <ChampionshipHostPanel lobbyId={lobby.id} championship={state.championship} isHost={isHost} myId={userId} refresh={refresh} />,
+      }}
+      tabsRef={tabsRef}
+    />
   );
 }

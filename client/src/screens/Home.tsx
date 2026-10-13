@@ -1,10 +1,7 @@
-import { useEffect, useState, type AnimationEvent } from 'react';
-import { useReducedMotionConfig } from 'framer-motion';
+import { useState } from 'react';
 import { CAR_COLORS, MAX_PLAYERS, normalizeName } from '@race/shared';
 import { MODEL_GEOMETRY } from '../art/vehicleArt';
-import { decorative, destinationSceneSvg, roadSurfaceSvg, type DestinationId } from '../art/worldArt';
 import { Car } from '../components/Car';
-import { TrustedSvg } from '../components/TrustedSvg';
 import { RejoinRace } from '../components/RejoinRace';
 import { Button, ErrorText, Icon, Page } from '../components/ui';
 import { api, errorMessage } from '../lib/api';
@@ -14,129 +11,17 @@ import { ensureSession, supabase } from '../lib/supabase';
 import { SoundToggle } from '../game/sound';
 import { Practice } from './Practice';
 
-/** Showroom scenery: one layer per destination; the road follows the weather. */
-const SCENE_ORDER: DestinationId[] = ['country', 'coast', 'city', 'desert', 'neon', 'rain'];
-const SCENES = SCENE_ORDER.map((id) => ({
-  id,
-  sky: decorative(destinationSceneSvg(id)),
-  road: decorative(roadSurfaceSvg({ wet: id === 'rain' })).replace('<svg ', '<svg preserveAspectRatio="none" '),
-}));
-interface StageCar {
-  id: number;
-  index: number;
-  phase: 'stage' | 'arriving' | 'leaving';
-}
-
-/** Each car holds the stage for 5–8 s, then drives off for the next one. */
-const nextDriveMs = () => 5000 + Math.random() * 3000;
-
-const showroomCar = (index: number) => ({
-  model: MODEL_GEOMETRY[index]!.id,
-  primary: CAR_COLORS[index % CAR_COLORS.length],
-  number: index + 1,
-  stripes: true,
-  accent: '#edf4df',
-  effect: 'smoke' as const,
-});
-
-/** Exhaust puffs behind the rear bumper; denser while accelerating away. */
-function Exhaust() {
-  return (
-    <span className="home-exhaust" aria-hidden="true">
-      <i /><i /><i /><i />
-    </span>
-  );
-}
-
-function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: number) => void }) {
-  const reducedMotion = useReducedMotionConfig();
-  const count = MODEL_GEOMETRY.length;
-  const model = MODEL_GEOMETRY[selected]!;
-  const [paused, setPaused] = useState(false);
-  const [announce, setAnnounce] = useState(false);
-  // Cars on stage. Each keeps its element from arrival to drive-off, so nothing remounts or flashes.
-  const [cars, setCars] = useState<StageCar[]>(() => [{ id: 0, index: selected, phase: 'stage' }]);
-  const [shown, setShown] = useState(selected);
-  const [swaps, setSwaps] = useState(0);
-  // A new backdrop after every full line-up, cross-faded while the cars swap.
-  const scene = Math.floor(swaps / count) % SCENES.length;
-
-  // Whatever changes the car (timer, arrows, line-up), the old one drives off in the same frame
-  // the new one starts driving in (derived during render, not in an effect, to avoid a flash).
-  if (shown !== selected) {
-    const id = Math.max(...cars.map((c) => c.id)) + 1;
-    setShown(selected);
-    setSwaps((n) => n + 1);
-    setCars(
-      reducedMotion
-        ? [{ id, index: selected, phase: 'stage' }]
-        : [...cars.map((c) => ({ ...c, phase: 'leaving' as const })).slice(-2), { id, index: selected, phase: 'arriving' }],
-    );
-  }
-  const finished = (id: number) => (e: AnimationEvent<HTMLDivElement>) => {
-    // Only the car's own drive-off ends it; inner animations (wheels, exhaust, chassis) bubble too.
-    if (e.target === e.currentTarget && e.animationName === 'home-car-out') setCars((cs) => cs.filter((c) => c.id !== id));
-  };
-
-  useEffect(() => {
-    if (reducedMotion || paused) return;
-    const t = setTimeout(() => {
-      setAnnounce(false);
-      onSelect((selected + 1) % count);
-    }, nextDriveMs());
-    return () => clearTimeout(t);
-  }, [selected, paused, reducedMotion, onSelect, count]);
-
-  const select = (direction: number) => {
-    setAnnounce(true);
-    onSelect((selected + direction + count) % count);
-  };
-  const driving = reducedMotion ? 'idle' : 'driving';
-
-  return (
-    <section
-      className={`home-showcase ${paused ? 'is-paused' : ''}`}
-      aria-label="Explore the car collection"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false); }}
-    >
-      <div className="home-showcase-world" aria-hidden="true">
-        {SCENES.map((sc, i) => (
-          <div key={sc.id} className={`home-scene ${i === scene ? 'is-active' : ''}`}>
-            <div className="home-scene-sky"><TrustedSvg markup={sc.sky} /></div>
-            <div className="home-scene-road"><TrustedSvg markup={sc.road} /></div>
-          </div>
-        ))}
-        <div className="home-road-dashes" />
-      </div>
-      <span className="home-race-number" aria-hidden="true">{String(selected + 1).padStart(2, '0')}</span>
-      {cars.map((c) => (
-        <div key={c.id} className={`home-showcase-car is-${c.phase}`} aria-hidden="true" onAnimationEnd={finished(c.id)}>
-          <div className="home-car-body">
-            <Car vehicle={showroomCar(c.index)} animation={c.phase === 'leaving' && !reducedMotion ? 'acceleration' : driving} />
-          </div>
-          <Exhaust />
-        </div>
-      ))}
-      <div className="home-showcase-controls">
-        <div aria-live={announce ? 'polite' : 'off'} aria-atomic="true"><strong>{model.name}</strong><span>{model.tag} · {selected + 1} of {count}</span></div>
-        <div className="home-car-buttons">
-          <button type="button" onClick={() => select(-1)} aria-label="Previous car"><span className="home-arrow-back"><Icon name="arrow" /></span></button>
-          <button type="button" onClick={() => select(1)} aria-label="Next car"><Icon name="arrow" /></button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function CarLineup({ selected, onSelect }: { selected: number; onSelect: (index: number) => void }) {
   return (
     <section className="home-lineup" aria-labelledby="car-lineup-title">
       <div className="home-lineup-heading">
-        <h2 id="car-lineup-title">One grid. {MODEL_GEOMETRY.length} personalities.</h2>
-        <p>Preview your favourite. Make it yours in the room’s garage.</p>
+        <h2 id="car-lineup-title">The starting lineup.</h2>
+        <p>{MODEL_GEOMETRY.length} cars. All equally fast. Make yours in the garage.</p>
+      </div>
+      <div className="home-selected-car" aria-live="polite" aria-atomic="true">
+        <div className="home-selected-art" aria-hidden="true"><Car vehicle={{ model: MODEL_GEOMETRY[selected]!.id, primary: CAR_COLORS[selected % CAR_COLORS.length], number: selected + 1, stripes: true, accent: '#f4f2eb' }} /></div>
+        <div><span className="home-collection-label">Collection preview</span><h3>{MODEL_GEOMETRY[selected]!.name}</h3><p>{MODEL_GEOMETRY[selected]!.tag}</p></div>
+        <span className="home-model-count">{String(selected + 1).padStart(2, '0')} / {MODEL_GEOMETRY.length}</span>
       </div>
       <ul className="home-lineup-cars" aria-label="All cars">
         {MODEL_GEOMETRY.map((model, index) => (
@@ -148,20 +33,20 @@ function CarLineup({ selected, onSelect }: { selected: number; onSelect: (index:
               onClick={() => onSelect(index)}
             >
               <span className="home-lineup-art" aria-hidden="true">
-                <Car vehicle={{ model: model.id, primary: CAR_COLORS[index % CAR_COLORS.length], number: index + 1, stripes: true, accent: '#edf4df' }} />
+                <Car vehicle={{ model: model.id, primary: CAR_COLORS[index % CAR_COLORS.length], number: index + 1, stripes: true, accent: '#f4f2eb' }} />
               </span>
               <span>{model.name}</span>
             </button>
           </li>
         ))}
       </ul>
-      <p className="home-lineup-note">All cars available. All equally fast. <span>Scroll to explore the collection <Icon name="arrow" size={14} /></span></p>
+      <p className="home-lineup-note">Your typing sets the pace. <span>Preview here. Save your choice in the room’s garage.</span></p>
     </section>
   );
 }
 
 export function Home() {
-  const [selectedCar, setSelectedCar] = useState(1);
+  const [selectedCar, setSelectedCar] = useState(2);
   const [name, setName] = useState(loadName);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -198,19 +83,24 @@ export function Home() {
       <RejoinRace />
       <div className="home-hero">
       <div className="home-story">
-        <h1>Type it. <span>Race it.</span></h1>
-        <p>Same text. Same clock. A little friendly rivalry.<br className="home-desktop-break" /> Race up to {MAX_PLAYERS} friends. Let your typing do the talking.</p>
+        <div className="home-story-copy">
+          <h1>Type it.<br /><span>Race it.</span></h1>
+          <p>Same text. <br />Same clock. <br />Your race.</p>
+        </div>
+        <picture className="home-hero-art">
+          <source media="(max-width: 700px)" srcSet="/images/pit-lane/stock-car-hero-768.webp" />
+          <img src="/images/pit-lane/stock-car-hero.webp" width="1536" height="1024" fetchPriority="high" alt="A yellow and charcoal GRID stock car, number 07, on the pit lane." />
+        </picture>
         <div className="home-race-format" aria-label="Race format">
-          <span><strong>{MAX_PLAYERS}</strong> racer grid</span>
-          <span><strong>1–5</strong> minute races</span>
+          <span><strong>{MAX_PLAYERS}</strong> racers</span>
+          <span><strong>1–5</strong> minutes</span>
           <span><Icon name="flag" size={16} /> Highest WPM wins</span>
         </div>
-        <Showroom selected={selectedCar} onSelect={setSelectedCar} />
       </div>
       <section className="home-entry" aria-labelledby="home-entry-title">
-        <div className="home-entry-heading"><span className="home-entry-label"><Icon name="flag" size={24} /> Race entry</span><span>No account needed</span></div>
-        <h2 id="home-entry-title">Your grid is waiting.</h2>
-        <p>Create a private room, or jump into a friend’s race.</p>
+        <div className="home-entry-heading"><span className="home-entry-label"><Icon name="flag" size={18} /> Race entry</span><span>No account needed</span></div>
+        <h2 id="home-entry-title">Your grid <br />is waiting.</h2>
+        <p>Create a private room or join your crew.</p>
       {supabase ? (
         <div className="home-entry-fields">
           <label className="g-field">
@@ -256,10 +146,10 @@ export function Home() {
               <Button type="submit" variant="secondary" icon="arrow" disabled={busy}>Join</Button>
             </form>
           <div id="home-entry-error"><ErrorText>{error}</ErrorText></div>
-          <p className="home-entry-note">
-            1–5 minute races. Highest WPM wins.{' '}
-            <a href="/first-lap" onClick={(e) => { e.preventDefault(); navigate('/first-lap'); }}>First lap &amp; typing comfort</a>
-          </p>
+          <div className="home-entry-links">
+            <a href="#practice">Practice solo <Icon name="arrow" size={16} /></a>
+            <a href="/first-lap" onClick={(e) => { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); navigate('/first-lap'); } }}>First lap &amp; typing comfort</a>
+          </div>
         </div>
       ) : (
         <div className="home-offline"><p>Multiplayer is unavailable right now. The practice track is always open.</p><a className="g-btn g-btn--primary" href="#practice">Take a practice lap <Icon name="arrow" /></a></div>

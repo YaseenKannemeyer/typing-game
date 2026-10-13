@@ -21,41 +21,37 @@
 @import './styles/grid/account.css' layer(components);
 @import './styles/world/world.css' layer(components);
 
-/*
- * Design tokens taken from the GRID vehicle and trophy kits
- * (design-kits/vehicle-kit/garage.css, design-kits/trophy-kit/gallery.html).
- * Use them as Tailwind utilities: bg-ink, bg-panel, border-line, text-muted, text-lime…
- */
+/* Tailwind aliases resolve to the app-owned tokens in styles/grid/tokens.css. */
 @theme {
   /* Mirrors 02-ui/tokens.css (--g-*) so Tailwind utilities and kit classes match. */
-  --color-ink: #111916; /* --g-bg */
-  --color-panel: #1b2520; /* --g-panel */
-  --color-panel-hi: #253329; /* --g-panel-raised */
-  --color-well: #111d16; /* kit input background */
-  --color-line: #3b4d40; /* --g-border */
-  --color-line-hi: #4b6052;
-  --color-fg: #eef4e9; /* --g-text */
-  --color-muted: #b1beb3; /* --g-muted */
-  --color-subtle: #8e9e92; /* --g-subtle */
-  --color-lime: #b9f46a; /* --g-lime */
-  --color-lime-ink: #17291a; /* --g-ink */
-  --color-paper: #dce4cf; /* --g-sage */
-  --color-paper-ink: #1b2a21;
-  --color-paper-muted: #647461;
-  --color-danger: #ffa69b; /* --g-error */
-  --color-danger-bg: #3d2423; /* --g-error-bg */
-  --color-info: #9fcaff; /* --g-blue */
-  --color-warning: #f7d48e; /* --g-warning */
-  --color-success: #91e1b8; /* --g-success */
-  --color-gold: #ffce65;
-  --color-silver: #c9dfeb;
-  --color-bronze: #dc9d71;
+  --color-ink: var(--g-bg);
+  --color-panel: var(--g-panel);
+  --color-panel-hi: var(--g-panel-raised);
+  --color-well: var(--g-bg);
+  --color-line: var(--g-border);
+  --color-line-hi: var(--g-control-border);
+  --color-fg: var(--g-text);
+  --color-muted: var(--g-muted);
+  --color-subtle: var(--g-subtle);
+  --color-lime: var(--g-accent);
+  --color-lime-ink: var(--g-ink);
+  --color-paper: var(--g-ticket);
+  --color-paper-ink: var(--g-ink);
+  --color-paper-muted: var(--g-ticket-muted);
+  --color-danger: var(--g-error);
+  --color-danger-bg: var(--g-error-bg);
+  --color-info: var(--g-blue);
+  --color-warning: var(--g-warning);
+  --color-success: var(--g-success);
+  --color-gold: var(--g-gold);
+  --color-silver: var(--g-silver);
+  --color-bronze: var(--g-bronze);
 
   /* Self-hosted Geist (UI) + Geist Mono (passages, telemetry). Imported in main.tsx. */
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Consolas, monospace;
 
-  --radius-card: 14px; /* --g-radius-md */
+  --radius-card: var(--g-radius-md);
 }
 
 @layer base {
@@ -339,7 +335,7 @@
   padding: 18px 22px;
   border: 1px solid var(--g-lime);
   border-radius: 14px;
-  background: #b9f46a12;
+  background: color-mix(in srgb, var(--g-accent) 7%, transparent);
 }
 .g-rejoin strong {
   display: block;

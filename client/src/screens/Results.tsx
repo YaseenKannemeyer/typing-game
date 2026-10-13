@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { raceResultsFromRows, TROPHIES, type Award, type RaceResult } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
-import { Confetti, FinishVenue, ResultsTable, type ResultRowView } from '../components/results/Results';
+import type { ResultRowView } from '../components/results/Results';
+import { ResultsView } from '../components/results/ResultsView';
+import type { ResultsAction, ResultsViewModel } from '../components/results/resultsViewModel';
 import { useAchievements } from '../components/achievements/Achievements';
-import { AwardCard } from '../components/trophies/AwardCard';
 import { RaceDebrief } from '../components/experience/Debrief';
 import { ChampionshipStandings } from '../components/experience/Championship';
-import { PitBoard, useControlBoard } from '../components/race/RaceControl';
-import { Button, Card, ErrorText, PageTitle, Pill, Skeleton } from '../components/ui';
+import { useControlBoard } from '../components/race/RaceControl';
 import { api, errorMessage } from '../lib/api';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
@@ -17,7 +17,7 @@ export function Results({ state }: { state: LobbyState }) {
   const { race, racePlayers, players, lobby, userId } = state;
   const { play } = useSound();
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState<string | null>(null);
+  const [busy, setBusy] = useState<ResultsAction | null>(null);
 
   // Ranks and stats are the server's; trophies were computed and stored by the
   // award-trophies Edge Function. The browser only displays them.
@@ -120,7 +120,7 @@ export function Results({ state }: { state: LobbyState }) {
   const isHost = lobby.host_id === userId;
   const design = modeDesign(race.mode);
 
-  const run = (key: string, action: () => Promise<unknown>) => async () => {
+  const run = (key: ResultsAction, action: () => Promise<unknown>) => async () => {
     setBusy(key);
     setError(null);
     try {
@@ -135,110 +135,41 @@ export function Results({ state }: { state: LobbyState }) {
     race: list.filter((a) => !TROPHIES[a.trophy].progression),
     progression: list.filter((a) => TROPHIES[a.trophy].progression),
   });
-  const mine = split(awards.get(userId ?? ''));
+
+  const model: ResultsViewModel = {
+    modeName: design.name,
+    rows,
+    isHost,
+    busy,
+    error,
+    raceControl: board,
+    awards: {
+      status: awarded ? 'ready' : 'pending',
+      mine: me ? { name: me.name, finished: me.finishedMs !== null, ...split(awards.get(userId ?? '')) } : null,
+      others: results
+        .filter((r) => r.id !== userId && awards.has(r.id))
+        .map((r) => {
+          const theirs = split(awards.get(r.id));
+          return { id: r.id, name: r.name, awards: [...theirs.race, ...theirs.progression] };
+        }),
+    },
+  };
 
   return (
-    <div className="results-screen space-y-8">
-      <PageTitle
-        eyebrow={`${design.name} · Final results`}
-        title="Every finish has a story."
-        lead="Highest WPM when the clock stopped wins. Official order and awards come from the server."
-      />
-
-      <div aria-live="polite">{board && <PitBoard key={board.id} event={board} />}</div>
-
-      <Card className="relative overflow-hidden">
-        {rows.some((r) => r.status === 'finished') ? (
-          <>
-            <FinishVenue rows={rows} />
-            <Confetti />
-          </>
-        ) : (
-          <p className="g-muted py-8 text-center">Nobody was still racing when the clock stopped.</p>
-        )}
-      </Card>
-
-      {/* What's next sits right under the podium, not 3,000px down. */}
-      <div className="g-result-actions">
-        {isHost ? (
-          <>
-            <Button icon="refresh" loading={busy === 'rematch'} disabled={!!busy} onClick={run('rematch', () => api.startRace(lobby.id))}>
-              Race again
-            </Button>
-            <Button variant="secondary" loading={busy === 'vote'} disabled={!!busy} onClick={run('vote', () => api.startVoting(lobby.id))}>
-              New mode vote
-            </Button>
-            <Button variant="ghost" loading={busy === 'lobby'} disabled={!!busy} onClick={run('lobby', () => api.returnToLobby(lobby.id))}>
-              Back to lobby
-            </Button>
-          </>
-        ) : (
-          <p className="g-muted">Waiting for the host to choose what's next…</p>
-        )}
-      </div>
-
-      <section className="g-stack">
-        <h2 className="g-heading">Official standings</h2>
-        <ResultsTable rows={rows} />
-      </section>
-
-      {state.championship && state.championship.status !== 'cancelled' && state.championship.committed.length > 0 && (
-        <ChampionshipStandings championship={state.championship} myId={userId} />
-      )}
-
-      {race && myRow && <RaceDebrief race={race} me={myRow} passage={state.passage} />}
-
-      {me && (
-        <section className="g-stack">
-          <div className="g-between">
-            <h2 className="g-heading">Your trophy haul</h2>
-            <Pill>{mine.race.length} race {mine.race.length === 1 ? 'award' : 'awards'}</Pill>
-          </div>
-          {!awarded ? (
-            <Skeleton />
-          ) : mine.race.length + mine.progression.length === 0 ? (
-            <p className="g-muted">{me.finishedMs === null ? 'Trophies are for racers still on the grid when the clock stops. Next race is yours.' : 'No trophies this time.'}</p>
-          ) : (
-            <>
-              <div className="g-grid-2">
-                {mine.race.map((a) => <AwardCard key={a.trophy} award={a} recipient={me.name} />)}
-              </div>
-              {mine.progression.length > 0 && (
-                <>
-                  <div className="g-divider" />
-                  <div className="g-eyebrow">PROGRESSION ACHIEVEMENTS</div>
-                  <div className="g-grid-2">
-                    {mine.progression.map((a) => <AwardCard key={a.trophy} award={a} recipient={me.name} />)}
-                  </div>
-                </>
-              )}
-            </>
-          )}
-        </section>
-      )}
-
-      {awarded && (
-        <section className="g-stack">
-          <h2 className="g-heading">Everyone's awards</h2>
-          {results
-            .filter((r) => r.id !== userId && awards.has(r.id))
-            .map((r) => {
-              const theirs = split(awards.get(r.id));
-              return (
-                <div key={r.id} className="g-stack">
-                  <p className="g-eyebrow">{r.name}</p>
-                  <div className="award-grid--compact">
-                    {[...theirs.race, ...theirs.progression].map((a) => (
-                      <AwardCard key={a.trophy} award={a} recipient={r.name} reveal={false} compact />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-        </section>
-      )}
-
-      <ErrorText>{error}</ErrorText>
-    </div>
+    <ResultsView
+      model={model}
+      actions={{
+        rematch: () => void run('rematch', () => api.startRace(lobby.id))(),
+        newVote: () => void run('vote', () => api.startVoting(lobby.id))(),
+        backToLobby: () => void run('lobby', () => api.returnToLobby(lobby.id))(),
+      }}
+      slots={{
+        championship:
+          state.championship && state.championship.status !== 'cancelled' && state.championship.committed.length > 0 ? (
+            <ChampionshipStandings championship={state.championship} myId={userId} />
+          ) : null,
+        debrief: race && myRow ? <RaceDebrief race={race} me={myRow} passage={state.passage} /> : null,
+      }}
+    />
   );
 }

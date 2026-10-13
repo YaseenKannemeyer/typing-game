@@ -2,10 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent }
 import {
   computeStats,
   getVisibleCars,
-  VISIBLE_CARS,
-  lineWords,
-  lockedWords,
-  PROGRESS_SUBMIT_MS,
   RACE_END_GRACE_MS,
   rankPlayers,
   resumeTypingState,
@@ -13,18 +9,18 @@ import {
   typedCorrectChars,
 } from '@race/shared';
 import { modeDesign } from '../art/gridArt';
-import { CountdownFrame } from '../components/race/Moments';
-import { Dashboard } from '../components/race/Dashboard';
-import { IdleBoard, PitBoard, useRaceControl } from '../components/race/RaceControl';
-import { formatElapsed, Minimap } from '../components/race/Hud';
-import { Track, type TrackCar } from '../components/Track';
-import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
-import { Banner, Loading, Pill } from '../components/ui';
-import { api, lineSubmission } from '../lib/api';
+import { useRaceControl } from '../components/race/RaceControl';
+import { RaceView } from '../components/race/RaceView';
+import type { RaceViewModel } from '../components/race/raceViewModel';
+import type { TrackCar } from '../components/Track';
+import type { TypingVariant } from '../components/TypingPanel';
+import { Loading } from '../components/ui';
+import { api } from '../lib/api';
 import { useServerNow } from '../lib/clock';
 import { clearActiveRace, loadRaceMistakes, saveActiveRace, saveRaceMistakes } from '../lib/storage';
 import { useSound } from '../game/sound';
 import type { LobbyState } from '../game/useLobby';
+import { SUBMIT_TIMEOUT_MS, useSubmitQueue } from '../game/useSubmitQueue';
 import { useTyping } from '../game/useTyping';
 import { destinationFor } from '../game/destinations';
 import { vehicleFor } from '../game/vehicles';
@@ -106,77 +102,20 @@ export function Race({ state }: Props) {
     play(value === 0 ? 'go-horn' : value === 1 ? 'countdown-final' : 'countdown-beep');
   }, [countdown, started, race, play]);
 
-  // Server sync. Locked lines go first, in order; then the current line's
-  // finished words are sent as provisional progress (re-scored next time).
-  // When time runs out, everything typed on the current line is locked in.
-  const tsRef = useRef(ts);
-  tsRef.current = ts;
-  const serverDone = useRef(myRow?.words_done ?? 0);
-  const lastSent = useRef('');
-  const queue = useRef<Promise<void>>(Promise.resolve());
-  const busy = useRef(false);
+  // Server sync (game/useSubmitQueue): locked lines first, then provisional
+  // progress; at time-up the current line is locked in, with bounded retries.
   const raceId = race?.id;
-  const sync = useCallback(
-    (final: boolean) => {
-      if (!raceId || (busy.current && !final)) return queue.current;
-      busy.current = true;
-      queue.current = queue.current
-        .then(async () => {
-          for (let guard = 0; guard < 50; guard++) {
-            const s = tsRef.current;
-            let from: number;
-            let words: string[];
-            let lock: boolean;
-            if (serverDone.current < lockedWords(s)) {
-              const idx = s.lines.findIndex((l) => l.start === serverDone.current);
-              const typed = idx >= 0 ? s.lockedTyped[idx] : null;
-              if (!typed) return;
-              from = serverDone.current;
-              words = typed.slice(0, lineWords(s, idx).length);
-              lock = true;
-            } else {
-              ({ from, words } = lineSubmission(s, final));
-              lock = final && words.length > 0;
-            }
-            const key = `${from}|${lock}|${words.join(' ')}|${s.keystrokes}|${s.errors}|${s.deletions}`;
-            if (key === lastSent.current) return;
-            const res = await api.submitTyping(raceId, from, words, lock, s);
-            lastSent.current = key;
-            serverDone.current = res.words_done;
-            if (res.reason === 'too_fast') setWarning('Your input was rejected as impossibly fast.');
-            if (!res.ok) return;
-            if (from === lockedWords(s)) return; // caught up: that was the current line
-          }
-        })
-        .catch(() => {
-          // Network blip: the next tick retries from the server's position.
-        })
-        .finally(() => {
-          busy.current = false;
-        });
-      return queue.current;
-    },
-    [raceId],
-  );
-
-  const syncing = isRacer && racing && started && !timeUp;
-  useEffect(() => {
-    if (!syncing) return;
-    const t = setInterval(() => void sync(false), PROGRESS_SUBMIT_MS);
-    return () => clearInterval(t);
-  }, [syncing, sync]);
-  // Enter: send the locked line straight away.
-  const locked = lockedWords(ts);
-  useEffect(() => {
-    if (syncing && locked > 0) void sync(false);
-  }, [locked, syncing, sync]);
-  // The final whistle: lock in whatever is on the current line.
-  const finalSent = useRef<string | null>(null);
-  useEffect(() => {
-    if (!raceId || !isRacer || !timeUp || !started || finalSent.current === raceId) return;
-    finalSent.current = raceId;
-    void sync(true);
-  }, [raceId, isRacer, timeUp, started, sync]);
+  const onTooFast = useCallback(() => setWarning('Your input was rejected as impossibly fast.'), []);
+  const submit = useSubmitQueue({
+    raceId,
+    typing: ts,
+    wordsDone: myRow?.words_done ?? 0,
+    active: isRacer && racing && started && !timeUp,
+    final: isRacer && timeUp && started,
+    // Local time at which any client may finalize the race: final retries stop there.
+    deadline: endAt - clockOffset + RACE_END_GRACE_MS,
+    onTooFast,
+  });
 
   // Remember this race so the player can rejoin it from home after leaving.
   const lobbyCode = lobby?.code;
@@ -190,12 +129,14 @@ export function Race({ state }: Props) {
 
   // Close the race once the timer (plus a moment for final lines) has run out.
   // Any client may ask; the server checks the clock.
+  // This client waits while its own final lines are still in flight (at most one request timeout).
   const lastFinalize = useRef(0);
+  const holdFinalize = submit.pending && now < endAt + RACE_END_GRACE_MS + SUBMIT_TIMEOUT_MS;
   useEffect(() => {
-    if (!race || !racing || now < endAt + RACE_END_GRACE_MS || now - lastFinalize.current < 3000) return;
+    if (!race || !racing || holdFinalize || now < endAt + RACE_END_GRACE_MS || now - lastFinalize.current < 3000) return;
     lastFinalize.current = now;
     void api.finalizeRace(race.id).catch(() => {});
-  }, [race, racing, now, endAt]);
+  }, [race, racing, holdFinalize, now, endAt]);
 
   // Standings by correct characters, re-ranked on a fixed cadence. Cars are
   // placed relative to the leader, who sits just short of the flag.
@@ -270,100 +211,46 @@ export function Race({ state }: Props) {
 
   if (!race || !passage) return <Loading label="Loading the race" />;
 
-  const design = modeDesign(race.mode);
   const variant: TypingVariant = race.mode === 'coding' ? 'coding' : race.mode === 'shakespeare' ? 'shakespeare' : 'standard';
-  const countdownValue = countdown > 3 ? 'READY' : (String(countdown) as '3' | '2' | '1');
-  const minutes = Math.round(durationMs / 60_000);
+  const finished = timeUp && started;
+  const championship = state.championship?.status === 'running' ? state.championship : null;
+  const model: RaceViewModel = {
+    session: {
+      modeName: modeDesign(race.mode).name,
+      viaRandom: lobby?.mode === 'random',
+      variant,
+      durationMs,
+      strict,
+      round: championship ? { n: Math.min(championship.rounds, championship.committed.length + 1), of: championship.rounds } : null,
+      destination: destinationFor(race.mode, lobby?.destination),
+      racerCount: racePlayers.length,
+    },
+    clock: {
+      phase: !started ? 'countdown' : finished ? 'time-up' : elapsed < GO_BANNER_MS ? 'go' : 'racing',
+      countdown: !started ? (countdown > 3 ? 'READY' : (String(countdown) as '3' | '2' | '1')) : elapsed < GO_BANNER_MS ? 'GO!' : null,
+      msLeft,
+      usedFraction: elapsed / durationMs,
+    },
+    role: isRacer ? 'racer' : 'spectating',
+    me: isRacer
+      ? { position: myRank || racePlayers.length, total: racePlayers.length, wpm: myStats.netWpm, accuracy: myStats.accuracy, mistakes: ts.errors }
+      : null,
+    cars,
+    overflow:
+      racePlayers.length > cars.length
+        ? ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * leaderAt }))
+        : null,
+    raceControl: board,
+    results: finished ? 'confirming' : 'provisional',
+    warning,
+    connection: state.connected ? 'live' : 'reconnecting',
+    delivery: isRacer ? submit.delivery : null,
+  };
 
   return (
-    <div className="race-screen">
-      <div className="g-between">
-        <div>
-          <h1 className="g-heading">
-            {lobby?.mode === 'random' && <span className="text-muted">Random → </span>}
-            {design.name}
-          </h1>
-        </div>
-        <div className="g-row">
-          {state.championship?.status === 'running' && (
-            <Pill lime>
-              ROUND {Math.min(state.championship.rounds, state.championship.committed.length + 1)} / {state.championship.rounds}
-            </Pill>
-          )}
-          <Pill>{minutes} MIN</Pill>
-          {strict && <Pill>ZERO MISTAKES</Pill>}
-          {isRacer ? <Pill lime>{racePlayers.length} RACERS</Pill> : <Pill>SPECTATING</Pill>}
-        </div>
-      </div>
-
-      {!isRacer && <Banner tone="info">The race is under way. You'll be on the grid for the next one.</Banner>}
-
-      {isRacer && (
-        <div className="race-top">
-          <Dashboard
-            position={myRank || racePlayers.length}
-            total={racePlayers.length}
-            wpm={myStats.netWpm}
-            accuracy={myStats.accuracy}
-            mistakes={ts.errors}
-            timeMs={started ? msLeft : durationMs}
-            timeLabel="TIME LEFT"
-            progress={elapsed / durationMs}
-            progressLabel="Race time used"
-            running={started && !timeUp}
-          />
-          <div className="race-control">
-            <div aria-live="polite">{board && <PitBoard key={board.id} event={board} />}</div>
-            {!board && <IdleBoard />}
-          </div>
-        </div>
-      )}
-
-      <div className="race-track relative">
-        <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} lanes={VISIBLE_CARS} />
-        {(!started || elapsed < GO_BANNER_MS) && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
-            <CountdownFrame value={started ? 'GO!' : countdownValue} />
-          </div>
-        )}
-      </div>
-
-      {/* Only when some racers don't have a lane on the track. */}
-      {racePlayers.length > cars.length && (
-        <div className="race-minimap">
-          <Minimap
-            racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * leaderAt }))}
-            localId={userId}
-          />
-        </div>
-      )}
-
-      {isRacer && (
-        <div className="race-typing">
-          <TypingPanel
-            ref={inputRef}
-            state={ts}
-            onKeyDown={onKeyDown}
-            variant={variant}
-            waiting={!started}
-            doneLabel={timeUp && started ? "TIME'S UP" : undefined}
-          />
-          {timeUp && started ? (
-            <p className="g-small g-muted">Time's up. Locking in the final lines and the official results…</p>
-          ) : (
-            started && (
-              <p className="g-small g-muted">
-                {formatElapsed(msLeft)} left. The text keeps going, so type until the clock stops.
-              </p>
-            )
-          )}
-          {warning && <Banner tone="warning">{warning}</Banner>}
-          {/* Phones: race control sits below the text so it never shifts the line you're typing. */}
-          <div className="race-control-below" aria-live="polite">
-            {board && <PitBoard key={board.id} event={board} />}
-          </div>
-        </div>
-      )}
-    </div>
+    <RaceView
+      model={model}
+      typing={isRacer ? { state: ts, inputRef, onKeyDown, waiting: !started, doneLabel: finished ? "TIME'S UP" : undefined } : null}
+    />
   );
 }

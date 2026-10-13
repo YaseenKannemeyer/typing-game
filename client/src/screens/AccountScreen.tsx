@@ -1,17 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_BUILD, normalizeVehicle } from '../art/vehicleArt';
 import { normalizeLivery } from '../art/worldArt';
-import {
-  AuthForm,
-  AuthStatus,
-  AuthStory,
-  MergeReview,
-  PasswordForm,
-  type AuthMode,
-  type GuestView,
-} from '../components/account/Account';
-import { Loading, Page } from '../components/ui';
-import { SoundToggle } from '../game/sound';
+import type { AuthMode, GuestView } from '../components/account/Account';
+import { AccountView } from '../components/account/AccountView';
+import type { AccountActions, AccountState } from '../components/account/accountViewModel';
 import { useAuth } from '../game/useAuth';
 import {
   checkVerified,
@@ -157,104 +149,59 @@ export function AccountScreen() {
       }
     });
 
-  let body;
-  if (!view) body = <Loading label="Opening your account" />;
-  else if (view.kind === 'form')
-    body = (
-      <div className="a-auth-layout">
-        <AuthStory mode={view.mode} guest={hasProgress ? guest : null} />
-        <AuthForm
-          mode={view.mode}
-          defaultName={loadName()}
-          hasGuestProgress={hasProgress}
-          busy={busy}
-          error={error}
-          onMode={(mode) => {
-            setError(null);
-            setView({ kind: 'form', mode });
-          }}
-          onSubmit={submitForm(view.mode)}
-          onGuest={() => navigate('/')}
-        />
-      </div>
-    );
-  else if (view.kind === 'verify')
-    body = (
-      <AuthStatus
-        kind="verify"
-        email={view.email || 'your email'}
-        receipt={guest && hasProgress ? { name: guest.name, races: guest.races, trophies: guest.trophies } : null}
-        busy={busy}
-        error={error}
-        action={{
-          label: "I've confirmed my email",
-          onClick: () =>
-            run(async () => {
-              if (await checkVerified()) setView({ kind: 'password', purpose: 'new' });
-              else throw new Error("We can't see the confirmation yet. Open the link in the email, then try again.");
-            }),
-        }}
-        secondary={{ label: 'Use a different email', onClick: () => setView({ kind: 'form', mode: hasProgress ? 'save' : 'signup' }) }}
-      >
-        {step() === 'verified' && !auth.permanent && (
-          <p className="g-small g-muted mb-4">Email confirmed. If you started in another tab, return there and press the button below.</p>
-        )}
-      </AuthStatus>
-    );
-  else if (view.kind === 'password')
-    body = (
-      <PasswordForm
-        title={view.purpose === 'reset' ? 'Choose a new password' : 'Email confirmed. Choose your password.'}
-        lead={view.purpose === 'reset' ? 'Set a new password for your account.' : 'This is the last step. Your racer, history and garage are already yours.'}
-        busy={busy}
-        error={error}
-        onSubmit={(password) =>
-          run(async () => {
-            await setPassword(password);
-            if (view.purpose === 'reset') navigate('/profile');
-            else await finishAccount();
-          })
-        }
-      />
-    );
-  else if (view.kind === 'review')
-    body = guest ? (
-      <MergeReview
-        guest={guest}
-        account={{ name: view.account.profile?.display_name ?? auth.email ?? 'Your account', races: view.account.stats.races, trophies: view.account.stats.trophies }}
-        busy={busy}
-        error={error}
-        onConfirm={merge}
-        onCancel={() =>
-          run(async () => {
-            await restoreGuest();
-            setView({ kind: 'form', mode: 'save' });
-          })
-        }
-      />
-    ) : (
-      <Loading label="Preparing your review" />
-    );
-  else if (view.kind === 'saving') body = <AuthStatus kind="saving" />;
-  else if (view.kind === 'saved')
-    body = (
-      <AuthStatus
-        kind="saved"
-        receipt={{ name: view.summary.profile?.display_name ?? 'Racer', races: view.summary.stats.races, trophies: view.summary.stats.trophies }}
-        action={{ label: 'View your profile', onClick: () => navigate('/profile') }}
-      />
-    );
-  else if (view.kind === 'retry')
-    body = (
-      <AuthStatus
-        kind="retry"
-        error={error}
-        busy={busy}
-        action={{ label: 'Retry preservation', onClick: merge }}
-        secondary={{ label: 'Cancel and keep guest session', onClick: () => run(async () => { await restoreGuest(); setView({ kind: 'form', mode: 'save' }); }) }}
-      />
-    );
-  else body = <AuthStatus kind="recovery" action={{ label: 'Back to sign in', onClick: () => setView({ kind: 'form', mode: 'signin' }) }} />;
+  const cancelMerge = () =>
+    run(async () => {
+      await restoreGuest();
+      setView({ kind: 'form', mode: 'save' });
+    });
 
-  return <Page actions={<SoundToggle />}>{body}</Page>;
+  const keep = guest && hasProgress ? guest : null;
+  let state: AccountState;
+  if (!view) state = { kind: 'loading' };
+  else if (view.kind === 'form') state = { kind: 'form', mode: view.mode, defaultName: loadName(), guest: keep };
+  else if (view.kind === 'verify')
+    state = {
+      kind: 'verify',
+      email: view.email || null,
+      receipt: keep ? { name: keep.name, races: keep.races, trophies: keep.trophies } : null,
+      confirmedElsewhere: step() === 'verified' && !auth.permanent,
+    };
+  else if (view.kind === 'review')
+    state = {
+      kind: 'review',
+      guest,
+      account: { name: view.account.profile?.display_name ?? auth.email ?? 'Your account', races: view.account.stats.races, trophies: view.account.stats.trophies },
+    };
+  else if (view.kind === 'saved')
+    state = { kind: 'saved', receipt: { name: view.summary.profile?.display_name ?? 'Racer', races: view.summary.stats.races, trophies: view.summary.stats.trophies } };
+  else state = view;
+
+  const actions: AccountActions = {
+    chooseMode: (mode) => {
+      setError(null);
+      setView({ kind: 'form', mode });
+    },
+    submitAuth: (values) => {
+      if (view?.kind === 'form') void submitForm(view.mode)(values);
+    },
+    continueAsGuest: () => navigate('/'),
+    confirmVerified: () =>
+      void run(async () => {
+        if (await checkVerified()) setView({ kind: 'password', purpose: 'new' });
+        else throw new Error("We can't see the confirmation yet. Open the link in the email, then try again.");
+      }),
+    useDifferentEmail: () => setView({ kind: 'form', mode: hasProgress ? 'save' : 'signup' }),
+    submitPassword: (password) =>
+      void run(async () => {
+        await setPassword(password);
+        if (view?.kind === 'password' && view.purpose === 'reset') navigate('/profile');
+        else await finishAccount();
+      }),
+    confirmMerge: () => void merge(),
+    cancelMerge: () => void cancelMerge(),
+    viewProfile: () => navigate('/profile'),
+    backToSignIn: () => setView({ kind: 'form', mode: 'signin' }),
+  };
+
+  return <AccountView model={{ state, busy, error }} actions={actions} />;
 }

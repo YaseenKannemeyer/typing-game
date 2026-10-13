@@ -1,0 +1,1002 @@
+[
+  {
+    "caseId": "vote-empty",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-selected",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-change",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-near-deadline",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-closing",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-error",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-guest",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-15",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-tie",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-random",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-1",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-2",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-3",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-15",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-winner",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-tied",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-dnf",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-flagged",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-nobody",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-guest",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-spectator",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-rematch-busy",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-action-error",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-championship",
+    "width": 320,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-empty",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-selected",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-change",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-near-deadline",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-closing",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-error",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-guest",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-15",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-tie",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-random",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-1",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-2",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-3",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-15",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-winner",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-tied",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-dnf",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-flagged",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-nobody",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-guest",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-spectator",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-rematch-busy",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-action-error",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-championship",
+    "width": 390,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-empty",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-selected",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-change",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-near-deadline",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-closing",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-error",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-guest",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-15",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-tie",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-random",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-1",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-2",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-3",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-15",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-winner",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-tied",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-dnf",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-flagged",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-nobody",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-guest",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-spectator",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-rematch-busy",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-action-error",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-championship",
+    "width": 768,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-empty",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-selected",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-change",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-near-deadline",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-closing",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-error",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-guest",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-15",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-tie",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-random",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-1",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-2",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-3",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-15",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-winner",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-tied",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-dnf",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-flagged",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-nobody",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-guest",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-spectator",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-rematch-busy",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-action-error",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-championship",
+    "width": 1280,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-empty",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-selected",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-change",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-near-deadline",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-closing",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-error",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-guest",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-15",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-tie",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "vote-reveal-random",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-1",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-2",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-3",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-15",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-winner",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-tied",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-dnf",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-me-flagged",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-nobody",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-guest",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-spectator",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-rematch-busy",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-action-error",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  },
+  {
+    "caseId": "results-championship",
+    "width": 1440,
+    "buttons": [],
+    "csp": true,
+    "overflow": 0,
+    "errors": []
+  }
+]

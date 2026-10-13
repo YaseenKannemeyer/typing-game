@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DEFAULT_BUILD, normalizeVehicle } from '../art/vehicleArt';
 import { normalizeLivery } from '../art/worldArt';
-import { ChartCard, EditNameDialog, ModeBests, ProfileHeader, RecentTrophies, TrendCharts } from '../components/profile/Profile';
-import { Clubhouse } from '../components/trophies/Clubhouse';
-import { Banner, Button, Card, Loading, Page, PageTitle } from '../components/ui';
-import { SoundToggle } from '../game/sound';
+import { ProfileView } from '../components/profile/ProfileView';
+import type { ProfileActions, ProfileState } from '../components/profile/profileViewModel';
 import { useAuth } from '../game/useAuth';
 import { signOut } from '../lib/account';
 import { api, errorMessage, type Summary, type TrophyRecord } from '../lib/api';
@@ -46,45 +44,9 @@ export function ProfileScreen() {
     if (auth.ready && auth.permanent) void api.myTrophies().then(setTrophies, () => setTrophies([]));
   }, [auth.ready, auth.permanent]);
 
-  if (!auth.ready) return <Page><Loading label="Loading your profile" /></Page>;
-
-  if (!auth.permanent) {
-    return (
-      <Page actions={<SoundToggle />}>
-        <PageTitle title="Make your progress permanent." lead="Guests race freely, but only accounts keep a profile, charts, a trophy cabinet and a place in the hall of fame." />
-        <div className="g-row">
-          <Button icon="arrow" onClick={() => navigate('/account')}>Save your progress</Button>
-          <Button variant="secondary" onClick={() => navigate('/account')}>Sign in</Button>
-        </div>
-      </Page>
-    );
-  }
-
-  if (!summary) {
-    return (
-      <Page actions={<SoundToggle />}>
-        {error ? <Banner tone="error">{error}</Banner> : <Loading label="Loading your profile" />}
-      </Page>
-    );
-  }
-
-  const profile = summary.profile;
-  if (!profile) {
-    return (
-      <Page actions={<SoundToggle />}>
-        <Card className="g-stack">
-          <Banner tone="info">Your account is verified. Finish setting it up to get your profile.</Banner>
-          <div><Button onClick={() => navigate('/account?step=verified')}>Finish setup</Button></div>
-        </Card>
-      </Page>
-    );
-  }
-
-  const vehicle = {
-    ...normalizeVehicle({ ...DEFAULT_BUILD, ...profile.vehicle, primary: profile.car_color ?? '#ff683b', playerName: profile.display_name }),
-    ...normalizeLivery(profile.vehicle),
-  };
+  const profile = summary?.profile ?? null;
   const saveProfile = (name: string, avatar?: 'car' | 'initials') => async () => {
+    if (!summary) return;
     setBusy(true);
     setEditError(null);
     try {
@@ -99,67 +61,49 @@ export function ProfileScreen() {
     }
   };
 
+  let state: ProfileState;
+  if (!auth.ready) state = { kind: 'loading', stage: 'auth' };
+  else if (!auth.permanent) state = { kind: 'guest' };
+  else if (!summary) state = error ? { kind: 'unavailable', error } : { kind: 'loading', stage: 'profile' };
+  else if (!profile) state = { kind: 'setup' };
+  else
+    state = {
+      kind: 'ready',
+      data: {
+        name: profile.display_name,
+        handle: profile.handle,
+        memberSince: memberSince(summary.member_since),
+        avatar: profile.avatar,
+        vehicle: {
+          ...normalizeVehicle({ ...DEFAULT_BUILD, ...profile.vehicle, primary: profile.car_color ?? '#ff683b', playerName: profile.display_name }),
+          ...normalizeLivery(profile.vehicle),
+        },
+        stats: summary.stats,
+        daily: summary.daily,
+        modeBests: summary.mode_bests,
+        recent: summary.recent,
+        trophyCounts: summary.trophy_counts,
+        trophyRecords: trophies,
+      },
+    };
+
+  const actions: ProfileActions = {
+    selectPeriod: setDays,
+    toggleAvatar: () => {
+      if (profile) void saveProfile(profile.display_name, profile.avatar === 'car' ? 'initials' : 'car')();
+    },
+    openEditName: () => setEditing(true),
+    saveName: (name) => void saveProfile(name)(),
+    cancelEditName: () => setEditing(false),
+    signOut: () => void signOut().then(() => navigate('/')),
+    goToAccount: () => navigate('/account'),
+    finishSetup: () => navigate('/account?step=verified'),
+  };
+
   return (
-    <Page
-      actions={
-        <>
-          <SoundToggle />
-          <Button variant="ghost" onClick={async () => { await signOut(); navigate('/'); }}>Sign out</Button>
-        </>
-      }
-    >
-      <ProfileHeader
-        name={profile.display_name}
-        handle={profile.handle}
-        memberSince={memberSince(summary.member_since)}
-        avatar={profile.avatar}
-        vehicle={vehicle}
-        stats={summary.stats}
-        onEditName={() => setEditing(true)}
-      />
-
-      <div className="a-profile-toolbar">
-        <h2>Your racing story</h2>
-        <div className="g-row">
-          <Button variant="secondary" disabled={busy} onClick={saveProfile(profile.display_name, profile.avatar === 'car' ? 'initials' : 'car')}>
-            {profile.avatar === 'car' ? 'Show avatar' : 'Show car'}
-          </Button>
-          <div className="a-period" role="group" aria-label="Chart period">
-            {PERIODS.map((p) => (
-              <button key={p.days} className="g-filter" aria-pressed={days === p.days} onClick={() => setDays(p.days)}>
-                {p.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {error && <Banner tone="error">{error}</Banner>}
-      <TrendCharts daily={summary.daily} />
-      <div className="g-grid-2 a-section">
-        <ChartCard title="Your best, by mode" kicker="SELECTED PERIOD">
-          <ModeBests bests={summary.mode_bests} />
-        </ChartCard>
-        <ChartCard title="Recent trophies" kicker="YOUR COLLECTION">
-          <RecentTrophies recent={summary.recent} />
-        </ChartCard>
-      </div>
-      <p className="a-footnote">
-        Best WPM is your highest completed-race average, not a rolling peak. Accuracy is correct attempts ÷ all attempts per day.
-        Charts use UTC dates and leave out unfinished and flagged races.
-      </p>
-
-      <Clubhouse counts={summary.trophy_counts} records={trophies} />
-
-      {editing && (
-        <EditNameDialog
-          initial={profile.display_name}
-          busy={busy}
-          error={editError}
-          onSave={(name) => void saveProfile(name)()}
-          onCancel={() => setEditing(false)}
-        />
-      )}
-    </Page>
+    <ProfileView
+      model={{ state, period: { days, options: PERIODS }, error: summary ? error : null, busy, edit: { open: editing, error: editError } }}
+      actions={actions}
+    />
   );
 }

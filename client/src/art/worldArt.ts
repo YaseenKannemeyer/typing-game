@@ -1,7 +1,7 @@
 /**
- * Typed port of design-kits/racing-world-kit (kits 16–24). Output is
- * byte-identical to the kit's WorldKit renderers (see worldArt.test.ts); keep
- * them in sync if the kit changes. The kit's vendor runtimes are the same
+ * Typed port of design-kits/racing-world-kit (kits 16–24). Scenery and identity
+ * primitives retain kit parity; cars and their livery anchors are app-owned.
+ * The kit's vendor runtimes are the same
  * vehicle/trophy/UI kits already ported in vehicleArt.ts, trophyArt.ts and
  * gridArt.ts, so those are reused here rather than duplicated.
  *
@@ -10,7 +10,7 @@
  * Kit 25 (championship) is not ported: it needs server support first.
  */
 import { escapeHtml as esc } from './gridArt';
-import { MAX_RACE_NUMBER, normalizeVehicle, vehicleSvg, type VehicleModel, type VehicleProps } from './vehicleArt';
+import { MAX_RACE_NUMBER, normalizeVehicle, VEHICLE_MARKINGS, vehicleSvg, type VehicleModel, type VehicleProps } from './vehicleArt';
 
 type VehicleInput = Partial<Record<keyof VehicleProps, unknown>>;
 
@@ -243,15 +243,12 @@ export function normalizeLivery(p: { team?: unknown; decal?: unknown; driver?: u
   };
 }
 
-/** Per-model decal anchors from the kit (other models use 164,82). */
-const DECAL_ANCHORS: Partial<Record<VehicleModel, readonly [number, number]>> = { monster: [156, 53], kart: [155, 93], rocket: [125, 67], formula: [146, 88] };
-
-/** The decal and lettering group the kit appends inside the car's SVG. */
+/** Per-model door markings appended inside the root SVG, as before. */
 export function liveryOverlay(model: VehicleModel, { team: teamId, decal, driver }: Partial<Livery>): string {
   const t = team(teamId ?? 'apex');
-  const [x, y] = DECAL_ANCHORS[model] || [164, 82];
+  const { decal: [x, y], lettering: [lx, ly] } = VEHICLE_MARKINGS[model] ?? VEHICLE_MARKINGS.classic;
   const label = String(driver ?? 'YASEEN').slice(0, DRIVER_LABEL_MAX).toUpperCase();
-  return `<g color="${t.color}" transform="translate(${x} ${y}) scale(.55)">${DECALS[(decal ?? 'chevron') as DecalId] || ''}</g><text x="${model === 'monster' ? 112 : 107}" y="${model === 'monster' ? 56 : model === 'kart' ? 103 : 75}" font-family="Arial,sans-serif" font-size="4.5" font-weight="700" fill="#152b24">${esc(label)}</text>`;
+  return `<g class="livery"><g color="${t.color}" transform="translate(${x} ${y}) scale(.55)">${DECALS[(decal ?? 'chevron') as DecalId] || ''}</g><text x="${lx}" y="${ly}" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="#f4f2eb" stroke="#171b21" stroke-width=".4" paint-order="stroke">${esc(label)}</text></g>`;
 }
 
 /** worldCar with the player's livery when they picked a team. */

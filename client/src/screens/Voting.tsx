@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { VOTE_DURATION_MS, type VoteMode } from '@race/shared';
 import { MODE_DESIGN, modeDesign } from '../art/gridArt';
-import { ModeCard, TimerRing, VoteReveal, type Voter } from '../components/voting/Voting';
-import { Button, ErrorText, PageTitle, Pill } from '../components/ui';
+import type { Voter } from '../components/voting/Voting';
+import { VotingView } from '../components/voting/VotingView';
+import type { VotingViewModel } from '../components/voting/votingViewModel';
 import { api, errorMessage } from '../lib/api';
 import { useServerNow } from '../lib/clock';
 import { useSound } from '../game/sound';
@@ -10,12 +11,14 @@ import type { LobbyState } from '../game/useLobby';
 import { vehicleFor } from '../game/vehicles';
 import { destinationInfo } from '../game/destinations';
 
+/** While the vote is closing, ask the server again this often until it answers. */
+const CLOSE_RETRY_MS = 3_000;
+
 export function Voting({ state }: { state: LobbyState }) {
   const { lobby, votes, userId, players, clockOffset, voteResult } = state;
   const now = useServerNow(clockOffset, 100);
   const { play } = useSound();
   const [error, setError] = useState<string | null>(null);
-  const closing = useRef(false);
   const endsAt = lobby?.vote_ends_at ? Date.parse(lobby.vote_ends_at) : now;
   const remaining = Math.max(0, (endsAt - now) / 1000);
   const isHost = lobby?.host_id === userId;
@@ -31,59 +34,49 @@ export function Voting({ state }: { state: LobbyState }) {
     return out;
   }, [votes, players]);
 
-  // When the deadline passes any client may ask the server to close the vote.
+  // When the deadline passes any client may ask the server to close the vote
+  // (spread over 0.8 s so clients don't all ask at once). It's idempotent, so
+  // keep asking every few seconds until the result arrives: the view locks the
+  // options while closing, so one lost request must not strand the room.
+  const lobbyId = lobby?.id;
+  const expired = !!lobby && remaining <= 0;
   useEffect(() => {
-    if (!lobby || remaining > 0 || closing.current) return;
-    closing.current = true;
-    const t = setTimeout(() => api.closeVoting(lobby.id).catch(() => {}), Math.random() * 800);
-    return () => clearTimeout(t);
-  }, [lobby, remaining]);
+    if (!lobbyId || !expired || voteResult) return;
+    const close = () => void api.closeVoting(lobbyId).catch(() => {});
+    const first = setTimeout(close, Math.random() * 800);
+    const retry = setInterval(close, CLOSE_RETRY_MS);
+    return () => {
+      clearTimeout(first);
+      clearInterval(retry);
+    };
+  }, [lobbyId, expired, voteResult]);
 
   if (!lobby) return null;
 
-  if (voteResult) {
-    const counts = [...voters.values()].map((v) => v.length);
-    const top = Math.max(0, ...counts);
-    const tie = top > 0 && counts.filter((c) => c === top).length > 1;
-    return <VoteReveal mode={modeDesign(voteResult)} tie={tie} />;
-  }
+  const counts = [...voters.values()].map((v) => v.length);
+  const top = Math.max(0, ...counts);
+  const model: VotingViewModel = {
+    clock: { remainingS: remaining, totalS: VOTE_DURATION_MS / 1000 },
+    closing: remaining <= 0 && !voteResult,
+    options: MODE_DESIGN.map((mode) => ({ mode, count: voters.get(mode.id)?.length ?? 0, voters: voters.get(mode.id) ?? [], selected: myVote === mode.id })),
+    votedCount: votes.length,
+    racerCount: players.length,
+    rules: { raceSeconds: lobby.race_seconds, zeroMistakes: lobby.zero_mistakes, destination: lobby.destination ? destinationInfo(lobby.destination).name : null },
+    isHost,
+    error,
+    reveal: voteResult ? { mode: modeDesign(voteResult), tie: top > 0 && counts.filter((c) => c === top).length > 1 } : null,
+  };
 
   return (
-    <div className="voting-screen">
-      <div className="g-voting-head gap-6">
-        <PageTitle title="Pick your kind of fast." lead="One racer, one vote. Choose the challenge for the whole grid." />
-        <TimerRing seconds={remaining} total={VOTE_DURATION_MS / 1000} />
-      </div>
-      <div className="g-row">
-        <Pill lime>{votes.length} / {players.length} VOTED</Pill>
-        <Pill>{lobby.race_seconds / 60} MIN RACE</Pill>
-        {lobby.zero_mistakes && <Pill>ZERO MISTAKES</Pill>}
-        <Pill>{lobby.destination ? destinationInfo(lobby.destination).name.toUpperCase() : 'SCENERY MATCHES THE MODE'}</Pill>
-        <p className="g-small g-muted">You can change your vote until time runs out. Ties are broken by the server.</p>
-      </div>
-      <div className="g-grid-3 vote-options">
-        {MODE_DESIGN.map((mode) => (
-          <ModeCard
-            key={mode.id}
-            mode={mode}
-            count={voters.get(mode.id)?.length ?? 0}
-            selected={myVote === mode.id}
-            voters={voters.get(mode.id) ?? []}
-            onVote={() => {
-              play('ui-click');
-              api.castVote(lobby.id, mode.id).catch((e) => setError(errorMessage(e)));
-            }}
-          />
-        ))}
-      </div>
-      {isHost && (
-        <div className="g-row">
-          <Button variant="secondary" icon="clock" onClick={() => api.closeVoting(lobby.id).catch((e) => setError(errorMessage(e)))}>
-            End voting now
-          </Button>
-        </div>
-      )}
-      <ErrorText>{error}</ErrorText>
-    </div>
+    <VotingView
+      model={model}
+      actions={{
+        vote: (mode) => {
+          play('ui-click');
+          api.castVote(lobby.id, mode).catch((e) => setError(errorMessage(e)));
+        },
+        endVoting: () => void api.closeVoting(lobby.id).catch((e) => setError(errorMessage(e))),
+      }}
+    />
   );
 }

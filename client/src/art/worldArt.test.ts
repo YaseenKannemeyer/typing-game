@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadWorldKit } from './loadKit';
-import { VEHICLE_MODELS } from './vehicleArt';
+import { VEHICLE_MARKINGS, VEHICLE_MODELS } from './vehicleArt';
 import {
   cabinetBackdropSvg,
   circuitFlagSvg,
@@ -14,6 +14,7 @@ import {
   helmetSvg,
   kerbSvg,
   liveryCarSvg,
+  liveryOverlay,
   numberPlateSvg,
   paddockBackdropSvg,
   podiumVenueSvg,
@@ -29,14 +30,21 @@ import {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const kit = loadWorldKit<any>();
+// Retain independent kit venue composition while using the new app-owned cars.
+kit.car = worldCar;
 
 const sampleVehicles = VEHICLE_MODELS.map((model, i) => ({
   model, primary: ['#ff683b', '#9fcaff', '#c6a3ff'][i % 3], accent: '#b9f46a', number: i, wheels: ['sport', 'aero', 'retro'][i % 3], stripes: i % 2 === 0,
 }));
 
-describe('racing-world ports match the kit byte-for-byte', () => {
+describe('racing-world composition and app-owned vehicle markings', () => {
   it('cars with resolved colours', () => {
-    for (const v of sampleVehicles) expect(worldCar(v)).toBe(kit.car(v));
+    for (const v of sampleVehicles) {
+      const svg = worldCar(v);
+      expect(svg).not.toContain('var(');
+      expect(svg).toContain(v.primary!);
+      expect(svg).toContain(v.accent);
+    }
   });
 
   it('16 workshop backgrounds for every station', () => {
@@ -85,8 +93,23 @@ describe('racing-world ports match the kit byte-for-byte', () => {
     for (const v of sampleVehicles)
       for (const decal of DECAL_IDS) {
         const props = { ...v, team: TEAMS[v.number % 4]!.id, decal, driver: 'Zoë & <Co> long name' };
-        expect(liveryCarSvg(props)).toBe(kit.liveryCar(props));
+        const svg = liveryCarSvg(props);
+        expect(svg).toBe(worldCar(v).replace(/<\/svg>$/, liveryOverlay(v.model, props) + '</svg>'));
+        expect(svg).toContain('ZOË &amp; &lt;CO&gt;');
       }
+  });
+
+  it('keeps number, decal and lettering anchors on every app-owned vehicle', () => {
+    expect(Object.keys(VEHICLE_MARKINGS)).toEqual(VEHICLE_MODELS);
+    for (const model of VEHICLE_MODELS) {
+      const { number, decal, lettering } = VEHICLE_MARKINGS[model];
+      expect(number[0]).toBeGreaterThan(100); expect(number[0]).toBeLessThan(160);
+      expect(number[1]).toBeGreaterThan(50); expect(number[1]).toBeLessThan(124);
+      const svg = liveryOverlay(model, { team: 'night', decal: 'checkered', driver: 'BOB3' });
+      expect(svg).toContain(`translate(${decal[0]} ${decal[1]})`);
+      expect(svg).toContain(`x="${lettering[0]}" y="${lettering[1]}"`);
+      expect(svg).toContain('>BOB3</text>');
+    }
   });
 
   it('22 WPM gauge, including values past the scale', () => {

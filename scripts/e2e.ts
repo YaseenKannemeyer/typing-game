@@ -77,7 +77,7 @@ async function main() {
   // Spectator: no name gate, no seat taken.
   await carol.goto(`${base}/r/${code}/watch`);
   await carol.getByText('2 of 15 racers in the room.').waitFor({ timeout: 20_000 });
-  await alice.getByText('2 / 15 parked').waitFor();
+  await alice.getByText('2 / 15 racers').waitFor();
   await carol.locator('.sp-feed--live').waitFor({ timeout: 15_000 });
   await shot(carol, '15-spectator-waiting');
 

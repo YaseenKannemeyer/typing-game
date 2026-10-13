@@ -14,6 +14,8 @@ const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen').then(
 const SpectatorScreen = lazy(() => import('./screens/SpectatorScreen').then((m) => ({ default: m.SpectatorScreen })));
 const FirstLap = lazy(() => import('./screens/FirstLap').then((m) => ({ default: m.FirstLap })));
 const LobbyScreen = lazy(() => import('./screens/LobbyScreen').then((m) => ({ default: m.LobbyScreen })));
+// Dev-only fixture gallery: DEV is false in production builds, so the import and chunk are dropped.
+const Fixtures = import.meta.env.DEV ? lazy(() => import('./dev/Fixtures')) : null;
 
 const HOME_META: PageMeta = {
   title: 'Multiplayer Type Racing',
@@ -36,6 +38,7 @@ const ROUTE_META: Record<string, PageMeta> = {
 };
 
 function routeMeta(path: string, code: string | null, watch: string | null): PageMeta {
+  if (import.meta.env.DEV && path === '/__fixtures') return { title: 'Fixtures (dev)', description: 'Development fixture gallery.' };
   if (path === '/' || path === '') return HOME_META;
   if (ROUTE_META[path]) return ROUTE_META[path];
   if (watch) return { title: `Watching room ${watch}`, description: 'Watch a live GRID type race: four lanes, full standings and the official winner.' };
@@ -65,6 +68,7 @@ export default function App() {
   );
 
   function route() {
+    if (Fixtures && path === '/__fixtures') return <Fixtures />;
     if (path === '/' || path === '') return <Home />;
     if (path === '/account') return <AccountScreen />;
     if (path === '/profile') return <ProfileScreen />;

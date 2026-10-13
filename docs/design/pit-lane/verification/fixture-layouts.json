@@ -1,0 +1,642 @@
+{
+  "date": "2026-10-13",
+  "method": "Chrome browser connection; rendered DOM layout measurements; dev fixtures; CAPTCHA disabled; dead local backend",
+  "laptop": [
+    {
+      "id": "race-countdown-ready",
+      "disabled": true,
+      "focused": false,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-countdown-3",
+      "disabled": true,
+      "focused": false,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-go",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-p1",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-middle",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-last",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-2-racers",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-15-racers",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-165-wpm",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-mistake",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-strict-blocked",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-coding",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-shakespeare",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-final-stretch",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-time-up",
+      "disabled": true,
+      "focused": false,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-reconnecting",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 709,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-warning",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-championship",
+      "disabled": false,
+      "focused": true,
+      "height": 720,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0,
+      "passage": true,
+      "telemetry": true,
+      "width": 1280
+    },
+    {
+      "id": "race-spectating",
+      "focused": false,
+      "height": 720,
+      "inputBottom": null,
+      "inputs": 0,
+      "overflow": 0,
+      "passage": false,
+      "telemetry": false,
+      "width": 1280
+    }
+  ],
+  "phone": [
+    {
+      "id": "race-countdown-ready",
+      "clockTop": 178,
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-countdown-3",
+      "clockTop": 178,
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-go",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-p1",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-middle",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-last",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-2-racers",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-15-racers",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-165-wpm",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-mistake",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-strict-blocked",
+      "clockTop": 181,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 566,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-coding",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-shakespeare",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-final-stretch",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-time-up",
+      "clockTop": 178,
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-reconnecting",
+      "clockTop": 304,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 690,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-warning",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-championship",
+      "clockTop": 178,
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 564,
+      "inputs": 1,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    {
+      "id": "race-spectating",
+      "clockTop": 177,
+      "focused": false,
+      "inputBottom": null,
+      "inputs": 0,
+      "overflow": 0,
+      "scrollY": 0
+    }
+  ],
+  "desktop": [
+    {
+      "id": "race-countdown-ready",
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-countdown-3",
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-go",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-p1",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-middle",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-last",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-2-racers",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-15-racers",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-165-wpm",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-mistake",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-strict-blocked",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-coding",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-shakespeare",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-final-stretch",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-time-up",
+      "disabled": true,
+      "focused": false,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-reconnecting",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 709,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-warning",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-championship",
+      "disabled": false,
+      "focused": true,
+      "inputBottom": 645,
+      "inputs": 1,
+      "overflow": 0
+    },
+    {
+      "id": "race-spectating",
+      "focused": false,
+      "inputBottom": null,
+      "inputs": 0,
+      "overflow": 0
+    }
+  ],
+  "other": [
+    {
+      "id": "home",
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "home-offline",
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "vehicles",
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "vehicleFigures": 15
+    },
+    {
+      "id": "home",
+      "width": 1280,
+      "height": 720,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "home-offline",
+      "width": 1280,
+      "height": 720,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "vehicles",
+      "width": 1280,
+      "height": 720,
+      "overflow": 0,
+      "vehicleFigures": 15
+    },
+    {
+      "id": "home",
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "home-offline",
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "vehicleFigures": 0
+    },
+    {
+      "id": "vehicles",
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "vehicleFigures": 15
+    }
+  ]
+}

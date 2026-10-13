@@ -1,0 +1,43 @@
+[
+  {
+    "caseId": "vote-change",
+    "count": "5 / 6 voted",
+    "focused": true,
+    "selected": "Coding",
+    "status": "Your vote: Coding. You can change it until voting closes."
+  },
+  {
+    "caseId": "vote-end",
+    "reveal": "CODING IT IS."
+  },
+  {
+    "caseId": "results-action-error",
+    "actionName": "Race again",
+    "busyState": {
+      "allDisabled": true,
+      "busy": true
+    },
+    "error": "Not enough racers for a rematch.",
+    "recovered": true
+  },
+  {
+    "caseId": "results-action-error",
+    "actionName": "New mode vote",
+    "busyState": {
+      "allDisabled": true,
+      "busy": true
+    },
+    "error": "Could not start a vote.",
+    "recovered": true
+  },
+  {
+    "caseId": "results-action-error",
+    "actionName": "Back to lobby",
+    "busyState": {
+      "allDisabled": true,
+      "busy": true
+    },
+    "error": "Could not return to the lobby.",
+    "recovered": true
+  }
+]

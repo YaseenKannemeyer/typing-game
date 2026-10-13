@@ -15,7 +15,7 @@ import { TypingPanel } from '../components/TypingPanel';
 import { Button, SectionTitle } from '../components/ui';
 import { api } from '../lib/api';
 import { loadBuild, takeDrill } from '../lib/storage';
-import { ensureSession, requireSupabase } from '../lib/supabase';
+import { ensureSession, supabase } from '../lib/supabase';
 import { PRACTICE_PASSAGES } from '../game/practicePassages';
 import { useSound } from '../game/sound';
 import { useTyping } from '../game/useTyping';
@@ -105,7 +105,8 @@ export function Practice() {
       if (!h) return setGhost({ kind: 'none', reason: 'error' });
       setHash(h);
       // Only look up laps for an existing session; practice alone never creates an account.
-      const { data } = await requireSupabase().auth.getSession();
+      if (!supabase) return setGhost({ kind: 'none', reason: 'signed-out' });
+      const { data } = await supabase.auth.getSession();
       if (!live) return;
       if (!data.session) return setGhost({ kind: 'none', reason: 'signed-out' });
       try {

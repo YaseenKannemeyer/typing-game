@@ -1,8 +1,11 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { getCaptchaToken } from './captcha';
+import { FIXTURE_DEAD_BACKEND, fixtureBackend } from './fixtureMode';
 
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+const url = fixtureBackend
+  ? (fixtureBackend === 'none' ? undefined : FIXTURE_DEAD_BACKEND)
+  : (import.meta.env.VITE_SUPABASE_URL as string | undefined);
+const publishableKey = fixtureBackend ? 'fixture-no-backend' : (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined);
 
 /**
  * Where sessions live:

@@ -91,7 +91,7 @@ export function Skeleton() {
 }
 
 export function Mark({ size = 44 }: { size?: number }) {
-  return <TrustedSvg markup={markSvg(size)} />;
+  return <span className="app-mark"><TrustedSvg markup={markSvg(size)} /></span>;
 }
 
 /** Brand lockup (01-brand wordmark). */

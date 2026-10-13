@@ -1,26 +1,17 @@
 import { describe, expect, it } from 'vitest';
+import { chromeAvailable, measureVehicleArt } from '../../../scripts/vehicle-measure';
 import { VEHICLE_MODELS } from './vehicleArt';
-import { laneLeft, vehicleExtents } from './vehicleAnchors';
+import { laneLeft, VEHICLE_EXTENTS, vehicleExtents } from './vehicleAnchors';
 
 describe('vehicle finish anchors', () => {
-  it('every model has a sensible visible body inside the viewBox', () => {
+  it('cover every model, with a sensible visible body inside the viewBox', () => {
+    expect(Object.keys(VEHICLE_EXTENTS).sort()).toEqual([...VEHICLE_MODELS].sort());
     for (const model of VEHICLE_MODELS) {
       const { rear, front } = vehicleExtents(model);
       expect(rear, model).toBeGreaterThanOrEqual(0);
       expect(front, model).toBeLessThanOrEqual(280);
       expect(front - rear, model).toBeGreaterThan(100);
     }
-  });
-
-  it('models differ in padding, which is why the box edge cannot be used', () => {
-    const fronts = new Set(VEHICLE_MODELS.map((m) => vehicleExtents(m).front));
-    expect(fronts.size).toBeGreaterThan(5);
-    expect(vehicleExtents('kart').front).toBeLessThan(vehicleExtents('rocket').front);
-  });
-
-  it('known geometry: formula rear wing and nose, rocket nose', () => {
-    expect(vehicleExtents('formula')).toEqual({ rear: 30, front: 251 });
-    expect(vehicleExtents('rocket').front).toBe(249);
   });
 
   it('at 100% the front bumper sits on the finish line; at 0% the rear sits on the start', () => {
@@ -34,5 +25,13 @@ describe('vehicle finish anchors', () => {
       expect(evalLeft(laneLeft(model, 1)) + (front / 280) * 110).toBeCloseTo(1000, 1);
       expect(evalLeft(laneLeft(model, 0)) + (rear / 280) * 110).toBeCloseTo(0, 1);
     }
+  });
+
+  // Real geometry needs a real renderer: measured in Chrome when it is installed (skipped otherwise).
+  it.runIf(chromeAvailable())('match the drawn art, with wheels on the ground line (Chrome)', { timeout: 60_000 }, async () => {
+    const report = await measureVehicleArt();
+    expect(report.renders).toBe(VEHICLE_MODELS.length * 12);
+    expect(report.stale, 'VEHICLE_EXTENTS is behind the drawings: run `npm run check:vehicles -- --write`').toEqual([]);
+    expect(report.problems).toEqual([]);
   });
 });

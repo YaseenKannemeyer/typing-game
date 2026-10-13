@@ -88,6 +88,33 @@ function siteMeta(publicUrl: string | undefined): Plugin {
 }
 
 /**
+ * Dev server only: the fixture gallery (/__fixtures, see src/lib/fixtureMode.ts) gets a
+ * Content-Security-Policy that allows this origin and the dead fixture endpoint, nothing else.
+ * It is in the HTML before any script runs, so it also covers script/image/iframe loads,
+ * XHR and beacons. Inline scripts and eval stay allowed for Vite's dev client and React refresh.
+ */
+function fixtureIsolation(): Plugin {
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:",
+    "connect-src 'self' http://127.0.0.1:9 ws://127.0.0.1:9",
+    "frame-src 'self'",
+    "form-action 'self'",
+  ].join('; ');
+  return {
+    name: 'fixture-isolation',
+    apply: 'serve',
+    transformIndexHtml(_html, ctx) {
+      if (!(ctx.originalUrl ?? ctx.path).startsWith('/__fixtures')) return [];
+      return [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: csp }, injectTo: 'head-prepend' }];
+    },
+  };
+}
+
+/**
  * Vercel preview builds (any branch but main) get a fixed "TEST" badge so they are never mistaken
  * for production. They share the production Supabase project, so everything done there is real.
  */
@@ -108,7 +135,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', 'VITE_');
   const vercel = loadEnv(mode, '.', 'VERCEL_');
   return {
-    plugins: [react(), tailwindcss(), siteMeta(env.VITE_PUBLIC_URL), previewBadge(vercel.VERCEL_ENV, vercel.VERCEL_GIT_COMMIT_REF)],
+    plugins: [react(), tailwindcss(), siteMeta(env.VITE_PUBLIC_URL), previewBadge(vercel.VERCEL_ENV, vercel.VERCEL_GIT_COMMIT_REF), fixtureIsolation()],
     build: {
       sourcemap: false,
       rolldownOptions: {

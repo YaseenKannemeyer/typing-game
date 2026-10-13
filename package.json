@@ -14,9 +14,11 @@
     "typecheck": "tsc -p shared && tsc -p client --noEmit",
     "bots": "tsx scripts/bots.ts",
     "e2e": "tsx scripts/e2e.ts",
-    "build:functions": "node scripts/build-functions.mjs"
+    "build:functions": "node scripts/build-functions.mjs",
+    "check:vehicles": "tsx scripts/check-vehicle-art.ts"
   },
   "devDependencies": {
+    "jsdom": "^26.1.0",
     "playwright-core": "^1.64.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
