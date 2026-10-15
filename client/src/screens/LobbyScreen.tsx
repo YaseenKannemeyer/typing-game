@@ -72,6 +72,7 @@ export function LobbyScreen({ code, name, onChangeName }: Props) {
 
   return (
     <Page
+      className={race?.status === 'racing' && lobby?.status !== 'voting' ? 'race-page' : ''}
       actions={
         <>
           <span className="g-pill g-pill--lime hidden font-mono sm:inline-flex">ROOM {code}</span>

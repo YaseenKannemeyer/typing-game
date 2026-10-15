@@ -12,6 +12,7 @@ import './index.css';
 import './styles/studio.css';
 import './styles/spectator.css';
 import './styles/experience.css';
+import './styles/race-layout.css';
 
 // Before the first paint, so the saved text size and contrast never flash.
 applyComfort(loadComfort());

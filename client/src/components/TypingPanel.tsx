@@ -9,6 +9,8 @@ interface Props {
   onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
   variant?: TypingVariant;
   waiting?: boolean;
+  /** Race cockpit: current line and one look-ahead line, without old lines. */
+  compact?: boolean;
   /** Shown instead of "finished" wording when the race clock has stopped. */
   doneLabel?: string;
 }
@@ -79,7 +81,7 @@ function Line({ targets, typed, active, past }: { targets: readonly string[]; ty
  * current line is highlighted, mistakes stay red, Space or Enter at the end locks a line in.
  */
 export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPanel(
-  { state, onKeyDown, variant = 'standard', waiting = false, doneLabel },
+  { state, onKeyDown, variant = 'standard', waiting = false, doneLabel, compact = false },
   ref,
 ) {
   const id = useId();
@@ -98,8 +100,8 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
     ready: state.strict ? 'ZERO-MISTAKE MODE' : 'READY TO TYPE',
   }[status];
 
-  const first = Math.max(0, state.lineIndex - 1);
-  const shown = state.lines.slice(first, state.lineIndex + 1 + AHEAD).map((_, j) => first + j);
+  const first = compact ? state.lineIndex : Math.max(0, state.lineIndex - 1);
+  const shown = state.lines.slice(first, state.lineIndex + 1 + (compact ? 1 : AHEAD)).map((_, j) => first + j);
   const currentText = targets.join(' ');
 
   let feedback = '';
@@ -112,7 +114,7 @@ export const TypingPanel = forwardRef<HTMLInputElement, Props>(function TypingPa
   return (
     <section className={`g-typing g-typing--${variant}`}>
       <div className="g-typing-head">
-        <span>{HEAD[variant]}</span>
+        <span>{compact && variant === 'standard' ? 'TYPE THE CURRENT LINE' : HEAD[variant]}</span>
         <span className="g-typing-state">{label}</span>
       </div>
       <div className="g-passage g-lines" aria-hidden="true">

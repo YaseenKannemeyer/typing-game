@@ -15,8 +15,8 @@ import {
 import { modeDesign } from '../art/gridArt';
 import { CountdownFrame } from '../components/race/Moments';
 import { Dashboard } from '../components/race/Dashboard';
-import { IdleBoard, PitBoard, useRaceControl } from '../components/race/RaceControl';
-import { formatElapsed, Minimap } from '../components/race/Hud';
+import { PitBoard, useRaceControl } from '../components/race/RaceControl';
+import { LiveStandings } from '../components/race/LiveStandings';
 import { Track, type TrackCar } from '../components/Track';
 import { TypingPanel, type TypingVariant } from '../components/TypingPanel';
 import { Banner, Loading, Pill } from '../components/ui';
@@ -276,8 +276,8 @@ export function Race({ state }: Props) {
   const minutes = Math.round(durationMs / 60_000);
 
   return (
-    <div className="race-screen">
-      <div className="g-between">
+    <div className="race-screen race-layout">
+      <div className="g-between race-context">
         <div>
           <h1 className="g-heading">
             {lobby?.mode === 'random' && <span className="text-muted">Random → </span>}
@@ -312,31 +312,27 @@ export function Race({ state }: Props) {
             progressLabel="Race time used"
             running={started && !timeUp}
           />
-          <div className="race-control">
-            <div aria-live="polite">{board && <PitBoard key={board.id} event={board} />}</div>
-            {!board && <IdleBoard />}
-          </div>
         </div>
       )}
 
-      <div className="race-track relative">
-        <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} lanes={VISIBLE_CARS} />
-        {(!started || elapsed < GO_BANNER_MS) && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
-            <CountdownFrame value={started ? 'GO!' : countdownValue} />
-          </div>
-        )}
+      <div className="race-field">
+        <LiveStandings racers={ranked.map((s) => ({ id: s.id, name: s.name, wpm: s.netWpm }))} localId={userId} />
+        <div className="race-track relative">
+          <Track cars={cars} total={racePlayers.length} started={started} destination={destinationFor(race.mode, lobby?.destination)} lanes={VISIBLE_CARS} />
+          {(!started || elapsed < GO_BANNER_MS) && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-ink/85">
+              <CountdownFrame value={started ? 'GO!' : countdownValue} />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Only when some racers don't have a lane on the track. */}
-      {racePlayers.length > cars.length && (
-        <div className="race-minimap">
-          <Minimap
-            racers={ranked.map((s) => ({ id: s.id, name: s.name, position: rankOf(s.id), progress: s.progress * leaderAt }))}
-            localId={userId}
-          />
+      <div className={`race-status-strip ${!started ? 'is-waiting' : timeUp ? 'is-finished' : ''}`}>
+        <span className="race-flag"><i aria-hidden="true" />{!started ? 'ON THE GRID' : timeUp ? 'CHEQUERED FLAG' : 'GREEN FLAG'}</span>
+        <div className="race-status-message" role="status">
+          {board ? <PitBoard key={board.id} event={board} /> : <span>{!started ? 'Get ready for the countdown' : timeUp ? 'Confirming official results…' : 'Race in progress'}</span>}
         </div>
-      )}
+      </div>
 
       {isRacer && (
         <div className="race-typing">
@@ -345,23 +341,12 @@ export function Race({ state }: Props) {
             state={ts}
             onKeyDown={onKeyDown}
             variant={variant}
+            compact
             waiting={!started}
             doneLabel={timeUp && started ? "TIME'S UP" : undefined}
           />
-          {timeUp && started ? (
-            <p className="g-small g-muted">Time's up. Locking in the final lines and the official results…</p>
-          ) : (
-            started && (
-              <p className="g-small g-muted">
-                {formatElapsed(msLeft)} left. The text keeps going, so type until the clock stops.
-              </p>
-            )
-          )}
+          <p className="race-provisional g-small g-muted">{timeUp && started ? "Time’s up. Locking in the final lines and the official results…" : 'Positions are provisional until results are confirmed.'}</p>
           {warning && <Banner tone="warning">{warning}</Banner>}
-          {/* Phones: race control sits below the text so it never shifts the line you're typing. */}
-          <div className="race-control-below" aria-live="polite">
-            {board && <PitBoard key={board.id} event={board} />}
-          </div>
         </div>
       )}
     </div>

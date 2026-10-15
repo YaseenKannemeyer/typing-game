@@ -1,0 +1,130 @@
+/* Live race cockpit. Keeps main's GRID palette and artwork; other screens retain their layouts. */
+.race-page .app-main { max-width: 1600px; padding: 0 24px 24px; }
+.race-page .app-header { max-width: 1600px; min-height: 64px; padding: 8px 24px; grid-template-columns: 1fr auto; grid-template-areas: 'brand actions'; }
+.race-page .app-header .a-nav, .race-page .race-site-footer { display: none; }
+.race-page .app-header-actions .g-btn { min-width: 44px; min-height: 44px; }
+.race-layout { --race-lane-height: 70px; gap: 0; }
+.race-layout .race-context { min-height: 48px; padding: 8px 0; }
+.race-layout .race-context .g-heading { font-size: 18px; }
+.race-layout .race-context .g-row { gap: 8px; }
+.race-layout .race-top { display: block; }
+.race-layout .telemetry { grid-template-columns: 200px minmax(0, 1fr); border-radius: 0; border-inline: 0; }
+.race-layout .telemetry-speed { padding: 8px 16px; gap: 0; background: transparent; }
+.race-layout .telemetry-speed > span { display: none; }
+.race-layout .speedometer { width: 164px; }
+.race-layout .telemetry-body { display: flex; flex-direction: column; justify-content: center; padding: 16px 0 0; }
+.race-layout .telemetry-stats { gap: 0; margin: auto 0; }
+.race-layout .telemetry-stats > div { padding: 0 24px; border-right: 1px solid var(--g-border); }
+.race-layout .telemetry-stats > div:last-child { border: 0; }
+.race-layout .telemetry-stats dt { margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.race-layout .telemetry-stats dd { font-size: clamp(28px, 3.2vw, 48px); font-weight: 600; font-variant-numeric: tabular-nums; }
+.race-layout .telemetry-stats > div:first-child dd { color: var(--g-lime); }
+.race-layout .telemetry-stats small { font-size: 16px; }
+.race-layout .telemetry-progress-copy { display: none; }
+.race-layout .telemetry-progress { border-radius: 0; margin-top: 16px; height: 2px; }
+.race-field { display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+.race-standings { position: relative; min-width: 0; display: flex; flex-direction: column; background: var(--ui-surface); border-right: 1px solid var(--g-border); }
+.race-standings h2 { margin: 0; padding: 16px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.race-standings h2 > span { font: 12px var(--g-mono); color: var(--g-muted); }
+.race-standings-scroll { position: absolute; inset: 52px 0 0; min-height: 0; overflow: auto; scrollbar-width: thin; }
+.race-standings-scroll:focus-visible { outline: 2px solid var(--g-lime); outline-offset: -2px; }
+.race-standings table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px; text-align: left; }
+.race-standings thead { position: sticky; top: 0; background: var(--ui-surface); z-index: 1; }
+.race-standings th, .race-standings td { padding: 10px 12px; border-bottom: 1px solid var(--g-border); }
+.race-standings thead th { font-size: 10px; color: var(--g-muted); font-weight: 500; text-transform: uppercase; }
+.race-standings th:first-child { width: 40px; }
+.race-standings th:last-child { width: 58px; }
+.race-standings td { font-family: var(--g-mono); font-variant-numeric: tabular-nums; }
+.race-standings :is(th, td):last-child { text-align: right; }
+.race-standings tbody th > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.race-standings small { font-size: 9px; letter-spacing: .06em; }
+.race-standings .is-you { background: var(--g-lime); color: var(--g-ink); }
+.race-layout .race-track { min-width: 0; }
+.race-layout .w-circuit { border: 0; border-radius: 0; }
+.race-layout .w-circuit-sky { height: 36px; }
+.race-layout .w-distance { padding-block: 8px; }
+.race-layout .w-lane { min-height: var(--race-lane-height); }
+.race-layout .w-finish-flag { display: none; }
+.race-layout .w-track-racer { --car-w: 150px; bottom: 4px; }
+.race-layout .w-lane-name small { display: none; }
+.race-layout .w-lane-name strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.race-layout .w-road .g-lane-percent { display: none; }
+.race-status-strip { display: flex; align-items: center; gap: 20px; min-height: 44px; padding: 8px 16px; border-block: 1px solid var(--g-border); background: var(--ui-surface); }
+.race-flag { flex-shrink: 0; display: inline-flex; align-items: center; gap: 10px; color: var(--g-lime); font-size: 12px; font-weight: 700; letter-spacing: .05em; }
+.race-flag i { width: 10px; height: 10px; background: currentColor; }
+.race-status-strip.is-waiting .race-flag { color: var(--g-warning); }
+.race-status-strip.is-finished .race-flag { color: var(--g-text); }
+.race-status-message { padding-left: 20px; border-left: 1px solid var(--g-border); color: var(--g-muted); font-size: 12px; min-width: 0; }
+.race-layout .race-status-message .w-pitboard { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; border: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; animation: none; }
+.race-status-message .w-board-source { display: none; }
+.race-layout .race-status-message .w-pitboard > strong { font: 600 12px var(--g-font); margin: 0; }
+.race-layout .race-status-message .w-pitboard p { font-size: 12px; }
+.race-layout .race-typing { gap: 0; order: initial; }
+.race-page .race-layout .g-typing { border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
+.race-page .race-layout .g-typing-head { padding: 16px 0 0; border: 0; }
+.race-page .race-layout .g-passage { padding: 12px 0 16px; font-size: var(--comfort-passage, clamp(20px, 2vw, 28px)); line-height: 1.65; }
+.race-layout .g-line { margin: 0; padding: 0; border-radius: 0; }
+.race-layout .g-line.is-current { background: transparent; }
+.race-layout .g-line:not(.is-current) { color: var(--g-subtle); }
+.race-page .race-layout .g-type-input { width: 100%; margin: 0; min-height: 60px; border: 2px solid var(--g-lime); border-radius: 6px; font: 22px var(--g-mono); }
+.race-page .race-layout .g-type-input:disabled { border-color: var(--g-border); }
+.race-page .race-layout .g-typing-foot { padding: 10px 0; min-height: 36px; gap: 4px 16px; }
+.race-layout .race-provisional { font-size: 11px; margin: 8px 0 0; }
+.race-page .race-layout .g-typing--shakespeare { background: #e2ddc9; padding: 0 16px; }
+
+@media (min-width: 768px) and (max-height: 800px) {
+  .race-page .app-header { min-height: 56px; padding-block: 4px; }
+  .race-layout { --race-lane-height: 46px; }
+  .race-layout .race-context { min-height: 36px; padding-block: 4px; }
+  .race-layout .speedometer { width: 116px; }
+  .race-layout .race-status-strip { min-height: 36px; padding-block: 4px; }
+  .race-layout .w-circuit-sky { height: 24px; }
+  .race-layout .w-track-racer { --car-w: 116px; bottom: 0; }
+  .race-layout .w-lane-name { line-height: 1.2; }
+  .race-page .race-layout .g-passage { font-size: var(--comfort-passage, 21px); padding-block: 8px; }
+  .race-page .race-layout .g-type-input { min-height: 52px; }
+}
+@media (max-width: 1000px) {
+  .race-field { grid-template-columns: 200px minmax(0, 1fr); }
+  .race-layout .telemetry { grid-template-columns: 170px minmax(0, 1fr); }
+  .race-layout .telemetry-stats > div { padding-inline: 14px; }
+  .race-layout .telemetry-stats dd { font-size: 28px; }
+  .race-layout .w-lane { grid-template-columns: 84px minmax(0, 1fr); }
+  .race-layout .w-distance { padding-left: 100px; }
+}
+@media (max-width: 767px) {
+  .race-page .app-main { padding: 0 12px 24px; }
+  .race-page .app-header { padding-inline: 12px; }
+  .race-page .app-header-actions { gap: 6px; }
+  .race-page .app-brand-link .g-brand { font-size: 20px; }
+  .race-page .app-brand-link .g-brand small { display: none; }
+  .race-layout .race-context { min-height: 44px; }
+  .race-layout .race-context .g-heading { font-size: 16px; }
+  .race-layout .race-context .g-row { gap: 4px; justify-content: flex-end; }
+  .race-layout .telemetry { grid-template-columns: 120px minmax(0, 1fr); }
+  .race-layout .telemetry-speed { display: flex; padding: 8px 4px; border-right: 1px solid var(--g-border); border-bottom: 0; }
+  .race-layout .speedometer { width: 112px; }
+  .race-layout .telemetry-body { padding: 10px 0 0; }
+  .race-layout .telemetry-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 0; }
+  .race-layout .telemetry-stats > div { padding-inline: 12px; border: 0; }
+  .race-layout .telemetry-stats dt { font-size: 9px; margin-bottom: 3px; }
+  .race-layout .telemetry-stats dd { font-size: 22px; }
+  .race-layout .telemetry-stats small { font-size: 10px; }
+  .race-layout .telemetry-progress { margin-top: 10px; }
+  .race-field { display: contents; }
+  .race-layout .race-track { order: 0; }
+  .race-layout .w-circuit-sky { height: 24px; }
+  .race-layout .w-lane { min-height: 48px; grid-template-columns: 70px minmax(0, 1fr); }
+  .race-layout .w-lane-name strong { font-size: 11px; }
+  .race-layout .w-track-racer { --car-w: 96px; bottom: 0; }
+  .race-layout .w-distance { padding-left: 82px; font-size: 8px; }
+  .race-layout .race-status-strip { gap: 10px; padding-inline: 8px; }
+  .race-flag { font-size: 10px; gap: 6px; }
+  .race-status-message { padding-left: 10px; font-size: 11px; }
+  .race-status-message .w-pitboard p { display: none; }
+  .race-page .race-layout .g-passage { font-size: var(--comfort-passage, 18px); line-height: 1.6; padding-block: 12px; }
+  .race-page .race-layout .g-type-input { font-size: 16px; min-height: 52px; padding-inline: 12px; }
+  .race-page .race-layout .g-typing-head { font-size: 10px; }
+  .race-standings { order: 5; margin-top: 20px; border: 1px solid var(--g-border); }
+  .race-standings-scroll { position: static; height: auto; max-height: 280px; flex: auto; }
+}
