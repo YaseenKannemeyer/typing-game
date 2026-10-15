@@ -35,9 +35,11 @@ export function useTyping(text: string, enabled: boolean, { strict = false, sect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, strict]);
 
+  // Also takes page-level key events, which the race redirects to the line when focus is elsewhere.
   const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (!enabled || !e.nativeEvent.isTrusted) return;
+    (e: KeyboardEvent<HTMLInputElement> | globalThis.KeyboardEvent) => {
+      const native = 'nativeEvent' in e ? e.nativeEvent : e;
+      if (!enabled || !native.isTrusted) return;
       const sec = sectionRef.current?.() ?? 0;
       const before = latest.current;
       let next: TypingState;

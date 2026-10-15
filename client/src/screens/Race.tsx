@@ -91,9 +91,11 @@ export function Race({ state }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [warning, setWarning] = useState<string | null>(null);
 
+  // The input only mounts once the text has loaded, which can be after GO.
+  const hasText = !!passage;
   useEffect(() => {
     if (started && isRacer && !timeUp) inputRef.current?.focus();
-  }, [started, isRacer, timeUp]);
+  }, [started, isRacer, timeUp, hasText]);
 
   // Countdown sounds, keyed to the server-aligned start time.
   const countdown = Math.ceil((startAt - now) / 1000);
@@ -261,12 +263,31 @@ export function Race({ state }: Props) {
   const board = useRaceControl({ raceId: race?.id, started, myId: userId, leader, myRank, msLeft, timeUp: timeUp && started });
 
   const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
+    (e: KeyboardEvent<HTMLInputElement> | globalThis.KeyboardEvent) => {
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) play('key-click');
       typing.onKeyDown(e);
     },
     [typing, play],
   );
+
+  // Typing after focus has left the line (a click on the page, back from another window)
+  // puts focus back and keeps the keystroke. Space and Enter still press a focused button.
+  useEffect(() => {
+    if (!started || !isRacer || timeUp) return;
+    const onPageKey = (e: globalThis.KeyboardEvent) => {
+      const input = inputRef.current;
+      if (!input || input.disabled || e.target === input || e.defaultPrevented) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key.length !== 1 && e.key !== 'Backspace' && e.key !== 'Enter') return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      if ((e.key === ' ' || e.key === 'Enter') && target?.closest('button, a[href], summary, [role="button"], [role="tab"]')) return;
+      input.focus({ preventScroll: true });
+      onKeyDown(e);
+    };
+    document.addEventListener('keydown', onPageKey);
+    return () => document.removeEventListener('keydown', onPageKey);
+  }, [started, isRacer, timeUp, onKeyDown]);
 
   if (!race || !passage) return <Loading label="Loading the race" />;
 
