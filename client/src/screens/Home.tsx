@@ -29,6 +29,7 @@ interface StageCar {
 
 /** Each car holds the stage for 5–8 s, then drives off for the next one. */
 const nextDriveMs = () => 5000 + Math.random() * 3000;
+const CARS_PER_SCENE = 2;
 
 const showroomCar = (index: number) => ({
   model: MODEL_GEOMETRY[index]!.id,
@@ -58,8 +59,8 @@ function Showroom({ selected, onSelect }: { selected: number; onSelect: (index: 
   const [cars, setCars] = useState<StageCar[]>(() => [{ id: 0, index: selected, phase: 'stage' }]);
   const [shown, setShown] = useState(selected);
   const [swaps, setSwaps] = useState(0);
-  // A new backdrop after every full line-up, cross-faded while the cars swap.
-  const scene = Math.floor(swaps / count) % SCENES.length;
+  // A new backdrop every CARS_PER_SCENE cars, cross-faded while the cars swap.
+  const scene = Math.floor(swaps / CARS_PER_SCENE) % SCENES.length;
 
   // Whatever changes the car (timer, arrows, line-up), the old one drives off in the same frame
   // the new one starts driving in (derived during render, not in an effect, to avoid a flash).
