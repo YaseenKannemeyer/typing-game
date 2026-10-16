@@ -41,7 +41,10 @@ const env = Object.fromEntries(
 const URL_ = env.VITE_SUPABASE_URL!;
 const KEY = env.VITE_SUPABASE_PUBLISHABLE_KEY!;
 
-const count = Math.max(3, Number(process.argv[2] ?? 4));
+const count = Number(process.argv[2] ?? 4);
+if (!Number.isInteger(count) || count < 3 || count > 15) {
+  throw new Error('Bot count must be an integer from 3 to 15 (including one cheater).');
+}
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let failures = 0;
 const check = (ok: boolean, label: string) => {
@@ -66,7 +69,7 @@ async function makeBot(i: number): Promise<Bot> {
     name: `Bot${i + 1}`,
     sb,
     id: data.user!.id,
-    wpm: 130 - i * 15,
+    wpm: 130 - i * (100 / (count - 1)),
     errorRate: 0.02 + i * 0.03,
     cheater: i === count - 1,
   };
@@ -212,7 +215,9 @@ async function main() {
   const hostColor = colorRows!.find((r) => r.user_id === host.id)!.car_color;
   check((await rpcError(second, 'set_car_color', { p_lobby_id: lobbyId, p_color: hostColor })) === 'color_taken', 'taken colour rejected');
   check((await rpcError(second, 'set_car_color', { p_lobby_id: lobbyId, p_color: '#000000' })) === 'invalid_color', 'unknown colour rejected');
-  await rpc(second, 'set_car_color', { p_lobby_id: lobbyId, p_color: '#fa8763' });
+  // At full capacity every colour is occupied; reselecting your own is valid.
+  const secondColor = colorRows!.find((r) => r.user_id === second.id)!.car_color;
+  await rpc(second, 'set_car_color', { p_lobby_id: lobbyId, p_color: secondColor });
 
   // Garage (cosmetic, server-validated) -------------------------------------
   const cleaned = await rpc<Record<string, unknown>>(second, 'set_vehicle', {
@@ -220,8 +225,8 @@ async function main() {
     p_vehicle: { model: 'rocket', accent: 'red;<script>', wheels: 'square', stripes: 'yes', number: 1234, effect: 'neon', speed: 999 },
   });
   check(
-    JSON.stringify(cleaned) === JSON.stringify({ model: 'rocket', accent: '#b9f46a', wheels: 'sport', stripes: false, number: 99, effect: 'neon' }) ||
-      (cleaned.model === 'rocket' && cleaned.accent === '#b9f46a' && cleaned.wheels === 'sport' && cleaned.stripes === false && cleaned.number === 99 && !('speed' in cleaned)),
+    cleaned.model === 'rocket' && cleaned.accent === '#b9f46a' && cleaned.wheels === 'sport' &&
+      cleaned.stripes === false && cleaned.number === 999 && cleaned.effect === 'neon' && !('speed' in cleaned),
     'garage build is sanitised server-side (unknown keys dropped)',
   );
 

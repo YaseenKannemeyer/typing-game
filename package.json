@@ -14,6 +14,8 @@
     "typecheck": "tsc -p shared && tsc -p client --noEmit",
     "bots": "tsx scripts/bots.ts",
     "e2e": "tsx scripts/e2e.ts",
+    "e2e:desktop": "tsx scripts/desktop-smoke.ts",
+    "e2e:resilience": "tsx scripts/resilience-smoke.ts",
     "build:functions": "node scripts/build-functions.mjs"
   },
   "devDependencies": {

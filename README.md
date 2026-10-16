@@ -24,9 +24,21 @@ npm test           # unit tests (shared/)
 npm run typecheck
 npm run bots -- 5  # live multiplayer simulation against Supabase (creates 5 anonymous users)
 npm run e2e        # two-player browser walkthrough in installed Chrome (needs `npm run dev`); screenshots → e2e-screens/
+npm run e2e:desktop -- http://localhost:5173 11 /tmp/typing-desktop-smoke
+                   # independent desktop browsers: join, vote, type, results, return to lobby
+npm run e2e:resilience -- http://localhost:5173 /tmp/typing-resilience-smoke
+                   # 3 browsers: a racer's network drops mid-race, then the host's drops (~3 min)
 ```
 
 Without Supabase env vars the app still runs in offline practice mode.
+
+Live tests create anonymous users: the bot count includes one anti-cheat test
+client, so `npm run bots -- 12` exercises 11 legitimate racers. Counts are limited
+to the room capacity of 15. The desktop test defaults to 11 legitimate racers
+and leaves its test room when finished. Supabase defaults to 30 new anonymous
+sign-ins per hour per public IP; budget test runs alongside event arrivals,
+especially when everyone shares Wi-Fi. Reusing an existing tab preserves its
+guest session. The configured limit is in Supabase Authentication → Rate Limits.
 
 ## Supabase setup
 
